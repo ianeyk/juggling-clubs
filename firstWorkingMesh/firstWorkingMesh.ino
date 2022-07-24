@@ -61,7 +61,8 @@ void changedConnectionCallback() {
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-    Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+    Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(), offset);
+
 }
 
 void setup() {

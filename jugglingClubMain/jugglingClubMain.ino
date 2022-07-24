@@ -1,8 +1,12 @@
 #define FASTLED_ESP8266_RAW_PIN_ORDER
+// comment the following line out if not the leader
+// #define LEADER true
+#define SHORTER_STRIPS true
 
 // #include <TaskScheduler.h>
 #include <FastLED.h>
 #include "painlessMesh.h"
+// #include "meshFuncs.ino"
 
 FASTLED_USING_NAMESPACE
 
@@ -23,17 +27,31 @@ FASTLED_USING_NAMESPACE
 //#define CLK_PIN   0
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
+#ifdef SHORTER_STRIPS
+#define NUM_LEDS 54
+#else
 #define NUM_LEDS    66
-CRGB leds[NUM_LEDS];
+#endif
 
 #define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  120
 
+CRGB leds[NUM_LEDS];
+
+#ifdef SHORTER_STRIPS
+int strip_len = 9;
+#else
 int strip_len = 12;
+#endif
+
 int ring_len = 18;
 
 void handle_wave(int h, int s, int v);
 void start_wave();
+
+
+unsigned long incrementPatternInterval = TASK_SECOND * 10;
+
 
 void updateLeds();
 Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
@@ -42,7 +60,7 @@ void incrementHue();
 Task taskIncrementHue( TASK_MILLISECOND * 20 , TASK_FOREVER, &incrementHue );
 
 void incrementPattern();
-Task taskIncrementPattern( TASK_SECOND * 10 , TASK_FOREVER, &incrementPattern );
+Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPattern );
 
 // set up PainlessMesh
 #define   MESH_PREFIX     "Apple"
@@ -54,8 +72,17 @@ painlessMesh mesh;
 
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
+  Serial.println("receiving message");
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
-  // interpretMessage(msg);
+
+  #ifndef LEADER
+  taskUpdateLeds.restart();
+  taskIncrementHue.restart();
+  taskIncrementPattern.restart();
+  #endif
+
+  // it is important that interpretMessage be called AFTER restarting the tasks (not before)
+  interpretMessage(msg);
 }
 void newConnectionCallback(uint32_t nodeId) {
     Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
@@ -65,6 +92,10 @@ void changedConnectionCallback() {
 }
 void nodeTimeAdjustedCallback(int32_t offset) {
     Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+    // unsigned long minus_offset = incrementPatternInterval - (offset % incrementPatternInterval);
+    // taskUpdateLeds.delay(minus_offset);
+    // taskIncrementHue.delay(minus_offset);
+    // taskIncrementPattern.delay(minus_offset);
 }
 
 // Task task_handle_wave(1000 / FRAMES_PER_SECOND, TASK_FOREVER, &handle_wave(255, 255, 255));
@@ -149,6 +180,14 @@ void loop()
 
 void incrementPattern()
 {
+
+  #ifdef LEADER
+  // every time we update the pattern, also send the message to update every other club's patterns
+  Serial.println("sending message...");
+  sendMessage();
+  Serial.println("Done sending message.");
+  #endif
+
   // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
 }
