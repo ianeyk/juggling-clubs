@@ -2,6 +2,7 @@
 
 // #include <TaskScheduler.h>
 #include <FastLED.h>
+#include "painlessMesh.h"
 
 FASTLED_USING_NAMESPACE
 
@@ -34,6 +35,38 @@ int ring_len = 18;
 void handle_wave(int h, int s, int v);
 void start_wave();
 
+void updateLeds();
+Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
+
+void incrementHue();
+Task taskIncrementHue( TASK_MILLISECOND * 20 , TASK_FOREVER, &incrementHue );
+
+void incrementPattern();
+Task taskIncrementPattern( TASK_SECOND * 10 , TASK_FOREVER, &incrementPattern );
+
+// set up PainlessMesh
+#define   MESH_PREFIX     "Apple"
+#define   MESH_PASSWORD   "circusLuminescence"
+#define   MESH_PORT       5555
+
+Scheduler userScheduler; // to control your personal task
+painlessMesh mesh;
+
+// Needed for painless library
+void receivedCallback( uint32_t from, String &msg ) {
+  Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
+  // interpretMessage(msg);
+}
+void newConnectionCallback(uint32_t nodeId) {
+    Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
+}
+void changedConnectionCallback() {
+  Serial.printf("Changed connections\n");
+}
+void nodeTimeAdjustedCallback(int32_t offset) {
+    Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+}
+
 // Task task_handle_wave(1000 / FRAMES_PER_SECOND, TASK_FOREVER, &handle_wave(255, 255, 255));
 // Task updateLEDs(100, strip_len, &FastLED.show);
 // Task task_start_wave(3000, TASK_FOREVER, &start_wave);
@@ -43,6 +76,7 @@ void setup() {
   Serial.begin(115200);
   delay(3000); // 3 second delay for recovery
 
+  // set up FastLED
   // tell FastLED about the LED strip configuration
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
@@ -51,6 +85,22 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   // runner.addTask(updateLEDs);
   // runner.add_task(task_start_wave);
+
+  // set up PainlessMesh
+  mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
+
+  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
+  mesh.onReceive(&receivedCallback);
+  mesh.onNewConnection(&newConnectionCallback);
+  mesh.onChangedConnections(&changedConnectionCallback);
+  mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+
+  userScheduler.addTask( taskUpdateLeds );
+  userScheduler.addTask( taskIncrementHue );
+  userScheduler.addTask( taskIncrementPattern );
+  taskUpdateLeds.enable();
+  taskIncrementHue.enable();
+  taskIncrementPattern.enable();
 }
 
 
@@ -65,33 +115,46 @@ uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 //   runner.add_task(task_handle_wave);
 // }
 
+void updateLeds() {
+  // Call the current pattern function once, updating the 'leds' array
+  gPatterns[gCurrentPatternNumber]();
+
+  // send the 'leds' array out to the actual LED strip
+  FastLED.show();
+}
+
 void loop()
 {
   // Call the current pattern function once, updating the 'leds' array
   // gPatterns[gCurrentPatternNumber]();
 
-  // send the 'leds' array out to the actual LED strip
-  FastLED.show();
-  // insert a delay to keep the framerate modest
-  FastLED.delay(1000/FRAMES_PER_SECOND);
+  // // send the 'leds' array out to the actual LED strip
+  // FastLED.show();
+  // // insert a delay to keep the framerate modest
+  // FastLED.delay(1000/FRAMES_PER_SECOND);
 
   // do some periodic updates
   // EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
-  // EVERY_N_SECONDS( 10 ) { nextPattern(); } // change patterns periodically
+  // EVERY_N_SECONDS( 10 ) { incrementPattern(); } // change patterns periodically
   // better_handle_wave(gHue, 255, 255);
-  longitudinal_wave(0, 255, 255);
+  // longitudinal_wave(0, 255, 255);
   // set_ring(gHue, 255, 255);
   // gHue++;
   // delay(100);
 
+  mesh.update();
 }
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
 
-void nextPattern()
+void incrementPattern()
 {
   // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
+}
+
+void incrementHue() {
+  gHue = (gHue + 1) % 255;
 }
 
 void rainbow()
