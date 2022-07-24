@@ -188,6 +188,8 @@ void incrementPattern()
   Serial.println("Done sending message.");
   #endif
 
+  // to fix the off by one error, we have to send the message BEFORE incrementing the pattern
+
   // add one to the current pattern number, and wrap around at the end
   gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
 }
@@ -199,7 +201,8 @@ void incrementHue() {
 void rainbow()
 {
   // FastLED's built-in rainbow generator
-  fill_rainbow( leds, NUM_LEDS, gHue, 7);
+
+  fill_rainbow( leds, NUM_LEDS, int(gHue / 50) * 50, 7);
 }
 
 void rainbowWithGlitter()
