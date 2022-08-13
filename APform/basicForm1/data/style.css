@@ -35,6 +35,9 @@ label {
     cursor: pointer;
     width:60%;
 }
+.pattern-selected {
+  background-color: salmon;
+}
 .add-in-selector {
     display: inline-block;
     background-color: #7334ca;
@@ -46,6 +49,9 @@ label {
     font-size: 30px;
     margin: 2px;
     cursor: pointer;
+}
+.add-in-selected {
+  background-color: #ac7ded;
 }
 .color-picker {
     height: 10rem;
