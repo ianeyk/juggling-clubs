@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="style.css" />
+<html>
+<body>
+
+<h1>Show a Color Picker</h1>
+
+<form action="" method="get">
+    <p>Choose up to six primary colors. For most patterns, only the top left color will be used. Black will always be ignored.</p>
+
+    <div class="color-grid-container">
+        <div class="color0"><input type='color' name='c' class='color-picker'></div>
+        <div class="color1"><input type='color' name='c' class='color-picker'></div>
+        <div class="color2"><input type='color' name='c' class='color-picker'></div>
+        <div class="color3"><input type='color' name='c' class='color-picker'></div>
+        <div class="color4"><input type='color' name='c' class='color-picker'></div>
+        <div class="color5"><input type='color' name='c' class='color-picker'></div>
+    </div>
+
+    <br>
+
+    <p>Choose your speeds. The first affects the time to cycle between patterns, the second affects how fast the pattern operates, and the last one controls some settings of the add-ons.</p>
+
+    <div class="slider-container">
+        <label for="speed0">Speed 0</label>
+        <input type="range" class="speed-selector" id="speed0" name="s0" value=1>
+        <label for="speed1">Speed 1</label>
+        <input type="range" class="speed-selector" id="speed1" name="s1" value=2>
+        <label for="speed2">Speed 2</label>
+        <input type="range" class="speed-selector" id="speed2" name="s2" value=2>
+    </div>
+
+    <div class="pattern-grid-container">
+        <div class="pattern-set">
+            <p>Select which patterns you would like to cycle through. If none are selected, all patterns will be used.</p>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern0" name="p00" value=0>
+                <label for="pattern0" class="pattern-selector">Pattern 0</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern1" name="p01" value=1>
+                <label for="pattern1" class="pattern-selector">Pattern 1</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern2" name="p02" value=2>
+                <label for="pattern2" class="pattern-selector">Pattern 2</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern3" name="p03" value=3>
+                <label for="pattern3" class="pattern-selector">Pattern 3</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern4" name="p04" value=4>
+                <label for="pattern4" class="pattern-selector">Pattern 4</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern5" name="p05" value=5>
+                <label for="pattern5" class="pattern-selector">Pattern 5</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern6" name="p06" value=6>
+                <label for="pattern6" class="pattern-selector">Pattern 6</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern7" name="p07" value=7>
+                <label for="pattern7" class="pattern-selector">Pattern 7</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern8" name="p08" value=8>
+                <label for="pattern8" class="pattern-selector">Pattern 8</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern9" name="p09" value=9>
+                <label for="pattern9" class="pattern-selector">Pattern 9</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern10" name="p10" value=10>
+                <label for="pattern10" class="pattern-selector">Pattern 10</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern11" name="p11" value=11>
+                <label for="pattern11" class="pattern-selector">Pattern 11</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern12" name="p12" value=12>
+                <label for="pattern12" class="pattern-selector">Pattern 12</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern13" name="p13" value=13>
+                <label for="pattern13" class="pattern-selector">Pattern 13</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern14" name="p14" value=14>
+                <label for="pattern14" class="pattern-selector">Pattern 14</label>
+            </div>
+
+        </div>
+
+        <div class="add-in-set">
+            <p>Select which add-ins you would like to cycle through. If none are selected, all patterns will be used.</p>
+
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in0" name="a00" value=0>
+                <label for="add-in0" class="add-in-selector">add-in 0</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in1" name="a01" value=1>
+                <label for="add-in1" class="add-in-selector">add-in 1</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in2" name="a02" value=2>
+                <label for="add-in2" class="add-in-selector">add-in 2</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in3" name="a03" value=3>
+                <label for="add-in3" class="add-in-selector">add-in 3</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in4" name="a04" value=4>
+                <label for="add-in4" class="add-in-selector">add-in 4</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in5" name="a05" value=5>
+                <label for="add-in5" class="add-in-selector">add-in 5</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in6" name="a06" value=6>
+                <label for="add-in6" class="add-in-selector">add-in 6</label>
+            </div>
+        </div>
+
+    <br><br>
+
+    <input type='submit' value='Submit'>
+</form>
+
+
+</body>
+</html>
+
+<!-- <script type="text/javascript">
+    document.getElementById('pattern0').value = "<?php echo $_GET['pattern0'];?>";
+</script> -->
+
+<!-- <script src="http://code.jquery.com/jquery.js"></script> -->
+<!-- This JavaScript file is required to load the XpressDox interview as well as the code required to run it -->
+
+<script>
+
+    // Avoid scoping issues by encapsulating
+    // code inside anonymous function
+    (function() {
+      // variable to store our current state
+      var cbstate;
+
+      // bind to the onload event
+      window.addEventListener('load', function() {
+        // Get the current state from localstorage
+        // State is stored as a JSON string
+        cbstate = JSON.parse(localStorage['CBState'] || '{}');
+
+        // Loop through state array and restore checked
+        // state for matching elements
+        for(var i in cbstate) {
+          var el = document.querySelector('input[name="' + i + '"]');
+          if (el) el.checked = true;
+        }
+
+        // Get all checkboxes that you want to monitor state for
+        var cb = document.getElementsByClassName('save-cb-state');
+
+        // Loop through results and ...
+        for(var i = 0; i < cb.length; i++) {
+
+          //bind click event handler
+          cb[i].addEventListener('click', function(evt) {
+            // If checkboxe is checked then save to state
+            if (this.checked) {
+              cbstate[this.name] = true;
+            }
+
+           // Else remove from state
+            else if (cbstate[this.name]) {
+              delete cbstate[this.name];
+            }
+
+           // Persist state
+            localStorage.CBState = JSON.stringify(cbstate);
+          });
+        }
+      });
+    })();
+    </script>
