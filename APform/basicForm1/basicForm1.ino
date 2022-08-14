@@ -14,6 +14,8 @@
 #include "painlessMesh.h"
 #include <FS.h>
 
+#include "packet.h"
+
 #ifdef ESP8266
 #include "Hash.h"
 #include <ESPAsyncTCP.h>
@@ -31,7 +33,7 @@
 
 #define HOSTNAME "HTTP_BRIDGE"
 
-void parseArgs(AsyncWebServerRequest *request);
+Packet parseArgs(AsyncWebServerRequest *request);
 // Prototype
 void receivedCallback( const uint32_t &from, const String &msg );
 IPAddress getlocalIP();
@@ -76,19 +78,15 @@ void setup() {
   //Async webserver
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", String(), false, processor);
-    parseArgs(request);
-    if (request->hasArg("body_color")){
-      String msg = request->arg("body_color");
-      Serial.print("your body color was: ");
-      Serial.println(msg);
-      mesh.sendBroadcast(msg);
-    }
-    if (request->hasArg("ring_color")){
-      String msg = request->arg("ring_color");
-      Serial.print("your ring color was: ");
-      Serial.println(msg);
-      mesh.sendBroadcast(msg);
-    }
+
+    // call the user-defined parsing function, below
+    //
+    Packet packet = parseArgs(request);
+    Serial.println("-----------------------");
+    Serial.println("Received JSON message: ");
+    Serial.println("-----------------------");
+    String serialized = serializePacket(packet);
+    Serial.println(serialized);
 
   });
 
@@ -129,15 +127,80 @@ IPAddress getlocalIP() {
   return IPAddress(mesh.getStationIP());
 }
 
-void parseArgs(AsyncWebServerRequest *request) {
+Packet parseArgs(AsyncWebServerRequest *request) {
+
+  Packet packet; // generate packet to send, with default values
 
   int params = request->params();
-  for(int i=0;i<params;i++){
+  for (int i = 0; i < params; i++) {
     AsyncWebParameter* p = request->getParam(i);
-    Serial.print("name: ");
-    Serial.print(p->name().c_str());
-    Serial.print(", value: ");
-    Serial.println(p->value().c_str());
+    String name = String(p->name());//.c_str();
+    // Serial.print("name: ");
+    // Serial.print(name);
+    String value = String(p->value());//.c_str();
+    // Serial.print(", value: ");
+    // Serial.println(value);
+
+    // initialize a Packet with default values
+
+
+    // start interpreting
+
+    if (name.startsWith("c")) {
+      Serial.println("first letter was 'c'!");
+      int idx = name.substring(1, 2).toInt();
+
+      String temp_substring = value.substring(1);
+      std::string temp_c_str = temp_substring.c_str();
+      const char* temp_const_char = temp_c_str.c_str();
+      long int color_int = strtol(temp_const_char, NULL, 16);
+
+      packet.colors[idx] = color_int;
+
+      Serial.print("Storing color as int: ");
+      Serial.println(packet.colors[idx]);
+    }
+
+    else if (name.startsWith("s")) {
+      Serial.println("first letter was 's'!");
+      int idx = name.substring(1, 2).toInt();
+
+      int speed_int = value.toInt();
+
+      packet.speeds[idx] = speed_int;
+
+      Serial.print("Storing speed as int: ");
+      Serial.println(packet.speeds[idx]);
+    }
+
+    else if (name.startsWith("p")) {
+      Serial.println("first letter was 'p'!");
+      int idx = name.substring(1, 3).toInt(); // read two digits, not one
+
+      // ignore the value
+
+      packet.patterns[idx] = true;
+
+      Serial.print("Setting pattern number ");
+      Serial.print(idx);
+      Serial.println(" to true");
+    }
+
+    else if (name.startsWith("a")) {
+      Serial.println("first letter was 'a'!");
+      int idx = name.substring(1, 3).toInt(); // read two digits, not one
+
+      packet.addons[idx] = true;
+
+      Serial.print("Setting addon number ");
+      Serial.print(idx);
+      Serial.println(" to true");
+    }
+
   }
 
+  return packet;
+
 }
+
+  // c0=%23000000&c1=%23000000&c2=%23000000&c3=%23000000&c4=%23000000&c5=%23000000&s0=1&s1=2&s2=2&p04=4&a03=3&a04=4

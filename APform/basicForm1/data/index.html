@@ -150,6 +150,26 @@
     // Avoid scoping issues by encapsulating
     // code inside anonymous function
     (function() {
+
+    function updateLabelColor(checkbox_element) {
+        myLabel = document.getElementById("label-for-" + checkbox_element.getAttribute("id"))
+            console.log(myLabel);
+            if (checkbox_element.checked) {
+                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
+                    myLabel.classList.add("pattern-selected");
+                } else {
+                    myLabel.classList.add("add-in-selected");
+                }
+            } else {
+                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
+                    myLabel.classList.add("pattern-selected");
+                    myLabel.classList.remove("pattern-selected");
+                } else {
+                    myLabel.classList.add("add-in-selected");
+                    myLabel.classList.remove("add-in-selected");
+                }
+            }
+    }
       // variable to store our current state
       var cbstate;
 
@@ -170,23 +190,7 @@
           cb_objs[i].addEventListener('change', function(evt) {
 
             // update color
-            myLabel = document.getElementById("label-for-" + evt.target.getAttribute("id"))
-            console.log(myLabel);
-            if (this.checked) {
-                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
-                    myLabel.classList.add("pattern-selected");
-                } else {
-                    myLabel.classList.add("add-in-selected");
-                }
-            } else {
-                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
-                    myLabel.classList.add("pattern-selected");
-                    myLabel.classList.remove("pattern-selected");
-                } else {
-                    myLabel.classList.add("add-in-selected");
-                    myLabel.classList.remove("add-in-selected");
-                }
-            }
+            updateLabelColor(evt.target);
 
             // then save the state
             if (this.checked) {
@@ -225,22 +229,7 @@
             el.checked = true;
 
             // then assign the new style
-            myLabel = document.getElementById("label-for-" + el.getAttribute("id"))
-            if (el.checked) {
-                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
-                    myLabel.classList.add("pattern-selected");
-                } else {
-                    myLabel.classList.add("add-in-selected");
-                }
-            } else {
-                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
-                    myLabel.classList.add("pattern-selected");
-                    myLabel.classList.remove("pattern-selected");
-                } else {
-                    myLabel.classList.add("add-in-selected");
-                    myLabel.classList.remove("add-in-selected");
-                }
-            }
+            updateLabelColor(el);
           }
         }
         for(const [name, val] of Object.entries(valstate)) {
