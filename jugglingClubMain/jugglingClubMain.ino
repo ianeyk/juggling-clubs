@@ -3,10 +3,23 @@
 // #define LEADER true
 #define SHORTER_STRIPS true
 
+#include "IPAddress.h"
+#include <FS.h>
+
+#ifdef ESP8266
+#include "Hash.h"
+#include <ESPAsyncTCP.h>
+#else
+#include <AsyncTCP.h>
+#endif
+#include <ESPAsyncWebServer.h>
+
 // #include <TaskScheduler.h>
 #include <FastLED.h>
 #include "painlessMesh.h"
 // #include "meshFuncs.ino"
+
+#include "packet.h"
 
 FASTLED_USING_NAMESPACE
 
@@ -63,12 +76,35 @@ void incrementPattern();
 Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPattern );
 
 // set up PainlessMesh
+// #define   MESH_PREFIX     "Apple"
+// #define   MESH_PASSWORD   "circusLuminescence"
+// #define   MESH_PORT       5555
+
+// from web server code
 #define   MESH_PREFIX     "Apple"
 #define   MESH_PASSWORD   "circusLuminescence"
 #define   MESH_PORT       5555
 
+#define   STATION_SSID     "Apple"
+#define   STATION_PASSWORD "circusLuminescence"
+
+#define HOSTNAME "HTTP_BRIDGE"
+
+AsyncWebServer server(80);
+IPAddress myIP(192,168,1,1);
+IPAddress myAPIP(192,168,1,2);
+// end web server code
+
+// Replaces placeholder with LED state value
+String processor(const String& var) {
+  return "Return val from processor";
+}
+Packet parseArgs(AsyncWebServerRequest *request);
+
+
 Scheduler userScheduler; // to control your personal task
 painlessMesh mesh;
+
 
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
@@ -96,26 +132,66 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 
 void setup() {
   Serial.begin(115200);
-  delay(3000); // 3 second delay for recovery
+  delay(1000); // 1 second delay for recovery
+
+  // Initialize SPIFFS
+  //
+  if(!SPIFFS.begin()){
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
+  }
 
   // set up FastLED
+  //
   // tell FastLED about the LED strip configuration
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
 
-  // set up PainlessMesh
-  mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
-  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
 
-  // set up PainlessMesh networking callbacks
+  // set up PainlessMesh
+  //
+  mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
+  //
+  // Channel set to 6. Make sure to use the same channel for your mesh and for you other network (STATION_SSID)
+  // init function and station / host setup from web server code
+  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
+  mesh.stationManual(STATION_SSID, STATION_PASSWORD);
+  mesh.setHostname(HOSTNAME);
+  mesh.setRoot(true); // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
+  mesh.setContainsRoot(true); // This node and all other nodes should ideally know the mesh contains a root, so call this on all nodes
+
+  myAPIP = IPAddress(mesh.getAPIP());
+  Serial.println("My AP IP is " + myAPIP.toString());
+  //
+  // Async webserver
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", String(), false, processor);
+
+    // call the user-defined parsing function, below
+    //
+    Packet packet = parseArgs(request);
+    Serial.println("-----------------------");
+    Serial.println("Received JSON message: ");
+    Serial.println("-----------------------");
+    String serialized = serializePacket(packet);
+    Serial.println(serialized);
+  });
+  // Route to load style.css file
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/style.css", "text/css");
+  });
+  // start web server
+  server.begin();
+
+  //
+  // set up PainlessMesh networking callbacks (both codes)
   mesh.onReceive(&receivedCallback);
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
-
+  //
   // start tasks controlling LEDs
   userScheduler.addTask( taskUpdateLeds );
   userScheduler.addTask( taskIncrementHue );
@@ -147,23 +223,6 @@ void updateLeds() {
 
 void loop()
 {
-  // Call the current pattern function once, updating the 'leds' array
-  // gPatterns[gCurrentPatternNumber]();
-
-  // // send the 'leds' array out to the actual LED strip
-  // FastLED.show();
-  // // insert a delay to keep the framerate modest
-  // FastLED.delay(1000/FRAMES_PER_SECOND);
-
-  // do some periodic updates
-  // EVERY_N_MILLISECONDS( 20 ) { gHue++; } // slowly cycle the "base color" through the rainbow
-  // EVERY_N_SECONDS( 10 ) { incrementPattern(); } // change patterns periodically
-  // better_handle_wave(gHue, 255, 255);
-  // longitudinal_wave(0, 255, 255);
-  // set_ring(gHue, 255, 255);
-  // gHue++;
-  // delay(100);
-
   mesh.update();
 }
 
@@ -314,4 +373,84 @@ void longitudinal_wave(int h, int s, int v) {
   if (longit_wave_pos > TWO_PI) {
     longit_wave_pos = 0;
   }
+}
+
+IPAddress getlocalIP() {
+  return IPAddress(mesh.getStationIP());
+}
+
+Packet parseArgs(AsyncWebServerRequest *request) {
+
+  Packet packet; // generate packet to send, with default values
+
+  int params = request->params();
+  for (int i = 0; i < params; i++) {
+    AsyncWebParameter* p = request->getParam(i);
+    String name = String(p->name());//.c_str();
+    // Serial.print("name: ");
+    // Serial.print(name);
+    String value = String(p->value());//.c_str();
+    // Serial.print(", value: ");
+    // Serial.println(value);
+
+    // initialize a Packet with default values
+
+
+    // start interpreting
+
+    if (name.startsWith("c")) {
+      Serial.println("first letter was 'c'!");
+      int idx = name.substring(1, 2).toInt();
+
+      String temp_substring = value.substring(1);
+      std::string temp_c_str = temp_substring.c_str();
+      const char* temp_const_char = temp_c_str.c_str();
+      long int color_int = strtol(temp_const_char, NULL, 16);
+
+      packet.colors[idx] = color_int;
+
+      Serial.print("Storing color as int: ");
+      Serial.println(packet.colors[idx]);
+    }
+
+    else if (name.startsWith("s")) {
+      Serial.println("first letter was 's'!");
+      int idx = name.substring(1, 2).toInt();
+
+      int speed_int = value.toInt();
+
+      packet.speeds[idx] = speed_int;
+
+      Serial.print("Storing speed as int: ");
+      Serial.println(packet.speeds[idx]);
+    }
+
+    else if (name.startsWith("p")) {
+      Serial.println("first letter was 'p'!");
+      int idx = name.substring(1, 3).toInt(); // read two digits, not one
+
+      // ignore the value
+
+      packet.patterns[idx] = true;
+
+      Serial.print("Setting pattern number ");
+      Serial.print(idx);
+      Serial.println(" to true");
+    }
+
+    else if (name.startsWith("a")) {
+      Serial.println("first letter was 'a'!");
+      int idx = name.substring(1, 3).toInt(); // read two digits, not one
+
+      packet.addons[idx] = true;
+
+      Serial.print("Setting addon number ");
+      Serial.print(idx);
+      Serial.println(" to true");
+    }
+
+  }
+
+  return packet;
+
 }

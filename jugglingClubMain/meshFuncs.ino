@@ -19,6 +19,8 @@ bool verifyMessage(String msg) {
 }
 
 void interpretMessage(String msg) {
+  Serial.print("Received message from the node network: ");
+  Serial.println(msg);
   if (!verifyMessage(msg)) {
     return;
   }
