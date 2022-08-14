@@ -92,16 +92,7 @@ void changedConnectionCallback() {
 }
 void nodeTimeAdjustedCallback(int32_t offset) {
     Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
-    // unsigned long minus_offset = incrementPatternInterval - (offset % incrementPatternInterval);
-    // taskUpdateLeds.delay(minus_offset);
-    // taskIncrementHue.delay(minus_offset);
-    // taskIncrementPattern.delay(minus_offset);
 }
-
-// Task task_handle_wave(1000 / FRAMES_PER_SECOND, TASK_FOREVER, &handle_wave(255, 255, 255));
-// Task updateLEDs(100, strip_len, &FastLED.show);
-// Task task_start_wave(3000, TASK_FOREVER, &start_wave);
-// Scheduler runner;
 
 void setup() {
   Serial.begin(115200);
@@ -114,18 +105,18 @@ void setup() {
 
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
-  // runner.addTask(updateLEDs);
-  // runner.add_task(task_start_wave);
 
   // set up PainlessMesh
   mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
-
   mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
+
+  // set up PainlessMesh networking callbacks
   mesh.onReceive(&receivedCallback);
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
 
+  // start tasks controlling LEDs
   userScheduler.addTask( taskUpdateLeds );
   userScheduler.addTask( taskIncrementHue );
   userScheduler.addTask( taskIncrementPattern );
