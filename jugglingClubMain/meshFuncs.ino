@@ -1,36 +1,22 @@
 #include "StringSplitter.h"
+#include "packet.h"
 
-String msg_to_send = "no message";
-String startChar = "msg";
-
-const int led1 = 16;
-const int led2 = 2;
-
-void sendMessage() {
-  String msg = startChar + "," + String(gCurrentPatternNumber) + "," + String(gHue) + ",";
-  msg += mesh.getNodeId();
+void sendMessage(Packet packet) {
+  packet.currentPattern = gCurrentPatternNumber;
+  packet.currentHue = gHue;
+  packet.currentOffset = 0;
+  String msg = serializePacket(packet);
   mesh.sendBroadcast( msg );
-
-  msg_to_send = "no message"; // reset the message
 }
 
-bool verifyMessage(String msg) {
-    return msg.startsWith(startChar);
-}
-
-void interpretMessage(String msg) {
+Packet interpretMessage(String msg) {
   Serial.print("Received message from the node network: ");
   Serial.println(msg);
-  if (!verifyMessage(msg)) {
-    return;
-  }
-  StringSplitter *splitter = new StringSplitter(msg, ',', 3);
-  int itemCount = splitter->getItemCount();
 
-  for(int i = 0; i < itemCount; i++){
-    String item = splitter->getItemAtIndex(i);
-  }
+  Packet packet = deSerializePacket(msg);
 
-  gCurrentPatternNumber = (splitter->getItemAtIndex(1)).toInt();
-  gHue = (splitter->getItemAtIndex(2)).toInt();
+  gCurrentPatternNumber = packet.currentPattern;
+  gHue = packet.currentHue;
+
+  return packet;
 }

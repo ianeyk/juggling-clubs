@@ -1,7 +1,12 @@
 #define FASTLED_ESP8266_RAW_PIN_ORDER
+
 // comment the following line out if not the leader
-// #define LEADER true
+//
+// **************************** //
+#define LEADER true
 #define SHORTER_STRIPS true
+// **************************** //
+//
 
 #include "IPAddress.h"
 #include <FS.h>
@@ -85,6 +90,7 @@ Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPat
 #define   MESH_PASSWORD   "circusLuminescence"
 #define   MESH_PORT       5555
 
+#ifdef LEADER
 #define   STATION_SSID     "Apple"
 #define   STATION_PASSWORD "circusLuminescence"
 
@@ -100,11 +106,11 @@ String processor(const String& var) {
   return "Return val from processor";
 }
 Packet parseArgs(AsyncWebServerRequest *request);
-
+#endif
 
 Scheduler userScheduler; // to control your personal task
 painlessMesh mesh;
-
+Packet instructionPacket; // Packet object that contains all information about patterns
 
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
@@ -118,7 +124,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   #endif
 
   // it is important that interpretMessage be called AFTER restarting the tasks (not before)
-  interpretMessage(msg);
+  instructionPacket = interpretMessage(msg);
 }
 void newConnectionCallback(uint32_t nodeId) {
     Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
@@ -134,12 +140,14 @@ void setup() {
   Serial.begin(115200);
   delay(1000); // 1 second delay for recovery
 
+  #ifdef LEADER
   // Initialize SPIFFS
   //
   if(!SPIFFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
+  #endif
 
   // set up FastLED
   //
@@ -149,16 +157,16 @@ void setup() {
   // set master brightness control
   FastLED.setBrightness(BRIGHTNESS);
 
-
+  #ifdef LEADER
   // set up PainlessMesh
   //
   mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
   //
   // Channel set to 6. Make sure to use the same channel for your mesh and for you other network (STATION_SSID)
   // init function and station / host setup from web server code
-  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT, WIFI_AP_STA, 6 );
-  mesh.stationManual(STATION_SSID, STATION_PASSWORD);
-  mesh.setHostname(HOSTNAME);
+  mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT); // , WIFI_AP_STA, 6 );
+  // mesh.stationManual(STATION_SSID, STATION_PASSWORD);
+  // mesh.setHostname(HOSTNAME);
   mesh.setRoot(true); // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
   mesh.setContainsRoot(true); // This node and all other nodes should ideally know the mesh contains a root, so call this on all nodes
 
@@ -174,9 +182,12 @@ void setup() {
     Packet packet = parseArgs(request);
     Serial.println("-----------------------");
     Serial.println("Received JSON message: ");
+    instructionPacket = packet;
     Serial.println("-----------------------");
     String serialized = serializePacket(packet);
     Serial.println(serialized);
+
+    sendMessage(instructionPacket);
   });
   // Route to load style.css file
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -184,6 +195,13 @@ void setup() {
   });
   // start web server
   server.begin();
+
+  #else
+    mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
+    //
+    mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT);
+    mesh.setContainsRoot(true); // This node and all other nodes should ideally know the mesh contains a root, so call this on all nodes
+  #endif
 
   //
   // set up PainlessMesh networking callbacks (both codes)
@@ -204,7 +222,8 @@ void setup() {
 
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
-SimplePatternList gPatterns = { rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm };
+// SimplePatternList gPatterns = { solid, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbowWithGlitter, confetti, juggle};
+SimplePatternList gPatterns = { solid, sparkle, solid, solid, solid, solid, solid, solid, solid, solid, solid, solid, solid, solid, solid };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
@@ -234,18 +253,42 @@ void incrementPattern()
   #ifdef LEADER
   // every time we update the pattern, also send the message to update every other club's patterns
   Serial.println("sending message...");
-  sendMessage();
+  sendMessage(instructionPacket);
   Serial.println("Done sending message.");
   #endif
 
   // to fix the off by one error, we have to send the message BEFORE incrementing the pattern
 
   // add one to the current pattern number, and wrap around at the end
-  gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE( gPatterns);
+  for (int i = 0; i < N_PATTERNS + 1; i++) {
+    gCurrentPatternNumber = (gCurrentPatternNumber + 1) % N_PATTERNS;
+    if (instructionPacket.patterns[gCurrentPatternNumber]) {
+      break;
+      // if the pattern is not enabled, continue incrementing
+    }
+  }
 }
 
 void incrementHue() {
+  Serial.print("My Node list: ");
+  for (int node : mesh.getNodeList())
+    {
+      Serial.print("Node ");
+      Serial.print(node);
+      Serial.print(", ");
+    }
+  Serial.println("!");
+
   gHue = (gHue + 1) % 255;
+}
+
+void solid() {
+  fill_solid( leds, NUM_LEDS, instructionPacket.colors[0]);
+}
+
+void sparkle() {
+  fill_solid( leds, NUM_LEDS, instructionPacket.colors[1]);
+  addGlitter(80);
 }
 
 void rainbow()
@@ -377,80 +420,4 @@ void longitudinal_wave(int h, int s, int v) {
 
 IPAddress getlocalIP() {
   return IPAddress(mesh.getStationIP());
-}
-
-Packet parseArgs(AsyncWebServerRequest *request) {
-
-  Packet packet; // generate packet to send, with default values
-
-  int params = request->params();
-  for (int i = 0; i < params; i++) {
-    AsyncWebParameter* p = request->getParam(i);
-    String name = String(p->name());//.c_str();
-    // Serial.print("name: ");
-    // Serial.print(name);
-    String value = String(p->value());//.c_str();
-    // Serial.print(", value: ");
-    // Serial.println(value);
-
-    // initialize a Packet with default values
-
-
-    // start interpreting
-
-    if (name.startsWith("c")) {
-      Serial.println("first letter was 'c'!");
-      int idx = name.substring(1, 2).toInt();
-
-      String temp_substring = value.substring(1);
-      std::string temp_c_str = temp_substring.c_str();
-      const char* temp_const_char = temp_c_str.c_str();
-      long int color_int = strtol(temp_const_char, NULL, 16);
-
-      packet.colors[idx] = color_int;
-
-      Serial.print("Storing color as int: ");
-      Serial.println(packet.colors[idx]);
-    }
-
-    else if (name.startsWith("s")) {
-      Serial.println("first letter was 's'!");
-      int idx = name.substring(1, 2).toInt();
-
-      int speed_int = value.toInt();
-
-      packet.speeds[idx] = speed_int;
-
-      Serial.print("Storing speed as int: ");
-      Serial.println(packet.speeds[idx]);
-    }
-
-    else if (name.startsWith("p")) {
-      Serial.println("first letter was 'p'!");
-      int idx = name.substring(1, 3).toInt(); // read two digits, not one
-
-      // ignore the value
-
-      packet.patterns[idx] = true;
-
-      Serial.print("Setting pattern number ");
-      Serial.print(idx);
-      Serial.println(" to true");
-    }
-
-    else if (name.startsWith("a")) {
-      Serial.println("first letter was 'a'!");
-      int idx = name.substring(1, 3).toInt(); // read two digits, not one
-
-      packet.addons[idx] = true;
-
-      Serial.print("Setting addon number ");
-      Serial.print(idx);
-      Serial.println(" to true");
-    }
-
-  }
-
-  return packet;
-
 }
