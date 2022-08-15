@@ -10,20 +10,17 @@ void solid() {
 }
 
 void pulse() {
-  CRGB myColor = CRGB(packet.colors[0]);
-  int pulseLength = 128;
-  int pulseAmount = abs((gHue % pulseLength) - (pulseLength / 2));
-  int pulseScale = 1;
+  pulse_color(packet.colors[0]);
+}
 
-  for (int i = 0; i < pulseAmount; i += pulseScale) {
-    myColor -= 3;
-    // myColor /= 1.5;
-  }
-  for (int i = pulseLength / 2; i > pulseAmount; i -= pulseScale) {
-    myColor += 3;
-  }
+void multi_solid() {
+  int myColorId = get_unique_color_id();
+  fill_solid( leds, NUM_LEDS, packet.colors[myColorId]);
+}
 
-  fill_solid( leds, NUM_LEDS, myColor);
+void multi_pulse() {
+  int myColorId = get_unique_color_id();
+  pulse_color(packet.colors[myColorId]);
 }
 
 void rainbow()
@@ -141,5 +138,31 @@ void fill_ring(CRGB color) {
     set_ring_by_longitude(i, color);
   }
 }
+
+void pulse_color(CRGB color) {
+  int pulseLength = 128;
+  int pulseAmount = abs((gHue % pulseLength) - (pulseLength / 2));
+  int pulseScale = 1;
+
+  for (int i = 0; i < pulseAmount; i += pulseScale) {
+    color -= 3;
+  }
+  for (int i = pulseLength / 2; i > pulseAmount; i -= pulseScale) {
+    color += 3;
+  }
+
+  fill_solid( leds, NUM_LEDS, color);
+}
+
+int multi_solid_colors[nClubs] = {0, 1, 2};
+int get_unique_color_id() {
+  if (packet.addons[5]) { // if the "Alternate Colors" add-on is selected:
+    return myUniqueOrderNumber + int(int(gHue * nClubs) / 256);
+  }
+  else { // do not alternate colors
+    return myUniqueOrderNumber;
+  }
+}
+
 
 #endif

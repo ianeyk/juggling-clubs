@@ -5,6 +5,11 @@
 // **************************** //
 #define LEADER true
 #define SHORTER_STRIPS true
+#define MY_UNIQUE_CLUB_ID 0
+// **************************** //
+// #define MY_UNIQUE_CLUB_ID 1
+// **************************** //
+// #define MY_UNIQUE_CLUB_ID 2
 // **************************** //
 //
 
@@ -112,6 +117,11 @@ Packet parseArgs(AsyncWebServerRequest *request);
 Scheduler userScheduler; // to control your personal task
 painlessMesh mesh;
 Packet packet; // Packet object that contains all information about patterns
+int myUniqueOrderNumber;
+const int nClubs = 3;
+uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
+uint8_t gHue = 0; // rotating "base color" used by many of the patterns
+
 
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
@@ -126,6 +136,9 @@ void receivedCallback( uint32_t from, String &msg ) {
 
   // it is important that interpretMessage be called AFTER restarting the tasks (not before)
   packet = interpretMessage(msg);
+  if (packet.addons[4]) {
+    gHue = (gHue + int(256 / nClubs)) % 256;
+  }
 }
 void newConnectionCallback(uint32_t nodeId) {
     Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
@@ -225,9 +238,6 @@ typedef void (*SimplePatternList[])();
 SimplePatternList gPatterns = { pulse, solid, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
 SimplePatternList gAddins = { ring_solid, sparkle, ring_solid, ring_solid, ring_solid, ring_solid, ring_solid };
 
-uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
-uint8_t gHue = 0; // rotating "base color" used by many of the patterns
-
 void updateLeds() {
   // Call the current pattern function once, updating the 'leds' array
   gPatterns[gCurrentPatternNumber]();
@@ -255,10 +265,12 @@ void incrementPattern()
   if (patternUnchangedCounter < packet.speeds[0]) {
     patternUnchangedCounter++;
     return;
-  }
-  // else:
+  } // else:
   patternUnchangedCounter = 0;
   // and proceed with the pattern change
+
+  // update own unique order id number based on list of other nodes
+  getUniqueOrderNumber();
 
   #ifdef LEADER
   // every time we update the pattern, also send the message to update every other club's patterns
@@ -283,16 +295,21 @@ void incrementPattern()
 int hueUnchangedCounter = 0;
 void incrementHue() {
 
+  if (packet.speeds[1] == 0) {
+    return; // freeze the animation in place if speed == 0
+  }
+
   if (hueUnchangedCounter < packet.speeds[1]) {
     hueUnchangedCounter++;
     return;
-  }
-  // else:
+  } // else:
   hueUnchangedCounter = 0;
   // and proceed with the pattern change
 
-  Serial.print("My Node list: ");
-  for (int node : mesh.getNodeList())
+  Serial.print("My current ID is ");
+  Serial.print(system_get_chip_id());
+  Serial.print("and my Node list is: ");
+  for (int node : mesh.getNodeList(true))
     {
       Serial.print("Node ");
       Serial.print(node);
@@ -300,9 +317,19 @@ void incrementHue() {
     }
   Serial.println("!");
 
-  gHue = (gHue + 1) % 255;
+  gHue = (gHue + 1) % 256;
 }
 
-IPAddress getlocalIP() {
-  return IPAddress(mesh.getStationIP());
+// IPAddress getlocalIP() {
+//   return IPAddress(mesh.getStationIP());
+// }
+
+void getUniqueOrderNumber() {
+  myUniqueOrderNumber = 0;
+  int myId = system_get_chip_id();
+  for (int otherNodeId : mesh.getNodeList(false)) {
+      if (otherNodeId < myId) {
+        myUniqueOrderNumber++;
+      }
+    }
 }

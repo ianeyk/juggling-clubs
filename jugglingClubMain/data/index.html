@@ -24,9 +24,9 @@
     <div class="slider-container">
         <label for="speed0" id="label-for-speed0">Number of seconds between patterns</label>
         <input type="range" class="speed-selector save-val-state" id="speed0" name="s0" min=3 max=120 step=1 value=10 oninput="document.getElementById('label-for-speed0').innerHTML = 'Number of seconds between patterns: ' + this.value">
-        <label for="speed1" id="label-for-speed1">Speed of pattern (smaller value is faster)</label>
-        <input type="range" class="speed-selector save-val-state" id="speed1" name="s1" min=1 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern (smaller value is faster): ' + this.value">
-        <label for="speed2" id="label-for-speed2">Secondary Sinput</label>
+        <label for="speed1" id="label-for-speed1">Speed of pattern</label>
+        <input type="range" class="speed-selector save-val-state" id="speed1" name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+        <label for="speed2" id="label-for-speed2">Secondary input</label>
         <input type="range" class="speed-selector save-val-state" id="speed2" name="s2" min=1 max=100 step=1 value=6 oninput="document.getElementById('label-for-speed2').innerHTML = 'Secondary input: ' + this.value">
     </div>
 
@@ -121,11 +121,11 @@
             </div>
             <div class="checkbox-label">
                 <input type="checkbox" class="save-cb-state" id="add-in5" name="a05" value=5>
-                <label for="add-in5" class="add-in-selector" id="label-for-add-in5">add-in 5</label>
+                <label for="add-in5" class="add-in-selector" id="label-for-add-in5">Offset timing</label>
             </div>
             <div class="checkbox-label">
                 <input type="checkbox" class="save-cb-state" id="add-in6" name="a06" value=6>
-                <label for="add-in6" class="add-in-selector" id="label-for-add-in6">add-in 6</label>
+                <label for="add-in6" class="add-in-selector" id="label-for-add-in6">Offset colors (applicable patterns only)</label>
             </div>
         </div>
 
