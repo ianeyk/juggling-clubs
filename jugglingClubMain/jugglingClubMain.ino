@@ -86,12 +86,12 @@ Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPat
 // #define   MESH_PORT       5555
 
 // from web server code
-#define   MESH_PREFIX     "Apple"
+#define   MESH_PREFIX     "Ian's Juggling Clubs"
 #define   MESH_PASSWORD   "circusLuminescence"
 #define   MESH_PORT       5555
 
 #ifdef LEADER
-#define   STATION_SSID     "Apple"
+#define   STATION_SSID     "Ian's Juggling Clubs"
 #define   STATION_PASSWORD "circusLuminescence"
 
 #define HOSTNAME "HTTP_BRIDGE"
@@ -221,7 +221,8 @@ void setup() {
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
 // SimplePatternList gPatterns = { solid, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbowWithGlitter, confetti, juggle};
-SimplePatternList gPatterns = { solid, sparkle, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
+SimplePatternList gPatterns = { pulse, solid_with_sparkle, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
+SimplePatternList gAddins = { ring_solid, sparkle, ring_solid, ring_solid, ring_solid, ring_solid, ring_solid };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
@@ -229,6 +230,13 @@ uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 void updateLeds() {
   // Call the current pattern function once, updating the 'leds' array
   gPatterns[gCurrentPatternNumber]();
+
+  // Call all the addins in order
+  for (int i = 0; i < N_ADDONS; i++) {
+    if (packet.addons[i]) {
+      gAddins[i]();
+    }
+  }
 
   // send the 'leds' array out to the actual LED strip
   FastLED.show();

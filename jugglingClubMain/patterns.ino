@@ -1,13 +1,34 @@
 #ifndef JUGGLING_CLUB_PATTERNS_LIBRARY
 #define JUGGLING_CLUB_PATTERNS_LIBRARY
 
+////////////////////////////
+////      Patterns      ////
+////////////////////////////
+
 void solid() {
   fill_solid( leds, NUM_LEDS, packet.colors[0]);
 }
 
-void sparkle() {
+void solid_with_sparkle() {
   fill_solid( leds, NUM_LEDS, packet.colors[1]);
   addGlitter(80);
+}
+
+void pulse() {
+  CRGB myColor = CRGB(packet.colors[0]);
+  int pulseLength = 128;
+  int pulseAmount = abs((gHue % pulseLength) - (pulseLength / 2));
+  int pulseScale = 1;
+
+  for (int i = 0; i < pulseAmount; i += pulseScale) {
+    myColor -= 3;
+    // myColor /= 1.5;
+  }
+  for (int i = pulseLength / 2; i > pulseAmount; i -= pulseScale) {
+    myColor += 3;
+  }
+
+  fill_solid( leds, NUM_LEDS, myColor);
 }
 
 void rainbow()
@@ -39,6 +60,7 @@ void confetti()
   leds[pos] += CHSV( gHue + random8(64), 200, 255);
 }
 
+/*
 void sinelon()
 {
   // a colored dot sweeping back and forth, with fading trails
@@ -46,6 +68,7 @@ void sinelon()
   int pos = beatsin16( 13, 0, NUM_LEDS-1 );
   leds[pos] += CHSV( gHue, 255, 192);
 }
+*/
 
 void bpm()
 {
@@ -68,72 +91,59 @@ void juggle() {
   }
 }
 
-int handle_wave_pos = 0;
-void handle_wave(int h, int s, int v) {
-  set_handle(handle_wave_pos, 0, 0, 0); // set the previous LED to off
-  handle_wave_pos = (handle_wave_pos + 1) % strip_len;
-  set_handle(handle_wave_pos, h, s, v); // set the next LED to on
+
+
+////////////////////////////
+////      Add-ins       ////
+////////////////////////////
+
+
+void ring_solid() {
+  fill_ring(packet.colors[3]);
 }
 
-float better_handle_wave_pos = 0;
-int handle_wave_val(int x) {
-  // return floor(pow(2, -abs(better_handle_wave_pos - float(x))) * 255);
-  float d = better_handle_wave_pos - float(x) + 0.005;
-  // return floor(((sin(d) / d) + 0.25) * 1 / 1.25 * 255);
-  return floor(max(cos(d), double(0)) * 255);
-}
-
-void better_handle_wave(int h, int s, int v) {
-  for (int i = 0; i < strip_len; i++) {
-    if (abs(better_handle_wave_pos - i) < 2) {
-      set_handle(i, h, s, handle_wave_val(i));
-    }
-    else {
-      set_handle(i, h, s, 0);
-    }
+const int sparkleMemoryLen = 5;
+uint16_t sparkleMemory[sparkleMemoryLen];
+int sparkleMemoryId = 0;
+void sparkle() { // pass in a number between 0 and 255
+  // almost an alias for FastLED's addGlitter(), but using a user-defined color
+  fract8 chanceOfGlitter = 128;
+  if( random8() < chanceOfGlitter) {
+    sparkleMemory[sparkleMemoryId] = random16(NUM_LEDS);
+    sparkleMemoryId = (sparkleMemoryId + 1) % sparkleMemoryLen;
   }
-  better_handle_wave_pos += 0.05;
-  if (better_handle_wave_pos >= strip_len + 2) {
-    better_handle_wave_pos = -2;
+  for (int i = 0; i < sparkleMemoryLen; i++) {
+    leds[sparkleMemory[i]] = packet.colors[5];
   }
 }
 
-void set_handle(int height, int h, int s, int v) {
-  leds[height] = CHSV(h, s, v);
-  leds[2 * strip_len - 1 - height] = CHSV(h, s, v);
-  leds[2 * strip_len - 1 + height] = CHSV(h, s, v);
-  leds[4 * strip_len - 1 - height] = CHSV(h, s, v);
+
+////////////////////////////
+////      Helpers       ////
+////////////////////////////
+
+
+void set_handle_by_height(int height, CRGB color) {
+  leds[height]                     = color;
+  leds[2 * strip_len - 1 - height] = color;
+  leds[2 * strip_len - 1 + height] = color;
+  leds[4 * strip_len - 1 - height] = color;
 }
 
-void set_ring(int h, int s, int v) {
+void fill_handle(CRGB color) {
+  for (int i = 0; i < strip_len; i ++) {
+    set_handle_by_height(i, color);
+  }
+}
+
+int ring_start = 4 * strip_len;
+void set_ring_by_longitude(int lon, CRGB color) {
+  leds[ring_start + lon] = color;
+}
+
+void fill_ring(CRGB color) {
   for (int i = 0; i < ring_len; i++) {
-    leds[4 * strip_len + i] = CHSV(h, s, v);
-  }
-}
-
-float longit_wave_pos = 0;
-int longit_wave_val(float angle) {
-  float d = fmod(longit_wave_pos - angle, TWO_PI);
-  if ((0 < d && d < HALF_PI) || 3 * HALF_PI < d && d < TWO_PI) {
-    return floor(cos(d) * 255);
-  } //else
-  return 0;
-}
-
-void longitudinal_wave(int h, int s, int v) {
-  // set the vertical strips
-  for (int handle_strip = 0; handle_strip < 4; handle_strip++) {
-    for (int i = 0; i < strip_len; i++) {
-      leds[handle_strip * strip_len + i] = CHSV(h, s, longit_wave_val(handle_strip * HALF_PI));
-    }
-  }
-  // set the ring
-  for (int i = 0; i < ring_len; i++) {
-    leds[4 * strip_len + i] = CHSV(h, s, longit_wave_val(i * TWO_PI / ring_len));
-  }
-  longit_wave_pos += 0.08;
-  if (longit_wave_pos > TWO_PI) {
-    longit_wave_pos = 0;
+    set_ring_by_longitude(i, color);
   }
 }
 
