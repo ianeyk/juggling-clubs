@@ -37,7 +37,7 @@ struct Packet {
         patterns[i] = defaultPatterns[i];
     }
 
-    int defaultSpeeds[N_SPEEDS] = {50, 50, 50};
+    int defaultSpeeds[N_SPEEDS] = {10, 20, 50};
     for (int i = 0; i < N_SPEEDS; i++) {
         speeds[i] = defaultSpeeds[i];
     }

@@ -68,14 +68,15 @@ void handle_wave(int h, int s, int v);
 void start_wave();
 
 
-unsigned long incrementPatternInterval = TASK_SECOND * 10;
+unsigned long incrementPatternInterval = TASK_SECOND * 1; // 10 seconds default
+unsigned long incrementHueInterval = TASK_MILLISECOND * 2; // 20 milliseconds default
 
 
 void updateLeds();
 Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
 
 void incrementHue();
-Task taskIncrementHue( TASK_MILLISECOND * 20 , TASK_FOREVER, &incrementHue );
+Task taskIncrementHue( incrementHueInterval , TASK_FOREVER, &incrementHue );
 
 void incrementPattern();
 Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPattern );
@@ -221,7 +222,7 @@ void setup() {
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
 // SimplePatternList gPatterns = { solid, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbowWithGlitter, confetti, juggle};
-SimplePatternList gPatterns = { pulse, solid_with_sparkle, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
+SimplePatternList gPatterns = { pulse, solid, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
 SimplePatternList gAddins = { ring_solid, sparkle, ring_solid, ring_solid, ring_solid, ring_solid, ring_solid };
 
 uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
@@ -247,10 +248,17 @@ void loop()
   mesh.update();
 }
 
-#define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
-
+int patternUnchangedCounter = 0;
 void incrementPattern()
 {
+
+  if (patternUnchangedCounter < packet.speeds[0]) {
+    patternUnchangedCounter++;
+    return;
+  }
+  // else:
+  patternUnchangedCounter = 0;
+  // and proceed with the pattern change
 
   #ifdef LEADER
   // every time we update the pattern, also send the message to update every other club's patterns
@@ -263,6 +271,7 @@ void incrementPattern()
 
   // add one to the current pattern number, and wrap around at the end
   for (int i = 0; i < N_PATTERNS + 1; i++) {
+    // cycle through N_PATTERNS + 1, so if no patterns are selected, we land on the (N + 1)'th element
     gCurrentPatternNumber = (gCurrentPatternNumber + 1) % N_PATTERNS;
     if (packet.patterns[gCurrentPatternNumber]) {
       break;
@@ -271,7 +280,17 @@ void incrementPattern()
   }
 }
 
+int hueUnchangedCounter = 0;
 void incrementHue() {
+
+  if (hueUnchangedCounter < packet.speeds[1]) {
+    hueUnchangedCounter++;
+    return;
+  }
+  // else:
+  hueUnchangedCounter = 0;
+  // and proceed with the pattern change
+
   Serial.print("My Node list: ");
   for (int node : mesh.getNodeList())
     {

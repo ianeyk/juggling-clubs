@@ -49,6 +49,7 @@ label {
     font-size: 30px;
     margin: 2px;
     cursor: pointer;
+    width:60%;
 }
 .add-in-selected {
   background-color: #ac7ded;

@@ -22,12 +22,12 @@
     <p>Choose your speeds. The first affects the time to cycle between patterns, the second affects how fast the pattern operates, and the last one controls some settings of the add-ons.</p>
 
     <div class="slider-container">
-        <label for="speed0">Speed 0</label>
-        <input type="range" class="speed-selector save-val-state" id="speed0" name="s0" value=1>
-        <label for="speed1">Speed 1</label>
-        <input type="range" class="speed-selector save-val-state" id="speed1" name="s1" value=2>
-        <label for="speed2">Speed 2</label>
-        <input type="range" class="speed-selector save-val-state" id="speed2" name="s2" value=2>
+        <label for="speed0" id="label-for-speed0">Number of seconds between patterns</label>
+        <input type="range" class="speed-selector save-val-state" id="speed0" name="s0" min=3 max=120 step=1 value=10 oninput="document.getElementById('label-for-speed0').innerHTML = 'Number of seconds between patterns: ' + this.value">
+        <label for="speed1" id="label-for-speed1">Speed of pattern (smaller value is faster)</label>
+        <input type="range" class="speed-selector save-val-state" id="speed1" name="s1" min=1 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern (smaller value is faster): ' + this.value">
+        <label for="speed2" id="label-for-speed2">Secondary Sinput</label>
+        <input type="range" class="speed-selector save-val-state" id="speed2" name="s2" min=1 max=100 step=1 value=6 oninput="document.getElementById('label-for-speed2').innerHTML = 'Secondary input: ' + this.value">
     </div>
 
     <div class="pattern-grid-container">

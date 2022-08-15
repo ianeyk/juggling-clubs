@@ -9,11 +9,6 @@ void solid() {
   fill_solid( leds, NUM_LEDS, packet.colors[0]);
 }
 
-void solid_with_sparkle() {
-  fill_solid( leds, NUM_LEDS, packet.colors[1]);
-  addGlitter(80);
-}
-
 void pulse() {
   CRGB myColor = CRGB(packet.colors[0]);
   int pulseLength = 128;
