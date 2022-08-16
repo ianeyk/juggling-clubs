@@ -137,7 +137,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   // it is important that interpretMessage be called AFTER restarting the tasks (not before)
   packet = interpretMessage(msg);
   if (packet.addons[4]) {
-    gHue = (gHue + int(256 / nClubs)) % 256;
+    gHue = (gHue + int(256 / nClubs) * myUniqueOrderNumber) % 256;
   }
 }
 void newConnectionCallback(uint32_t nodeId) {
@@ -179,6 +179,7 @@ void setup() {
   // Channel set to 6. Make sure to use the same channel for your mesh and for you other network (STATION_SSID)
   // init function and station / host setup from web server code
   mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT); // , WIFI_AP_STA, 6 );
+  IPAddress staticIP(192, 168, 0, 51);
   // mesh.stationManual(STATION_SSID, STATION_PASSWORD);
   // mesh.setHostname(HOSTNAME);
   mesh.setRoot(true); // Bridge node, should (in most cases) be a root node. See [the wiki](https://gitlab.com/painlessMesh/painlessMesh/wikis/Possible-challenges-in-mesh-formation) for some background
@@ -307,9 +308,11 @@ void incrementHue() {
   // and proceed with the pattern change
 
   Serial.print("My current ID is ");
-  Serial.print(system_get_chip_id());
+  // Serial.print(system_get_chip_id());
+  int myCurrentId = mesh.getNodeList(true).front();
+  Serial.print(myCurrentId);
   Serial.print("and my Node list is: ");
-  for (int node : mesh.getNodeList(true))
+  for (int node : mesh.getNodeList(false))
     {
       Serial.print("Node ");
       Serial.print(node);
@@ -326,7 +329,7 @@ void incrementHue() {
 
 void getUniqueOrderNumber() {
   myUniqueOrderNumber = 0;
-  int myId = system_get_chip_id();
+  int myId = mesh.getNodeList(true).front(); // assuming the first element is its own; // system_get_chip_id();
   for (int otherNodeId : mesh.getNodeList(false)) {
       if (otherNodeId < myId) {
         myUniqueOrderNumber++;
