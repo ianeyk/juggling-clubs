@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="style.css" />
+<html>
+<body>
+
+<h1>Show a Color Picker</h1>
+
+<form action="" method="get">
+    <p>Choose up to six primary colors. For most patterns, only the top left color will be used. Black will always be ignored.</p>
+
+    <div class="color-grid-container">
+        <div class="color0"><input type='color' name='c0' class='color-picker save-val-state'></div>
+        <div class="color1"><input type='color' name='c1' class='color-picker save-val-state'></div>
+        <div class="color2"><input type='color' name='c2' class='color-picker save-val-state'></div>
+        <div class="color3"><input type='color' name='c3' class='color-picker save-val-state'></div>
+        <div class="color4"><input type='color' name='c4' class='color-picker save-val-state'></div>
+        <div class="color5"><input type='color' name='c5' class='color-picker save-val-state'></div>
+    </div>
+
+    <br>
+
+    <p>Choose your speeds. The first affects the time to cycle between patterns, the second affects how fast the pattern operates, and the last one controls some settings of the add-ons.</p>
+
+    <div class="slider-container">
+        <label for="speed0" id="label-for-speed0">Number of seconds between patterns</label>
+        <input type="range" class="speed-selector save-val-state" id="speed0" name="s0" min=3 max=120 step=1 value=10 oninput="document.getElementById('label-for-speed0').innerHTML = 'Number of seconds between patterns: ' + this.value">
+        <label for="speed1" id="label-for-speed1">Speed of pattern</label>
+        <input type="range" class="speed-selector save-val-state" id="speed1" name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+        <label for="speed2" id="label-for-speed2">Secondary input</label>
+        <input type="range" class="speed-selector save-val-state" id="speed2" name="s2" min=1 max=100 step=1 value=6 oninput="document.getElementById('label-for-speed2').innerHTML = 'Secondary input: ' + this.value">
+    </div>
+
+    <div class="pattern-grid-container">
+        <div class="pattern-set">
+            <p>Select which patterns you would like to cycle through. If none are selected, all patterns will be used.</p>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern0" name="p00" value=0>
+                <label for="pattern0" class="pattern-selector" id="label-for-pattern0">Pulsing color</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern1" name="p01" value=1>
+                <label for="pattern1" class="pattern-selector" id="label-for-pattern1">Solid color with sparkle (uses color slot #2)</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern2" name="p02" value=2>
+                <label for="pattern2" class="pattern-selector" id="label-for-pattern2">Solid color</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern3" name="p03" value=3>
+                <label for="pattern3" class="pattern-selector" id="label-for-pattern3">Rainbow with glitter</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern4" name="p04" value=4>
+                <label for="pattern4" class="pattern-selector" id="label-for-pattern4">Confetti</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern5" name="p05" value=5>
+                <label for="pattern5" class="pattern-selector" id="label-for-pattern5">Juggle</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern6" name="p06" value=6>
+                <label for="pattern6" class="pattern-selector" id="label-for-pattern6">BPM</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern7" name="p07" value=7>
+                <label for="pattern7" class="pattern-selector" id="label-for-pattern7">Pattern 7</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern8" name="p08" value=8>
+                <label for="pattern8" class="pattern-selector" id="label-for-pattern8">Pattern 8</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern9" name="p09" value=9>
+                <label for="pattern9" class="pattern-selector" id="label-for-pattern9">Pattern 9</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern10" name="p10" value=10>
+                <label for="pattern10" class="pattern-selector" id="label-for-pattern10">Pattern 10</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern11" name="p11" value=11>
+                <label for="pattern11" class="pattern-selector" id="label-for-pattern11">Pattern 11</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern12" name="p12" value=12>
+                <label for="pattern12" class="pattern-selector" id="label-for-pattern12">Pattern 12</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern13" name="p13" value=13>
+                <label for="pattern13" class="pattern-selector" id="label-for-pattern13">Pattern 13</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="pattern14" name="p14" value=14>
+                <label for="pattern14" class="pattern-selector" id="label-for-pattern14">Pattern 14</label>
+            </div>
+
+        </div>
+
+        <div class="add-in-set">
+            <p>Select which add-ins you would like to cycle through. If multiple are selected, only the last one will be used.</p>
+
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in0" name="a00" value=0>
+                <label for="add-in0" class="add-in-selector" id="label-for-add-in0">Ring Color (uses color #4)</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in1" name="a01" value=1>
+                <label for="add-in1" class="add-in-selector" id="label-for-add-in1">Sparkle (uses color #6)</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in2" name="a02" value=2>
+                <label for="add-in2" class="add-in-selector" id="label-for-add-in2">add-in 2</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in3" name="a03" value=3>
+                <label for="add-in3" class="add-in-selector" id="label-for-add-in3">add-in 3</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in4" name="a04" value=4>
+                <label for="add-in4" class="add-in-selector" id="label-for-add-in4">add-in 4</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in5" name="a05" value=5>
+                <label for="add-in5" class="add-in-selector" id="label-for-add-in5">Offset timing</label>
+            </div>
+            <div class="checkbox-label">
+                <input type="checkbox" class="save-cb-state" id="add-in6" name="a06" value=6>
+                <label for="add-in6" class="add-in-selector" id="label-for-add-in6">Offset colors (applicable patterns only)</label>
+            </div>
+        </div>
+
+    <br><br>
+
+    <input type='submit' value='Submit'>
+</form>
+
+
+</body>
+</html>
+
+<!-- <script type="text/javascript">
+    document.getElementById('pattern0').value = "<?php echo $_GET['pattern0'];?>";
+</script> -->
+
+<!-- <script src="http://code.jquery.com/jquery.js"></script> -->
+<!-- This JavaScript file is required to load the XpressDox interview as well as the code required to run it -->
+
+<script>
+
+    // Avoid scoping issues by encapsulating
+    // code inside anonymous function
+    (function() {
+
+    function updateLabelColor(checkbox_element) {
+        myLabel = document.getElementById("label-for-" + checkbox_element.getAttribute("id"))
+            console.log(myLabel);
+            if (checkbox_element.checked) {
+                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
+                    myLabel.classList.add("pattern-selected");
+                } else {
+                    myLabel.classList.add("add-in-selected");
+                }
+            } else {
+                if (myLabel.getAttribute("for").slice(0, 3) == "pat") {
+                    myLabel.classList.add("pattern-selected");
+                    myLabel.classList.remove("pattern-selected");
+                } else {
+                    myLabel.classList.add("add-in-selected");
+                    myLabel.classList.remove("add-in-selected");
+                }
+            }
+    }
+      // variable to store our current state
+      var cbstate;
+
+      // bind to the onload event
+      window.addEventListener('load', function() {
+        // Get the current state from localstorage
+        // State is stored as a JSON string
+        cbstate = JSON.parse(localStorage['CBState'] || '{}');
+        valstate = JSON.parse(localStorage['ValState'] || '{}');
+
+        var cb_objs = document.getElementsByClassName('save-cb-state');
+        var va_objs = document.getElementsByClassName('save-val-state');
+
+        // Loop through results and ...
+        for(var i = 0; i < cb_objs.length; i++) {
+
+          //bind click event handler
+          cb_objs[i].addEventListener('change', function(evt) {
+
+            // update color
+            updateLabelColor(evt.target);
+
+            // then save the state
+            if (this.checked) {
+              cbstate[this.name] = true;
+            }
+
+           // Else remove from state
+            else if (cbstate[this.name]) {
+              delete cbstate[this.name];
+            }
+
+           // Persist state
+            localStorage.CBState = JSON.stringify(cbstate);
+          });
+        }
+        // Loop through results and ...
+        for(var i = 0; i < va_objs.length; i++) {
+
+          //bind value-changed event handler
+          va_objs[i].addEventListener('change', function(evt) {
+            // If checkboxe is checked then save to state
+
+            valstate[this.name] = this.value;
+
+           // Persist state
+            localStorage.ValState = JSON.stringify(valstate);
+          });
+        }
+
+        // Loop through state array and restore checked
+        // state for matching elements
+        for(var i in cbstate) {
+          var el = document.querySelector('input[name="' + i + '"]');
+          if (el) {
+            // check the check box
+            el.checked = true;
+
+            // then assign the new style
+            updateLabelColor(el);
+          }
+        }
+        for(const [name, val] of Object.entries(valstate)) {
+          var el = document.querySelector('input[name="' + name + '"]');
+          if (el) el.value = val;
+        }
+
+      });
+    })();
+    </script>

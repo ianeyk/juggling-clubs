@@ -1,0 +1,146 @@
+/***
+   Rui Santos
+   Complete project details at https://RandomNerdTutorials.com
+***/
+
+html {
+  font-family: Arial;
+  display: inline-block;
+  margin: 0px auto;
+  text-align: center;
+}
+h1 {
+  color: #0F3376;
+  padding: 2vh;
+}
+p {
+  font-size: 1.5rem;
+}
+label {
+  color: #f44336;
+}
+.checkbox-label {
+    display: block;
+}
+.pattern-selector {
+    display: inline-block;
+    background-color: #008CBA;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 16px 40px;
+    text-decoration: none;
+    font-size: 30px;
+    margin: 2px;
+    cursor: pointer;
+    width:60%;
+}
+.pattern-selected {
+  background-color: salmon;
+}
+.add-in-selector {
+    display: inline-block;
+    background-color: #7334ca;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 16px 40px;
+    text-decoration: none;
+    font-size: 30px;
+    margin: 2px;
+    cursor: pointer;
+    width:60%;
+}
+.add-in-selected {
+  background-color: #ac7ded;
+}
+.color-picker {
+    height: 10rem;
+    width: 10rem;
+    display: inline;
+}
+.speed-selector {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 25px;
+    background: #c0c0c0;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+
+.speed-selector:hover {
+opacity: 1;
+}
+
+.speed-selector::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 25px;
+height: 25px;
+background: #04AA6D;
+cursor: pointer;
+}
+
+.speed-selector::-moz-range-thumb {
+width: 25px;
+height: 25px;
+background: #04AA6D;
+cursor: pointer;
+}
+
+.slider-container {
+    width: 100%;
+}
+
+/***
+Grid areas
+***/
+
+.color0 { grid-area: topleft; }
+.color1 { grid-area: topmiddle; }
+.color2 { grid-area: topright; }
+.color3 { grid-area: bottomleft; }
+.color4 { grid-area: bottommiddle; }
+.color5 { grid-area: bottomright; }
+
+.color-grid-container {
+  margin: auto;
+  display: grid;
+  grid-template-areas:
+    'topleft topmiddle topright'
+    'bottomleft bottommiddle bottomright';
+  gap: 1rem;
+  height: 22rem;
+  width: 33rem;
+}
+
+.color-grid-container > div {
+    margin: auto;
+}
+
+.pattern-set {
+    grid-area: "pattern";
+    align-self: start;
+    /* align-items: start; */
+}
+.add-in-set {
+    grid-area: "add-in";
+    align-self: start;
+    /* align-items: start; */
+}
+
+.pattern-grid-container {
+  margin: auto;
+  display: grid;
+  align-self: start;
+  grid-template-areas:
+  'pattern add-in';
+  align-content:start;
+}
+
+.pattern-grid-container > div {
+    align-self: start;
+    margin: auto;
+}
