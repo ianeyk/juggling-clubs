@@ -3,9 +3,9 @@
 // comment the following line out if not the leader
 //
 // **************************** //
-#define LEADER true
+// #define LEADER true
 #define SHORTER_STRIPS true
-#define MY_UNIQUE_CLUB_ID 0
+// #define MY_UNIQUE_CLUB_ID 0
 // **************************** //
 // #define MY_UNIQUE_CLUB_ID 1
 // **************************** //

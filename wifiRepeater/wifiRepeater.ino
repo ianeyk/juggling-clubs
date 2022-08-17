@@ -27,20 +27,8 @@ public:
   }
 
   void handleRequest(AsyncWebServerRequest *request) {
-
-  AsyncResponseStream *response = request->beginResponseStream("text/html");
-  // AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/index.html");
-
-    // response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
-    // response->print("<p>This is out captive portal front page.</p>");
-    // response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
-    // response->printf("<p>Try opening <a href='http://%s'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
-    // response->print("</body></html>");
-
-    Serial.println("Handling Request...");
+    AsyncWebServerResponse *response = request->beginResponse(SPIFFS, "/index.html");
     request->send(SPIFFS, "/index.html", "text/html", false);
-    // request->send(response);
-    Serial.println("Request handled!");
   }
 };
 
@@ -54,21 +42,23 @@ void setup(){
   //
   if(!SPIFFS.begin()){
     Serial.println("An Error has occurred while mounting SPIFFS");
+    pinMode(16, OUTPUT); // Built-in LED #1
+    pinMode(2, OUTPUT); // Built-in LED #2
+
+    while(true) {
+      digitalWrite(16, HIGH);
+      digitalWrite(2, LOW);
+      delay(100);
+      digitalWrite(16, LOW);
+      digitalWrite(2, HIGH);
+      delay(100);
+    }
     return;
   }
 
-  Serial.begin(115200);
   //your other setup stuff...
   WiFi.softAP("esp-captive");
   dnsServer.start(53, "*", WiFi.softAPIP());
-  // // Setup MDNS responder
-  // if (!MDNS.begin(myHostname)) {
-  //   Serial.println("Error setting up MDNS responder!");
-  // } else {
-  //   Serial.println("mDNS responder started");
-  //   // Add service to MDNS-SD
-  //   MDNS.addService("http", "tcp", 80);
-  // }
   // server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
   //more handlers...
 
@@ -78,9 +68,6 @@ void setup(){
     // call the user-defined parsing function, below
     //
     packet = parseArgs(request);
-    Serial.println("-----------------------");
-    Serial.println("Received JSON message: ");
-    Serial.println("-----------------------");
     String serialized = serializePacket(packet);
     Serial.println(serialized);
   });
