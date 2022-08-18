@@ -4,7 +4,7 @@
 //
 // **************************** //
 // #define LEADER true
-#define SHORTER_STRIPS true
+// #define SHORTER_STRIPS true
 // #define MY_UNIQUE_CLUB_ID 0
 // **************************** //
 // #define MY_UNIQUE_CLUB_ID 1
@@ -92,7 +92,7 @@ Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPat
 // #define   MESH_PORT       5555
 
 // from web server code
-#define   MESH_PREFIX     "Ian's Juggling Clubs"
+#define   MESH_PREFIX     "Circus IT Department"
 #define   MESH_PASSWORD   "circusLuminescence"
 #define   MESH_PORT       5555
 

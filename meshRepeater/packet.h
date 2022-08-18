@@ -32,7 +32,7 @@ struct Packet {
         colors[i] = defaultColors[i];
     }
 
-    bool defaultPatterns[N_PATTERNS] = {true, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+    bool defaultPatterns[N_PATTERNS] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
     for (int i = 0; i < N_PATTERNS; i++) {
         patterns[i] = defaultPatterns[i];
     }
@@ -42,7 +42,7 @@ struct Packet {
         speeds[i] = defaultSpeeds[i];
     }
 
-    bool defaultAddons[N_ADDONS] = {true, true, false, false, false, false, false};
+    bool defaultAddons[N_ADDONS] = {false, false, false, false, false, false, false};
     for (int i = 0; i < N_ADDONS; i++) {
         addons[i] = defaultAddons[i];
     }

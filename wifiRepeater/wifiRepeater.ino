@@ -57,7 +57,7 @@ void setup(){
   }
 
   //your other setup stuff...
-  WiFi.softAP("esp-captive");
+  WiFi.softAP("Juggling Club Controller");
   dnsServer.start(53, "*", WiFi.softAPIP());
   // server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
   //more handlers...
