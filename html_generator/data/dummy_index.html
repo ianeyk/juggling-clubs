@@ -1,0 +1,101 @@
+<div class="checkbox-label">
+    <input type="checkbox" class="save-cb-state" id="pattern0" name="p00" value=0>
+    <label for="pattern0" class="pattern-selector" id="label-for-pattern0">Pulsing color</label>
+    <div class="pattern-selector pattern-details" id="details-for-pattern0">
+        <div class="inline-option-grid-3">
+            <div class="inline-option-grid-label">
+                <input type="checkbox" class="save-cb-state" id="nnnn4" name="kkkk" value=0>
+                <label for="nnnn4" class="inline-option-label-label" id="label-for-pattern0">Individually Assign Colors</label>
+            </div>
+            <div class="inline-option-grid-input color-grid-container-1">
+                <div class="color0 club-number-label">Club 1</div>
+                <div class="color1 club-number-label">Club 2</div>
+                <div class="color2 club-number-label">Club 3</div>
+            </div>
+        </div>
+        <div class="inline-option-grid-3">
+            <div class="inline-option-grid-label">
+                <input type="checkbox" class="save-cb-state" id="nnnn5" name="kkkk" value=0>
+                <label for="nnnn5" class="inline-option-label-label" id="label-for-pattern0">Body color:</label>
+            </div>
+            <div class="inline-option-grid-input color-grid-container-1">
+                <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+            </div>
+        </div>
+        <div class="inline-option-grid-3">
+            <div class="inline-option-grid-label">
+                <input type="checkbox" class="save-cb-state" id="nnnn" name="kkkk" value=0>
+                <label for="nnnn" class="inline-option-label-label" id="label-for-pattern0">Ring color:</label>
+            </div>
+            <div class="inline-option-grid-input color-grid-container-1">
+                <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+            </div>
+        </div>
+        <div class="inline-option-grid-3">
+            <div class="inline-option-grid-label">
+                <input type="checkbox" class="save-cb-state" id="nnnn3" name="kkkk" value=0>
+                <label for="nnnn3" class="inline-option-label-label" id="label-for-pattern0">Sparkle color:</label>
+            </div>
+
+            <div class="inline-option-grid-input color-grid-container-1">
+                <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+            </div>
+            <div class="inline-option-grid-slider slider-container">
+                <input type="range" class="speed-selector speed-selector-small save-val-state"  name="s1" min=0 max=100 step=1 value=20>
+                <label>Speed</label>
+                <br>
+                <input type="range" class="speed-selector speed-selector-small save-val-state"  name="s2" min=0 max=100 step=1 value=20>
+                <label>Duration</label>
+            </div>
+        </div>
+        <div class="inline-option-grid-3">
+            <div class="inline-option-grid-label">
+                <input type="checkbox" class="save-cb-state" id="nnnn2" name="kkkk" value=0>
+                <label for="nnnn2" class="inline-option-label-label" id="label-for-pattern0">Flash color:</label>
+            </div>
+            <div class="inline-option-grid-input color-grid-container-1">
+                <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+            </div>
+            <div class="inline-option-grid-slider slider-container">
+                <input type="range" class="speed-selector speed-selector-small save-val-state" name="s1" min=0 max=100 step=1 value=20>
+                <label>Speed</label>
+                <input type="range" class="speed-selector speed-selector-small save-val-state" name="s2" min=0 max=100 step=1 value=20>
+                <label>Duration</label>
+            </div>
+        </div>
+        <div class="inline-option-grid-2">
+            <div class="inline-option-grid-label">Pattern speed:</div>
+            <div class="inline-option-grid-slider slider-container">
+                <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+                <label>Speed</label>
+            </div>
+        </div>
+        <div class="inline-option-grid-2">
+            <div class="inline-option-grid-label">Color cycle speed:</div>
+            <div class="inline-option-grid-slider slider-container">
+                <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+                <label>Speed</label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="checkbox-label">
+    <input type="checkbox" class="save-cb-state" id="pattern1" name="p01" value=1>
+    <label for="pattern1" class="pattern-selector" id="label-for-pattern1">Solid color with sparkle (uses color slot #2)</label>
+</div>
+<div class="checkbox-label">
+    <input type="checkbox" class="save-cb-state" id="pattern2" name="p02" value=2>
+    <label for="pattern2" class="pattern-selector" id="label-for-pattern2">Solid color</label>
+</div>
+<div class="checkbox-label">
+    <input type="checkbox" class="save-cb-state" id="pattern3" name="p03" value=3>
+    <label for="pattern3" class="pattern-selector" id="label-for-pattern3">Rainbow with glitter</label>
+</div>

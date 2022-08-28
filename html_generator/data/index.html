@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="style.css" />
+<html>
+<body>
+
+<h1>Show a Color Picker</h1>
+
+<form action="" method="get">
+
+    <div class="pattern-set">
+        <p class="main-text">Select which patterns you would like to cycle through. If none are selected, all patterns will be used.</p>
+        <div class="checkbox-label">
+            <input type="checkbox" class="save-cb-state" id="pattern0" name="p00" value=0>
+            <label for="pattern0" class="pattern-selector" id="label-for-pattern0">Pulsing color</label>
+            <div class="pattern-selector pattern-details" id="details-for-pattern0">
+                <div class="inline-option-grid-3">
+                    <div class="inline-option-grid-label">
+                        <input type="checkbox" class="save-cb-state" id="nnnn4" name="kkkk" value=0>
+                        <label for="nnnn4" class="inline-option-label-label" id="label-for-pattern0">Individually Assign Colors</label>
+                    </div>
+                    <div class="inline-option-grid-input color-grid-container-1">
+                        <div class="color0 club-number-label">Club 1</div>
+                        <div class="color1 club-number-label">Club 2</div>
+                        <div class="color2 club-number-label">Club 3</div>
+                    </div>
+                </div>
+                <div class="inline-option-grid-3">
+                    <div class="inline-option-grid-label">
+                        <input type="checkbox" class="save-cb-state" id="nnnn5" name="kkkk" value=0>
+                        <label for="nnnn5" class="inline-option-label-label" id="label-for-pattern0">Body color:</label>
+                    </div>
+                    <div class="inline-option-grid-input color-grid-container-1">
+                        <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                        <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                        <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+                    </div>
+                </div>
+                <div class="inline-option-grid-3">
+                    <div class="inline-option-grid-label">
+                        <input type="checkbox" class="save-cb-state" id="nnnn" name="kkkk" value=0>
+                        <label for="nnnn" class="inline-option-label-label" id="label-for-pattern0">Ring color:</label>
+                    </div>
+                    <div class="inline-option-grid-input color-grid-container-1">
+                        <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                        <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                        <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+                    </div>
+                </div>
+                <div class="inline-option-grid-3">
+                    <div class="inline-option-grid-label">
+                        <input type="checkbox" class="save-cb-state" id="nnnn3" name="kkkk" value=0>
+                        <label for="nnnn3" class="inline-option-label-label" id="label-for-pattern0">Sparkle color:</label>
+                    </div>
+
+                    <div class="inline-option-grid-input color-grid-container-1">
+                        <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                        <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                        <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+                    </div>
+                    <div class="inline-option-grid-slider slider-container">
+                        <input type="range" class="speed-selector speed-selector-small save-val-state"  name="s1" min=0 max=100 step=1 value=20>
+                        <label>Speed</label>
+                        <br>
+                        <input type="range" class="speed-selector speed-selector-small save-val-state"  name="s2" min=0 max=100 step=1 value=20>
+                        <label>Duration</label>
+                    </div>
+                </div>
+                <div class="inline-option-grid-3">
+                    <div class="inline-option-grid-label">
+                        <input type="checkbox" class="save-cb-state" id="nnnn2" name="kkkk" value=0>
+                        <label for="nnnn2" class="inline-option-label-label" id="label-for-pattern0">Flash color:</label>
+                    </div>
+                    <div class="inline-option-grid-input color-grid-container-1">
+                        <div class="color0"><input type='color' name='c0' class='color-picker-small save-val-state'></div>
+                        <div class="color1"><input type='color' name='c1' class='color-picker-small save-val-state'></div>
+                        <div class="color2"><input type='color' name='c2' class='color-picker-small save-val-state'></div>
+                    </div>
+                    <div class="inline-option-grid-slider slider-container">
+                        <input type="range" class="speed-selector speed-selector-small save-val-state" name="s1" min=0 max=100 step=1 value=20>
+                        <label>Speed</label>
+                        <input type="range" class="speed-selector speed-selector-small save-val-state" name="s2" min=0 max=100 step=1 value=20>
+                        <label>Duration</label>
+                    </div>
+                </div>
+                <div class="inline-option-grid-2">
+                    <div class="inline-option-grid-label">Pattern speed:</div>
+                    <div class="inline-option-grid-slider slider-container">
+                        <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+                        <label>Speed</label>
+                    </div>
+                </div>
+                <div class="inline-option-grid-2">
+                    <div class="inline-option-grid-label">Color cycle speed:</div>
+                    <div class="inline-option-grid-slider slider-container">
+                        <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+                        <label>Speed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="checkbox-label">
+            <input type="checkbox" class="save-cb-state" id="pattern1" name="p01" value=1>
+            <label for="pattern1" class="pattern-selector" id="label-for-pattern1">Solid color with sparkle (uses color slot #2)</label>
+        </div>
+        <div class="checkbox-label">
+            <input type="checkbox" class="save-cb-state" id="pattern2" name="p02" value=2>
+            <label for="pattern2" class="pattern-selector" id="label-for-pattern2">Solid color</label>
+        </div>
+        <div class="checkbox-label">
+            <input type="checkbox" class="save-cb-state" id="pattern3" name="p03" value=3>
+            <label for="pattern3" class="pattern-selector" id="label-for-pattern3">Rainbow with glitter</label>
+        </div>
+    </div>
+
+    <br><br>
+
+    <input type='submit' value='Submit'>
+</form>
+
+
+</body>
+</html>
+
+<!-- <script type="text/javascript">
+    document.getElementById('pattern0').value = "<?php echo $_GET['pattern0'];?>";
+</script> -->
+
+<!-- <script src="http://code.jquery.com/jquery.js"></script> -->
+<!-- This JavaScript file is required to load the XpressDox interview as well as the code required to run it -->
+
+<script>
+
+    // Avoid scoping issues by encapsulating
+    // code inside anonymous function
+    (function() {
+
+        function updateLabelColor(checkbox_element) {
+            myLabel = document.getElementById("label-for-" + checkbox_element.getAttribute("id"))
+            myDetails = document.getElementById("details-for-" + checkbox_element.getAttribute("id"))
+            console.log(myLabel);
+            if (checkbox_element.checked) {
+                myLabel.classList.add("pattern-selected");
+                myDetails.classList.add("details-selected");
+            } else {
+                myLabel.classList.add("pattern-selected");
+                myLabel.classList.remove("pattern-selected");
+                myDetails.classList.add("details-selected");
+                myDetails.classList.remove("details-selected");
+            }
+        }
+
+      // variable to store our current state
+      var cbstate;
+
+      // bind to the onload event
+      window.addEventListener('load', function() {
+        // Get the current state from localstorage
+        // State is stored as a JSON string
+        cbstate = JSON.parse(localStorage['CBState'] || '{}');
+        valstate = JSON.parse(localStorage['ValState'] || '{}');
+
+        var cb_objs = document.getElementsByClassName('save-cb-state');
+        var va_objs = document.getElementsByClassName('save-val-state');
+
+        // Loop through results and ...
+        for(var i = 0; i < cb_objs.length; i++) {
+
+          //bind click event handler
+          cb_objs[i].addEventListener('change', function(evt) {
+
+            // update color
+            updateLabelColor(evt.target);
+
+            // then save the state
+            if (this.checked) {
+              cbstate[this.name] = true;
+            }
+
+           // Else remove from state
+            else if (cbstate[this.name]) {
+              delete cbstate[this.name];
+            }
+
+           // Persist state
+            localStorage.CBState = JSON.stringify(cbstate);
+          });
+        }
+        // Loop through results and ...
+        for(var i = 0; i < va_objs.length; i++) {
+
+          //bind value-changed event handler
+          va_objs[i].addEventListener('change', function(evt) {
+            // If checkboxe is checked then save to state
+
+            valstate[this.name] = this.value;
+
+           // Persist state
+            localStorage.ValState = JSON.stringify(valstate);
+          });
+        }
+
+        // Loop through state array and restore checked
+        // state for matching elements
+        for(var i in cbstate) {
+          var el = document.querySelector('input[name="' + i + '"]');
+          if (el) {
+            // check the check box
+            el.checked = true;
+
+            // then assign the new style
+            updateLabelColor(el);
+          }
+        }
+        for(const [name, val] of Object.entries(valstate)) {
+          var el = document.querySelector('input[name="' + name + '"]');
+          if (el) el.value = val;
+        }
+
+      });
+    })();
+    </script>
