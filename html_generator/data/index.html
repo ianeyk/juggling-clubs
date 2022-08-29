@@ -85,15 +85,15 @@
                 <div class="inline-option-grid-2">
                     <div class="inline-option-grid-label">Pattern speed:</div>
                     <div class="inline-option-grid-slider slider-container">
-                        <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
-                        <label>Speed</label>
+                        <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+                        <label id="label-for-speed1">Speed</label>
                     </div>
                 </div>
                 <div class="inline-option-grid-2">
                     <div class="inline-option-grid-label">Color cycle speed:</div>
                     <div class="inline-option-grid-slider slider-container">
-                        <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed1').innerHTML = 'Speed of pattern: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
-                        <label>Speed</label>
+                        <input type="range" class="speed-selector speed-selector-medium save-val-state"  name="s1" min=0 max=100 step=1 value=20 oninput="document.getElementById('label-for-speed2').innerHTML = 'Speed: ' + (this.value == 0 ? '(frozen)' : ((Math.abs((10.001 / this.value)).toFixed(1) + 'x')))">
+                        <label id="label-for-speed2">Speed</label>
                     </div>
                 </div>
             </div>
@@ -137,15 +137,32 @@
         function updateLabelColor(checkbox_element) {
             myLabel = document.getElementById("label-for-" + checkbox_element.getAttribute("id"))
             myDetails = document.getElementById("details-for-" + checkbox_element.getAttribute("id"))
+            // myColors = document.getElementsByName("details-for-" + checkbox_element.getAttribute("id"))
+            myColorPickerList = document.getElementsByClassName("details-for-" + checkbox_element.getAttribute("id"));
+
+            console.log("myLabel:");
             console.log(myLabel);
+            console.log("myDetails");
+            console.log(myDetails);
             if (checkbox_element.checked) {
                 myLabel.classList.add("pattern-selected");
-                myDetails.classList.add("details-selected");
+                if (myDetails) {
+                    myDetails.classList.add("show-hidden");
+                }
+                for(var i = 0; i < myColorPickerList.length; i++) {
+                    myColorPickerList[i].classList.add("show-hidden")
+                }
             } else {
                 myLabel.classList.add("pattern-selected");
                 myLabel.classList.remove("pattern-selected");
-                myDetails.classList.add("details-selected");
-                myDetails.classList.remove("details-selected");
+                if (myDetails) {
+                    myDetails.classList.add("show-hidden");
+                    myDetails.classList.remove("show-hidden");
+                }
+                for(var i = 0; i < myColorPickerList.length; i++) {
+                    myColorPickerList[i].classList.add("show-hidden")
+                    myColorPickerList[i].classList.remove("show-hidden")
+                }
             }
         }
 
