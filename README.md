@@ -6,7 +6,7 @@ There are three files in this repo that are important:
 
 #### 1) jugglingClubMain.ino
 
-Upload this to the three clubs. Don't bother modifying the `#define LEADER` lines (or enabling the #ifdef LEADER` code blocks); in the current configuration, all clubs are followers and have identical code. The only line you need to change is `#define SHORTER_STRIPS` for clubs that have fewer LEDs to control. 
+Upload this to the three clubs. Don't bother modifying the `#define LEADER` lines (or enabling the `#ifdef LEADER` code blocks); in the current configuration, all clubs are followers and have identical code. The only line you need to change is `#define SHORTER_STRIPS` for clubs that have fewer LEDs to control. 
 
 You should not need to upload the SPIFFS files to the juggling club boards.
 
