@@ -10,41 +10,47 @@ for communication via PainlessMesh. Also contains functions for serializing and 
 the Packet using JSON.
 */
 
-#define JSON_BUFFER_SIZE 1000
+#define JSON_BUFFER_SIZE 1000 * 100 // used to be just 1000
 
-#define N_PATTERNS 15
-#define N_ADDONS 7
-#define N_COLORS 6
-#define N_SPEEDS 3
+#define N_PATTERNS 10 // look at the length of pattern_names in construct_html.py
+#define N_ADDONS 8 // look at the length of pattern_options_definitions
+#define N_COLORS 15 // look at the number of addins under pattern_options_definitions for which show_colors == True, multiplied by 3
+#define N_SPEEDS 14 // look at the number of addins under pattern_options_definitions for sliders_only == False, multiplied by 2, + the number of addins under pattern_options_definitions for which sliders_only == True, multiplied by 1
 
 struct Packet {
-  long int colors[N_COLORS];
-  int speeds[N_SPEEDS];
   bool patterns[N_PATTERNS];
-  int addons[N_ADDONS];
+  long int colors[N_PATTERNS][N_COLORS]; // [N_PATTERNS][N_COLORS];
+  int speeds[N_PATTERNS][N_SPEEDS]; // [N_PATTERNS][N_SPEEDS];
+  int addons[N_PATTERNS][N_ADDONS]; // [N_PATTERNS][N_ADDONS];
   int currentPattern;
   int currentHue;
   int currentOffset;
 
   Packet() {
-    long int defaultColors[] = {16711880, 0, 0, 16581374, 0, 0}; // initialize with hot pink
-    for (int i = 0; i < N_COLORS; i++) {
-        colors[i] = defaultColors[i];
+    bool defaultPatterns[N_PATTERNS] = {false, false, false, false, false, false, false, false, false, false};
+    for (int p = 0; p < N_PATTERNS; p++) {
+        patterns[p] = defaultPatterns[p];
     }
 
-    bool defaultPatterns[N_PATTERNS] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-    for (int i = 0; i < N_PATTERNS; i++) {
-        patterns[i] = defaultPatterns[i];
+    long int defaultColors[] = {16711880, 0, 0, 16581374, 0, 0}; // initialize with hot pink
+    for (int p = 0; p < N_PATTERNS; p++) {
+      for (int c = 0; c < N_COLORS; c++) {
+          colors[p][c] = defaultColors[c];
+      }
     }
 
     int defaultSpeeds[N_SPEEDS] = {10, 20, 50};
-    for (int i = 0; i < N_SPEEDS; i++) {
-        speeds[i] = defaultSpeeds[i];
+    for (int p = 0; p < N_PATTERNS; p++) {
+      for (int s = 0; s < N_SPEEDS; s++) {
+          speeds[p][s] = defaultSpeeds[s];
+      }
     }
 
     bool defaultAddons[N_ADDONS] = {false, false, false, false, false, false, false};
-    for (int i = 0; i < N_ADDONS; i++) {
-        addons[i] = defaultAddons[i];
+    for (int p = 0; p < N_PATTERNS; p++) {
+      for (int a = 0; a < N_ADDONS; a++) {
+          addons[p][a] = defaultAddons[a];
+      }
     }
 
     currentPattern = 0;
@@ -69,19 +75,31 @@ String serializePacket(Packet packet) {
     patterns.add(packet.patterns[i]);
   }
 
-  JsonArray speeds = doc.createNestedArray("speeds");
-  for (int i = 0; i < N_SPEEDS; i++) {
-    speeds.add(packet.speeds[i]);
+  JsonArray outerSpeeds = doc.createNestedArray("speeds");
+  for (int p = 0; p < N_PATTERNS; p++) {
+    JsonArray innerSpeeds = doc.createNestedArray("speeds");
+    for (int s = 0; s < N_SPEEDS; s++) {
+      innerSpeeds.add(packet.speeds[s]);
+    }
+    outerSpeeds.add(innerSpeeds);
   }
 
-  JsonArray colors = doc.createNestedArray("colors");
-  for (int i = 0; i < N_COLORS; i++) {
-    colors.add(packet.colors[i]);
+  JsonArray outerColors = doc.createNestedArray("colors");
+  for (int p = 0; p < N_PATTERNS; p++) {
+    JsonArray innerColors = doc.createNestedArray("colors");
+    for (int c = 0; c < N_COLORS; c++) {
+      innerColors.add(packet.colors[c]);
+    }
+    outerColors.add(innerColors);
   }
 
-  JsonArray addons = doc.createNestedArray("addons");
-  for (int i = 0; i < N_ADDONS; i++) {
-    addons.add(packet.addons[i]);
+  JsonArray outerAddons = doc.createNestedArray("addons");
+  for (int p = 0; p < N_PATTERNS; p++) {
+    JsonArray innerAddons = doc.createNestedArray("addons");
+    for (int a = 0; a < N_ADDONS; a++) {
+      innerAddons.add(packet.addons[a]);
+    }
+    outerAddons.add(innerAddons);
   }
 
   doc["currentPattern"] = packet.currentPattern;
@@ -120,26 +138,30 @@ Packet deSerializePacket(String input) {
     return packet;
   }
 
-
   // Parse values and populate the Packet object.
   //
   // Most of the time, you can rely on the implicit casts.
   // In other case, you can do doc["time"].as<long>();
-
-  for (int i = 0; i < N_COLORS; i++) {
-      packet.colors[i] = doc["colors"][i];
-  }
-
   for (int i = 0; i < N_PATTERNS; i++) {
       packet.patterns[i] = doc["patterns"][i];
   }
 
-  for (int i = 0; i < N_SPEEDS; i++) {
-      packet.speeds[i] = doc["speeds"][i];
+  for (int p = 0; p < N_PATTERNS; p++) {
+    for (int c = 0; c < N_COLORS; c++) {
+        packet.colors[p][c] = doc["colors"][p][c];
+    }
   }
 
-  for (int i = 0; i < N_ADDONS; i++) {
-      packet.addons[i] = doc["addons"][i];
+  for (int p = 0; p < N_PATTERNS; p++) {
+    for (int s = 0; s < N_SPEEDS; s++) {
+        packet.speeds[p][s] = doc["speeds"][p][s];
+    }
+  }
+
+  for (int p = 0; p < N_PATTERNS; p++) {
+    for (int a = 0; a < N_ADDONS; a++) {
+        packet.addons[p][a] = doc["addons"][p][a];
+    }
   }
 
   packet.currentPattern = doc["currentPattern"];
@@ -147,6 +169,13 @@ Packet deSerializePacket(String input) {
   packet.currentOffset = doc["currentOffset"];
 
   return packet;
+}
+
+int getPatternFromArgId(String argId) {
+  return argId.substring(1, 3).toInt();
+}
+int getIndexFromArgId(String argId) {
+  return argId.substring(3, 5).toInt();
 }
 
 Packet parseArgs(AsyncWebServerRequest *request) {
@@ -159,41 +188,31 @@ Packet parseArgs(AsyncWebServerRequest *request) {
     AsyncWebParameter* p = request->getParam(i);
     String name = String(p->name());//.c_str();
     String value = String(p->value());//.c_str();
+    int pat = getPatternFromArgId(name);
+    int idx = getIndexFromArgId(name);
 
     // start interpreting the parameter, and use it to populate one field in the packet
     //
     if (name.startsWith("c")) {
-      int idx = name.substring(1, 2).toInt();
-
       String temp_substring = value.substring(1);
       std::string temp_c_str = temp_substring.c_str();
       const char* temp_const_char = temp_c_str.c_str();
       long int color_int = strtol(temp_const_char, NULL, 16);
 
-      packet.colors[idx] = color_int;
+      packet.colors[pat][idx] = color_int;
     }
 
     else if (name.startsWith("s")) {
-      int idx = name.substring(1, 2).toInt();
-
       int speed_int = value.toInt();
-
-      packet.speeds[idx] = speed_int;
-
+      packet.speeds[pat][idx] = speed_int;
     }
 
     else if (name.startsWith("p")) {
-      int idx = name.substring(1, 3).toInt(); // read two digits, not one
-
-      // ignore the value
-
-      packet.patterns[idx] = true;
+      packet.patterns[pat] = true; // ignore the value
     }
 
     else if (name.startsWith("a")) {
-      int idx = name.substring(1, 3).toInt(); // read two digits, not one
-
-      packet.addons[idx] = true;
+      packet.addons[pat][idx] = true;
     }
 
   }

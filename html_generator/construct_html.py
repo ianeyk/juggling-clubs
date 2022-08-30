@@ -148,8 +148,6 @@ class HtmlConstructor():
 
     def read_javascript_file(self):
         f = open("./html_generator/javascript_template.html", "r")
-        # C:\dev\git\juggling-clubs\html_generator\construct_html.py
-        # C:\dev\git\juggling-clubs\html_generator\javascript_template.html
 
         contents = f.read()
         f.close()
