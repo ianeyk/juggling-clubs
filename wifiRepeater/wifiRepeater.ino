@@ -64,6 +64,10 @@ void setup(){
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html");
+  });
+
+  server.on("/", HTTP_POST, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html");
 
     // call the user-defined parsing function, below
     //
@@ -75,6 +79,11 @@ void setup(){
   // Route to load style.css file
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/style.css", "text/css");
+  });
+
+  // Route to load style.css file
+  server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/favicon.ico");
   });
 
   server.begin();
