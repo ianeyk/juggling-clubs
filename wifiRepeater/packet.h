@@ -10,7 +10,7 @@ for communication via PainlessMesh. Also contains functions for serializing and 
 the Packet using JSON.
 */
 
-#define JSON_BUFFER_SIZE 1000 * 100 // used to be just 1000
+#define JSON_BUFFER_SIZE (1000 * 30) // used to be just 1000
 
 #define N_PATTERNS 10 // look at the length of pattern_names in construct_html.py
 #define N_ADDONS 8 // look at the length of pattern_options_definitions
@@ -59,47 +59,51 @@ struct Packet {
   }
 };
 
+DynamicJsonDocument doc(JSON_BUFFER_SIZE);
 String serializePacket(Packet packet) {
-
+  Serial.println("Beginning Serialization");
   // Allocate the JSON document
   //
   // Inside the brackets, 200 is the RAM allocated to this document.
   // Don't forget to change this value to match your requirement.
   // Use https://arduinojson.org/v6/assistant to compute the capacity.
-  StaticJsonDocument<JSON_BUFFER_SIZE> doc;
+  doc.clear();
+  doc.garbageCollect();
+  Serial.println("Document has been set up");
 
   // Add values in the document
   //
   JsonArray patterns = doc.createNestedArray("patterns");
   for (int i = 0; i < N_PATTERNS; i++) {
+    Serial.println("adding pattern " + String(i));
     patterns.add(packet.patterns[i]);
   }
 
   JsonArray outerSpeeds = doc.createNestedArray("speeds");
   for (int p = 0; p < N_PATTERNS; p++) {
-    JsonArray innerSpeeds = doc.createNestedArray("speeds");
+    JsonArray innerSpeeds = outerSpeeds.createNestedArray();
     for (int s = 0; s < N_SPEEDS; s++) {
-      innerSpeeds.add(packet.speeds[s]);
+      innerSpeeds.add(packet.speeds[p][s]);
+      Serial.println("adding speed [" + String(p) + "][" + String(s) + "] .");
     }
-    outerSpeeds.add(innerSpeeds);
   }
 
   JsonArray outerColors = doc.createNestedArray("colors");
   for (int p = 0; p < N_PATTERNS; p++) {
-    JsonArray innerColors = doc.createNestedArray("colors");
+    JsonArray innerColors = outerColors.createNestedArray();
     for (int c = 0; c < N_COLORS; c++) {
-      innerColors.add(packet.colors[c]);
+      innerColors.add(packet.colors[p][c]);
+      Serial.println("adding color [" + String(p) + "][" + String(c) + "] .");
     }
-    outerColors.add(innerColors);
   }
 
   JsonArray outerAddons = doc.createNestedArray("addons");
   for (int p = 0; p < N_PATTERNS; p++) {
-    JsonArray innerAddons = doc.createNestedArray("addons");
+    JsonArray innerAddons = outerAddons.createNestedArray();
     for (int a = 0; a < N_ADDONS; a++) {
-      innerAddons.add(packet.addons[a]);
+      innerAddons.add(packet.addons[p][a]);
+      Serial.println("adding addon [" + String(p) + "][" + String(a) + "] .");
     }
-    outerAddons.add(innerAddons);
   }
 
   doc["currentPattern"] = packet.currentPattern;
@@ -109,8 +113,11 @@ String serializePacket(Packet packet) {
   // Generate the minified JSON and store it as a string.
   //
   String output;
+  Serial.println("Serializing Document");
   int size = serializeJson(doc, output);
-
+  Serial.println("Document has been serialized");
+  doc.clear();
+  doc.garbageCollect();
   return output;
 }
 
@@ -120,7 +127,9 @@ Packet deSerializePacket(String input) {
   // Inside the brackets, 200 is the capacity of the memory pool in bytes.
   // Don't forget to change this value to match your JSON document.
   // Use https://arduinojson.org/v6/assistant to compute the capacity.
-  StaticJsonDocument<JSON_BUFFER_SIZE> doc;
+  // DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+  doc.clear();
+  doc.garbageCollect();
 
   Packet packet; // object to return
 
@@ -168,6 +177,9 @@ Packet deSerializePacket(String input) {
   packet.currentHue = doc["currentHue"];
   packet.currentOffset = doc["currentOffset"];
 
+  doc.clear();
+  doc.garbageCollect();
+
   return packet;
 }
 
@@ -178,12 +190,18 @@ int getIndexFromArgId(String argId) {
   return argId.substring(3, 5).toInt();
 }
 
+void printParsingStep(String argType, int pat, int idx, long int val);
+
 Packet parseArgs(AsyncWebServerRequest *request) {
+  Serial.println("Beginning to parse args!!!");
 
   Packet packet; // generate packet to send, with default values
+  Serial.println("Packet initialized.");
 
   int params = request->params();
+  Serial.println("Params initialized.");
   for (int i = 0; i < params; i++) {
+    Serial.println("getting param" + String(i));
     // get one parameter at a time
     AsyncWebParameter* p = request->getParam(i);
     String name = String(p->name());//.c_str();
@@ -200,25 +218,42 @@ Packet parseArgs(AsyncWebServerRequest *request) {
       long int color_int = strtol(temp_const_char, NULL, 16);
 
       packet.colors[pat][idx] = color_int;
+      printParsingStep("Color", pat, idx, color_int);
     }
 
     else if (name.startsWith("s")) {
       int speed_int = value.toInt();
       packet.speeds[pat][idx] = speed_int;
+      printParsingStep("Speed", pat, idx, (long int)speed_int);
     }
 
     else if (name.startsWith("p")) {
       packet.patterns[pat] = true; // ignore the value
+      printParsingStep("Pattern", pat, pat, 1);
     }
 
     else if (name.startsWith("a")) {
       packet.addons[pat][idx] = true;
+      printParsingStep("Addin", pat, idx, 1);
     }
 
   }
 
+  Serial.println("returning Packet");
   return packet;
 
+}
+
+void printParsingStep(String argType, int pat, int idx, long int val) {
+    Serial.print("Setting ");
+    Serial.print(argType);
+    Serial.print("[");
+    Serial.print(pat);
+    Serial.print("][");
+    Serial.print(idx);
+    Serial.print("] to ");
+    Serial.print(val);
+    Serial.println(" !");
 }
 
 #endif

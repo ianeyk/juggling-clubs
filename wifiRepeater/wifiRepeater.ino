@@ -35,9 +35,22 @@ public:
 /* hostname for mDNS. Should work at least on windows. Try http://esp8266.local */
 const char *myHostname = "esp8266";
 
+String serializedString;
 void setup(){
 
   Serial.begin(115200);
+  // test serialization
+  //
+  // String serialized = serializePacket(packet);
+  // Serial.println(serialized);
+  Serial.println("==============================  (#1)");
+  // serialized = serializePacket(packet);
+  // Serial.println(serialized);
+  Serial.println("==============================  (#2)");
+  // serialized = serializePacket(packet);
+  // Serial.println(serialized);
+  Serial.println("==============================  (#3)");
+
   // Initialize SPIFFS
   //
   if(!SPIFFS.begin()){
@@ -67,9 +80,12 @@ void setup(){
 
     // call the user-defined parsing function, below
     //
-    packet = parseArgs(request);
-    String serialized = serializePacket(packet);
-    Serial.println(serialized);
+    Serial.println("Received a request");
+    // packet = parseArgs(request);
+    Serial.println("Packet has been parsed");
+    serializedString = serializePacket(packet);
+    Serial.println("Packet has serialized");
+    Serial.println(serializedString);
   });
 
   // Route to load style.css file
