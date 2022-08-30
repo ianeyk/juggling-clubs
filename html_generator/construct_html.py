@@ -128,17 +128,29 @@ class HtmlConstructor():
     def write_to_file(self, contents):
         soup = BeautifulSoup(contents, 'html.parser')
         beautiful = soup.prettify()
-        f = open("./data/python_constructed_html.html", "w")
+        f = open("./html_generator/python_constructed_html.html", "w")
         f.write(beautiful)
         f.close()
 
         minified = htmlmin.minify(contents)
-        f2 = open("./data/python_minified_html.html", "w")
+        f2 = open("./wifiRepeater/data/index.html", "w")
         f2.write(minified)
         f2.close()
 
+        # copy the css file into the new data folder
+        f3 = open("./html_generator/style.css", "r")
+        css_contents = f3.read()
+        f3.close()
+
+        f4 = open("./wifiRepeater/data/style.css", "w")
+        f4.write(css_contents)
+        f4.close()
+
     def read_javascript_file(self):
-        f = open("./data/javascript_template.html", "r")
+        f = open("./html_generator/javascript_template.html", "r")
+        # C:\dev\git\juggling-clubs\html_generator\construct_html.py
+        # C:\dev\git\juggling-clubs\html_generator\javascript_template.html
+
         contents = f.read()
         f.close()
         return contents
