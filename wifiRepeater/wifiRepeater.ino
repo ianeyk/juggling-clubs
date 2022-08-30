@@ -64,10 +64,6 @@ void setup(){
 
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html");
-  });
-
-  server.on("/", HTTP_POST, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html");
 
     // call the user-defined parsing function, below
     //
