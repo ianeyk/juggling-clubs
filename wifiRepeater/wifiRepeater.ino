@@ -10,6 +10,15 @@
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
+#define DEBUG true
+
+void debug_print(String arg); // function declarations
+void debug_print(int arg); // function declarations
+void debug_print(char* arg); // function declarations
+void debug_println(String arg);
+void debug_println(int arg);
+void debug_println(char* arg);
+
 #include "packet.h"
 Packet packet;
 
@@ -35,38 +44,40 @@ public:
 /* hostname for mDNS. Should work at least on windows. Try http://esp8266.local */
 const char *myHostname = "esp8266";
 
-String serializedString;
+// String serializedString;
+char* serializedString;
+
 void setup(){
 
   Serial.begin(115200);
   // test serialization
   //
   // String serialized = serializePacket(packet);
-  // Serial.println(serialized);
-  Serial.println("==============================  (#1)");
+  // debug_println(serialized);
+  debug_println("==============================  (#1)");
   // serialized = serializePacket(packet);
-  // Serial.println(serialized);
-  Serial.println("==============================  (#2)");
+  // debug_println(serialized);
+  debug_println("==============================  (#2)");
   // serialized = serializePacket(packet);
-  // Serial.println(serialized);
-  Serial.println("==============================  (#3)");
+  // debug_println(serialized);
+  debug_println("==============================  (#3)");
 
-  serializedString = serializePacket(packet);
-  Serial.println("Packet has serialized");
-  Serial.println(serializedString);
+  // serializedString = serializePacket(packet);
+  // debug_println("Packet has serialized");
+  // debug_println(serializedString);
 
-  Serial.println("DeSerializing (creating Packet)");
-  packet = deSerializePacket(serializedString);
-  Serial.println("Done DeSerializing !!");
+  // debug_println("DeSerializing (creating Packet)");
+  // packet = deSerializePacket(serializedString);
+  // debug_println("Done DeSerializing !!");
 
-  serializedString = serializePacket(packet);
-  Serial.println("Packet has serialized");
-  Serial.println(serializedString);
+  // serializedString = serializePacket(packet);
+  // debug_println("Packet has serialized");
+  // debug_println(serializedString);s
 
   // Initialize SPIFFS
   //
   if(!SPIFFS.begin()){
-    Serial.println("An Error has occurred while mounting SPIFFS");
+    debug_println("An Error has occurred while mounting SPIFFS");
     pinMode(16, OUTPUT); // Built-in LED #1
     pinMode(2, OUTPUT); // Built-in LED #2
 
@@ -92,21 +103,24 @@ void setup(){
 
     // call the user-defined parsing function, below
     //
-    Serial.println("Received a request");
+    debug_println("Received a request");
     packet = parseArgs(request);
-    Serial.println("Packet has been parsed");
+    debug_println("Packet has been parsed");
     // serializedString = serializePacket(packet);
+    #ifdef DEBUG
     serializedString = serializePacket(packet);
-    Serial.println("Packet has serialized");
-    Serial.println(serializedString);
+    debug_println("Packet has serialized");
+    debug_println(serializedString);
+    #else
+    serializePacket(packet);
+    #endif
+    // debug_println("DeSerializing (creating Packet)");
+    // packet = deSerializePacket(serializedString);
+    // debug_println("Done DeSerializing !!");
 
-    Serial.println("DeSerializing (creating Packet)");
-    packet = deSerializePacket(serializedString);
-    Serial.println("Done DeSerializing !!");
-
-    serializedString = serializePacket(packet);
-    Serial.println("Packet has serialized");
-    Serial.println(serializedString);
+    // serializedString = serializePacket(packet);
+    // debug_println("Packet has serialized");
+    // debug_println(serializedString);
 
   });
 
@@ -124,6 +138,38 @@ void setup(){
   server.begin();
 }
 
-void loop(){
+void loop() {
   dnsServer.processNextRequest();
+}
+
+void debug_print(String arg) {
+#ifdef DEBUG
+  Serial.print(arg);
+#endif
+}
+void debug_print(int arg) {
+#ifdef DEBUG
+  Serial.print(arg);
+#endif
+}
+void debug_print(char* arg) {
+#ifdef DEBUG
+  Serial.print(arg);
+#endif
+}
+
+void debug_println(String arg) {
+#ifdef DEBUG
+  Serial.println(arg);
+#endif
+}
+void debug_println(int arg) {
+#ifdef DEBUG
+  Serial.println(arg);
+#endif
+}
+void debug_println(char* arg) {
+#ifdef DEBUG
+  Serial.println(arg);
+#endif
 }

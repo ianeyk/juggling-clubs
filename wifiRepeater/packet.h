@@ -63,12 +63,16 @@ struct Packet {
   }
 };
 
-String output;
+  #ifdef DEBUG
+char output[JSON_BUFFER_SIZE];
+char* serializePacket(Packet packet) {
+  #else
+void serializePacket(Packet packet) {
+  #endif
 // DynamicJsonDocument doc(JSON_BUFFER_SIZE);
 
-String serializePacket(Packet packet) {
 // void serializePacket(Packet packet) {
-  Serial.println("Beginning Serialization");
+  debug_println("Beginning Serialization");
   // Allocate the JSON document
   //
   // Inside the brackets, 200 is the RAM allocated to this document.
@@ -78,14 +82,14 @@ String serializePacket(Packet packet) {
   // doc.garbageCollect();
   DynamicJsonDocument doc(JSON_BUFFER_SIZE);
   // doc.shrinkToFit();
-  output = "";
-  Serial.println("Document has been set up");
+  // output = "";
+  debug_println("Document has been set up");
 
   // Add values in the document
   //
   JsonArray patterns = doc.createNestedArray("patterns");
   for (int i = 0; i < N_PATTERNS; i++) {
-    Serial.println("adding pattern " + String(i));
+    debug_println("adding pattern " + String(i));
     patterns.add(packet.patterns[i]);
   }
 
@@ -94,7 +98,7 @@ String serializePacket(Packet packet) {
     JsonArray innerSpeeds = outerSpeeds.createNestedArray();
     for (int s = 0; s < N_SPEEDS; s++) {
       innerSpeeds.add(packet.speeds[p][s]);
-      Serial.println("adding speed [" + String(p) + "][" + String(s) + "] .");
+      debug_println("adding speed [" + String(p) + "][" + String(s) + "] .");
     }
   }
 
@@ -103,7 +107,7 @@ String serializePacket(Packet packet) {
     JsonArray innerColors = outerColors.createNestedArray();
     for (int c = 0; c < N_COLORS; c++) {
       innerColors.add(packet.colors[p][c]);
-      Serial.println("adding color [" + String(p) + "][" + String(c) + "] .");
+      debug_println("adding color [" + String(p) + "][" + String(c) + "] .");
     }
   }
 
@@ -112,7 +116,7 @@ String serializePacket(Packet packet) {
     JsonArray innerAddons = outerAddons.createNestedArray();
     for (int a = 0; a < N_ADDONS; a++) {
       innerAddons.add(packet.addons[p][a]);
-      Serial.println("adding addon [" + String(p) + "][" + String(a) + "] .");
+      debug_println("adding addon [" + String(p) + "][" + String(a) + "] .");
     }
   }
 
@@ -122,28 +126,36 @@ String serializePacket(Packet packet) {
 
   // Generate the minified JSON and store it as a string.
   //
-  Serial.println("Serializing Document");
+  debug_println("Serializing Document");
   // int size = serializeJson(doc, Serial); // This works nicely for the deployment version!
-  output = "";
+  // output = "";
+  #ifdef DEBUG
+  int size = serializeJson(doc, Serial);
+  #else
   int size = serializeJson(doc, output);
-  Serial.println("Document has been serialized");
-  Serial.print("with size: ");
-  Serial.println(size);
+  #endif
+  debug_println("Document has been serialized");
+  debug_print("with size: ");
+  debug_println(size);
 
 
-  Serial.print("memory usage after serializing is: ");
-  Serial.print(doc.memoryUsage());
-  Serial.println(" bytes");
+  debug_print("memory usage after serializing is: ");
+  debug_print(doc.memoryUsage());
+  debug_println(" bytes");
 
   doc.clear();
   doc.garbageCollect();
-  // return;
+
+  #ifdef DEBUG
   return output;
+  #else
+  return;
+  #endif
 }
 
 Packet deSerializePacket(String input) {
-  Serial.print("Input was: ");
-  Serial.println(input);
+  debug_print("Input was: ");
+  debug_println(input);
   // Allocate the JSON document
   //
   // Inside the brackets, 200 is the capacity of the memory pool in bytes.
@@ -167,8 +179,8 @@ Packet deSerializePacket(String input) {
 
   // Test if parsing succeeds.
   if (error) {
-    Serial.print("We Encountered an Error !!!: ");
-    Serial.println(error.c_str());
+    debug_print("We Encountered an Error !!!: ");
+    debug_println(error.c_str());
     return packet;
   }
 
@@ -218,15 +230,15 @@ int getIndexFromArgId(String argId) {
 void printParsingStep(String argType, int pat, int idx, long int val);
 
 Packet parseArgs(AsyncWebServerRequest *request) {
-  Serial.println("Beginning to parse args!!!");
+  debug_println("Beginning to parse args!!!");
 
   Packet packet; // generate packet to send, with default values
-  Serial.println("Packet initialized.");
+  debug_println("Packet initialized.");
 
   int params = request->params();
-  Serial.println("Params initialized.");
+  debug_println("Params initialized.");
   for (int i = 0; i < params; i++) {
-    Serial.println("getting param" + String(i));
+    debug_println("getting param" + String(i));
     // get one parameter at a time
     AsyncWebParameter* p = request->getParam(i);
     String name = String(p->name());//.c_str();
@@ -264,21 +276,21 @@ Packet parseArgs(AsyncWebServerRequest *request) {
 
   }
 
-  Serial.println("returning Packet");
+  debug_println("returning Packet");
   return packet;
 
 }
 
 void printParsingStep(String argType, int pat, int idx, long int val) {
-    Serial.print("Setting ");
-    Serial.print(argType);
-    Serial.print("[");
-    Serial.print(pat);
-    Serial.print("][");
-    Serial.print(idx);
-    Serial.print("] to ");
-    Serial.print(val);
-    Serial.println(" !");
+    debug_print("Setting ");
+    debug_print(argType);
+    debug_print("[");
+    debug_print(pat);
+    debug_print("][");
+    debug_print(idx);
+    debug_print("] to ");
+    debug_print(val);
+    debug_println(" !");
 }
 
 #endif
