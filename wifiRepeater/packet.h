@@ -10,7 +10,7 @@ for communication via PainlessMesh. Also contains functions for serializing and 
 the Packet using JSON.
 */
 
-#define JSON_BUFFER_SIZE (1000 * 30) // used to be just 1000
+#define JSON_BUFFER_SIZE (1000 * 3) // used to be just 1000
 
 #define N_PATTERNS 10 // look at the length of pattern_names in construct_html.py
 #define N_ADDONS 8 // look at the length of pattern_options_definitions
@@ -21,35 +21,39 @@ struct Packet {
   bool patterns[N_PATTERNS];
   long int colors[N_PATTERNS][N_COLORS]; // [N_PATTERNS][N_COLORS];
   int speeds[N_PATTERNS][N_SPEEDS]; // [N_PATTERNS][N_SPEEDS];
-  int addons[N_PATTERNS][N_ADDONS]; // [N_PATTERNS][N_ADDONS];
+  bool addons[N_PATTERNS][N_ADDONS]; // [N_PATTERNS][N_ADDONS];
   int currentPattern;
   int currentHue;
   int currentOffset;
 
   Packet() {
-    bool defaultPatterns[N_PATTERNS] = {false, false, false, false, false, false, false, false, false, false};
+    // bool defaultPatterns[N_PATTERNS] = {false, false, false, false, false, false, false, false, false, false};
     for (int p = 0; p < N_PATTERNS; p++) {
-        patterns[p] = defaultPatterns[p];
+        // patterns[p] = defaultPatterns[p];
+        patterns[p] = false;
     }
 
-    long int defaultColors[] = {16711880, 0, 0, 16581374, 0, 0}; // initialize with hot pink
+    // long int defaultColors[] = {16711880, 0, 0, 16581374, 0, 0}; // initialize with hot pink
     for (int p = 0; p < N_PATTERNS; p++) {
       for (int c = 0; c < N_COLORS; c++) {
-          colors[p][c] = defaultColors[c];
+          // colors[p][c] = defaultColors[c];
+          colors[p][c] = 0;
       }
     }
 
-    int defaultSpeeds[N_SPEEDS] = {10, 20, 50};
+    // int defaultSpeeds[N_SPEEDS] = {10, 20, 50};
     for (int p = 0; p < N_PATTERNS; p++) {
       for (int s = 0; s < N_SPEEDS; s++) {
-          speeds[p][s] = defaultSpeeds[s];
+          // speeds[p][s] = defaultSpeeds[s];
+          speeds[p][s] = 50;
       }
     }
 
-    bool defaultAddons[N_ADDONS] = {false, false, false, false, false, false, false};
+    // bool defaultAddons[N_ADDONS] = {false, false, false, false, false, false, false};
     for (int p = 0; p < N_PATTERNS; p++) {
       for (int a = 0; a < N_ADDONS; a++) {
-          addons[p][a] = defaultAddons[a];
+          // addons[p][a] = defaultAddons[a];
+          addons[p][a] = false;
       }
     }
 
