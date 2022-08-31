@@ -10,7 +10,7 @@
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
-#define DEBUG true
+// #define DEBUG true
 
 void debug_print(String arg); // function declarations
 void debug_print(int arg); // function declarations

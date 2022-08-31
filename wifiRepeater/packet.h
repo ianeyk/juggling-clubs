@@ -130,9 +130,10 @@ void serializePacket(Packet packet) {
   // int size = serializeJson(doc, Serial); // This works nicely for the deployment version!
   // output = "";
   #ifdef DEBUG
-  int size = serializeJson(doc, Serial);
-  #else
   int size = serializeJson(doc, output);
+  #else
+  int size = serializeJson(doc, Serial);
+  Serial.println("");
   #endif
   debug_println("Document has been serialized");
   debug_print("with size: ");
