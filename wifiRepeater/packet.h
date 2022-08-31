@@ -10,7 +10,7 @@ for communication via PainlessMesh. Also contains functions for serializing and 
 the Packet using JSON.
 */
 
-#define JSON_BUFFER_SIZE (1000 * 3) // used to be just 1000
+#define JSON_BUFFER_SIZE (1024 * 8) // used to be just 1000
 
 #define N_PATTERNS 10 // look at the length of pattern_names in construct_html.py
 #define N_ADDONS 8 // look at the length of pattern_options_definitions
@@ -63,16 +63,22 @@ struct Packet {
   }
 };
 
-DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+String output;
+// DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+
 String serializePacket(Packet packet) {
+// void serializePacket(Packet packet) {
   Serial.println("Beginning Serialization");
   // Allocate the JSON document
   //
   // Inside the brackets, 200 is the RAM allocated to this document.
   // Don't forget to change this value to match your requirement.
   // Use https://arduinojson.org/v6/assistant to compute the capacity.
-  doc.clear();
-  doc.garbageCollect();
+  // doc.clear();
+  // doc.garbageCollect();
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+  // doc.shrinkToFit();
+  output = "";
   Serial.println("Document has been set up");
 
   // Add values in the document
@@ -116,24 +122,37 @@ String serializePacket(Packet packet) {
 
   // Generate the minified JSON and store it as a string.
   //
-  String output;
   Serial.println("Serializing Document");
+  // int size = serializeJson(doc, Serial); // This works nicely for the deployment version!
+  output = "";
   int size = serializeJson(doc, output);
   Serial.println("Document has been serialized");
+  Serial.print("with size: ");
+  Serial.println(size);
+
+
+  Serial.print("memory usage after serializing is: ");
+  Serial.print(doc.memoryUsage());
+  Serial.println(" bytes");
+
   doc.clear();
   doc.garbageCollect();
+  // return;
   return output;
 }
 
 Packet deSerializePacket(String input) {
+  Serial.print("Input was: ");
+  Serial.println(input);
   // Allocate the JSON document
   //
   // Inside the brackets, 200 is the capacity of the memory pool in bytes.
   // Don't forget to change this value to match your JSON document.
   // Use https://arduinojson.org/v6/assistant to compute the capacity.
-  // DynamicJsonDocument doc(JSON_BUFFER_SIZE);
-  doc.clear();
-  doc.garbageCollect();
+  DynamicJsonDocument doc(JSON_BUFFER_SIZE);
+  // doc.clear();
+  // doc.garbageCollect();
+  // doc.shrinkToFit(); // DO NOT ADD THIS LINE
 
   Packet packet; // object to return
 
@@ -148,6 +167,8 @@ Packet deSerializePacket(String input) {
 
   // Test if parsing succeeds.
   if (error) {
+    Serial.print("We Encountered an Error !!!: ");
+    Serial.println(error.c_str());
     return packet;
   }
 

@@ -35,7 +35,7 @@ public:
 /* hostname for mDNS. Should work at least on windows. Try http://esp8266.local */
 const char *myHostname = "esp8266";
 
-// String serializedString;
+String serializedString;
 void setup(){
 
   Serial.begin(115200);
@@ -50,6 +50,18 @@ void setup(){
   // serialized = serializePacket(packet);
   // Serial.println(serialized);
   Serial.println("==============================  (#3)");
+
+  serializedString = serializePacket(packet);
+  Serial.println("Packet has serialized");
+  Serial.println(serializedString);
+
+  Serial.println("DeSerializing (creating Packet)");
+  packet = deSerializePacket(serializedString);
+  Serial.println("Done DeSerializing !!");
+
+  serializedString = serializePacket(packet);
+  Serial.println("Packet has serialized");
+  Serial.println(serializedString);
 
   // Initialize SPIFFS
   //
@@ -83,9 +95,19 @@ void setup(){
     Serial.println("Received a request");
     packet = parseArgs(request);
     Serial.println("Packet has been parsed");
-    String serializedString = serializePacket(packet);
+    // serializedString = serializePacket(packet);
+    serializedString = serializePacket(packet);
     Serial.println("Packet has serialized");
     Serial.println(serializedString);
+
+    Serial.println("DeSerializing (creating Packet)");
+    packet = deSerializePacket(serializedString);
+    Serial.println("Done DeSerializing !!");
+
+    serializedString = serializePacket(packet);
+    Serial.println("Packet has serialized");
+    Serial.println(serializedString);
+
   });
 
   // Route to load style.css file
