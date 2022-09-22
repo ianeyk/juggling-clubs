@@ -2,11 +2,20 @@
 #include "painlessMesh.h"
 // #include "meshFuncs.ino"
 
-#include "packet.h"
-
 #define   MESH_PREFIX     "Circus IT Department"
 #define   MESH_PASSWORD   "circusLuminescence"
 #define   MESH_PORT       5555
+
+// #define DEBUG true
+
+void debug_print(String arg); // function declarations
+void debug_print(int arg); // function declarations
+void debug_print(char* arg); // function declarations
+void debug_println(String arg);
+void debug_println(int arg);
+void debug_println(char* arg);
+
+#include "packet.h"
 
 IPAddress myIP(192,168,1,1);
 IPAddress myAPIP(192,168,1,2);
@@ -86,6 +95,13 @@ void setup() {
   taskIncrementPattern.enable();
 }
 
+// Example input strings
+// String S0 = {"patterns":[false,false,false,false,false,false,false,false,false,false],"speeds":[[0,0,0,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,50]],"colors":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"addons":[[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false]],"currentPattern":0,"currentHue":0,"currentOffset":0}
+// String S1 = {"patterns":[true,false,false,false,false,false,false,false,false,false],"speeds":[[0,0,0,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,50]],"colors":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"addons":[[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false]],"currentPattern":0,"currentHue":0,"currentOffset":0}
+// String S2 = {"patterns":[false,true,false,false,false,false,false,false,false,false],"speeds":[[0,0,0,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,20],[50,50,50,50,50,50,50,50,20,20,20,20,20,50],[50,50,50,50,50,50,50,50,20,20,20,20,20,50]],"colors":[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]],"addons":[[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false]],"currentPattern":0,"currentHue":0,"currentOffset":0}
+//
+
+
 void loop()
 {
   mesh.update();
@@ -110,6 +126,7 @@ void updateLeds() {
             packet = deSerializePacket(serialMessage);
             sendMessage(packet);
             serialMessage = "";
+            Serial.println("done with updateLeds()");
         }
     }
 }
@@ -118,7 +135,7 @@ int patternUnchangedCounter = 0;
 void incrementPattern()
 {
 
-  if (patternUnchangedCounter < packet.speeds[0]) {
+  if (patternUnchangedCounter < packet.speeds[gCurrentPatternNumber][0]) {
     patternUnchangedCounter++;
     return;
   } // else:
@@ -142,11 +159,11 @@ void incrementPattern()
 int hueUnchangedCounter = 0;
 void incrementHue() {
 
-  if (packet.speeds[1] == 0) {
+  if (packet.speeds[gCurrentPatternNumber][1] == 0) {
     return; // freeze the animation in place if speed == 0
   }
 
-  if (hueUnchangedCounter < packet.speeds[1]) {
+  if (hueUnchangedCounter < packet.speeds[gCurrentPatternNumber][1]) {
     hueUnchangedCounter++;
     return;
   } // else:
@@ -154,4 +171,36 @@ void incrementHue() {
   // and proceed with the pattern change
 
   gHue = (gHue + 1) % 256;
+}
+
+void debug_print(String arg) {
+#ifdef DEBUG
+  Serial.print(arg);
+#endif
+}
+void debug_print(int arg) {
+#ifdef DEBUG
+  Serial.print(arg);
+#endif
+}
+void debug_print(char* arg) {
+#ifdef DEBUG
+  Serial.print(arg);
+#endif
+}
+
+void debug_println(String arg) {
+#ifdef DEBUG
+  Serial.println(arg);
+#endif
+}
+void debug_println(int arg) {
+#ifdef DEBUG
+  Serial.println(arg);
+#endif
+}
+void debug_println(char* arg) {
+#ifdef DEBUG
+  Serial.println(arg);
+#endif
 }

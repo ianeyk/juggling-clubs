@@ -5,8 +5,12 @@ void sendMessage(Packet packet) {
   packet.currentPattern = gCurrentPatternNumber;
   packet.currentHue = gHue;
   packet.currentOffset = 0;
-  String msg = serializePacket(packet);
-  mesh.sendBroadcast( msg );
+  // String msg = serializePacket(packet);
+  // mesh.sendBroadcast( msg );
+  serializePacket(packet);
+  Serial.println("Packet is Serialized!");
+  mesh.sendBroadcast( String(deserializedPacketOutput) );
+  Serial.println("Packet is sent.");
 }
 
 Packet interpretMessage(String msg) {
