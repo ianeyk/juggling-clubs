@@ -23,6 +23,7 @@
 #include <AsyncTCP.h>
 #endif
 #include <ESPAsyncWebServer.h>
+#include <DNSServer.h>
 
 // #include <TaskScheduler.h>
 #include <FastLED.h>
@@ -101,10 +102,36 @@ Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPat
 
 #define HOSTNAME "HTTP_BRIDGE"
 
+DNSServer dnsServer;
 AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
 IPAddress myAPIP(192,168,1,2);
+IPAddress subnet(255,255,255,0);
+
+class CaptiveRequestHandler : public AsyncWebHandler {
+public:
+  CaptiveRequestHandler() {}
+  virtual ~CaptiveRequestHandler() {}
+
+  bool canHandle(AsyncWebServerRequest *request){
+    //request->addInterestingHeader("ANY");
+    return true;
+  }
+
+  void handleRequest(AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("text/html");
+    response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
+    response->print("<p>This is out captive portal front page.</p>");
+    response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
+    response->printf("<p>Try opening <a href='http://%s'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
+    response->print("</body></html>");
+    request->send(response);
+  }
+};
+
 // end web server code
+
+#include "packet.h"
 
 // Replaces placeholder with LED state value
 String processor(const String& var) {
@@ -113,7 +140,6 @@ String processor(const String& var) {
 Packet parseArgs(AsyncWebServerRequest *request);
 #endif
 
-#include "packet.h"
 
 Scheduler userScheduler; // to control your personal task
 painlessMesh mesh;
@@ -156,12 +182,13 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 void setup() {
   Serial.begin(115200);
   delay(1000); // 1 second delay for recovery
+  Serial.println("Hello World!");
 
   #ifdef LEADER
-  // Initialize SPIFFS
+  // Initialize LittleFS
   //
-  if(!SPIFFS.begin()){
-    Serial.println("An Error has occurred while mounting SPIFFS");
+  if(!LittleFS.begin()){
+    Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
   #endif
@@ -192,8 +219,16 @@ void setup() {
   Serial.println("My AP IP is " + myAPIP.toString());
   //
   // Async webserver
+  WiFi.softAP(STATION_SSID, STATION_PASSWORD);
+  WiFi.softAPConfig(myIP, myAPIP, subnet);
+  delay(100);
+  dnsServer.start(53, "*", WiFi.softAPIP());
+  server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
+
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html", String(), false, processor);
+    Serial.println("I received a request!");
+    request->send(LittleFS, "/index.html", String(), false, processor);
+    Serial.println("I delivered the file!");
 
     // call the user-defined parsing function, below
     //
@@ -208,7 +243,7 @@ void setup() {
   });
   // Route to load style.css file
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/style.css", "text/css");
+    request->send(LittleFS, "/style.css", "text/css");
   });
   // start web server
   server.begin();
@@ -259,6 +294,7 @@ void updateLeds() {
 
 void loop()
 {
+  dnsServer.processNextRequest();
   mesh.update();
 }
 
@@ -310,18 +346,18 @@ void incrementHue() {
   hueUnchangedCounter = 0;
   // and proceed with the pattern change
 
-  Serial.print("My current ID is ");
-  // Serial.print(system_get_chip_id());
-  int myCurrentId = mesh.getNodeList(true).front();
-  Serial.print(myCurrentId);
-  Serial.print("and my Node list is: ");
-  for (int node : mesh.getNodeList(false))
-    {
-      Serial.print("Node ");
-      Serial.print(node);
-      Serial.print(", ");
-    }
-  Serial.println("!");
+  // Serial.print("My current ID is ");
+  // // Serial.print(system_get_chip_id());
+  // int myCurrentId = mesh.getNodeList(true).front();
+  // Serial.print(myCurrentId);
+  // Serial.print("and my Node list is: ");
+  // for (int node : mesh.getNodeList(false))
+  //   {
+  //     Serial.print("Node ");
+  //     Serial.print(node);
+  //     Serial.print(", ");
+  //   }
+  // Serial.println("!");
 
   gHue = (gHue + 1) % 256;
 }
