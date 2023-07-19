@@ -121,18 +121,7 @@ Packet parseArgs(AsyncWebServerRequest *request);
 
 class CaptiveRequestHandler : public AsyncWebHandler {
 public:
-  CaptiveRequestHandler() {
-          /* THIS IS WHERE YOU CAN PLACE THE CALLS */
-       server.onNotFound([](AsyncWebServerRequest *request){
-        AsyncWebServerResponse* response = request->beginResponse(SPIFFS, "/NotFound.html", "text/html");
-        request->send(response);
-       });
-
-      server.on("/Bootstrap.min.css", HTTP_GET, [](AsyncWebServerRequest *request) {
-        AsyncWebServerResponse* response = request->beginResponse(SPIFFS, "/Bootstrap.min.css", "text/css");
-         request->send(response);
-      });
-  }
+  CaptiveRequestHandler() {}
   virtual ~CaptiveRequestHandler() {}
 
   bool canHandle(AsyncWebServerRequest *request){
