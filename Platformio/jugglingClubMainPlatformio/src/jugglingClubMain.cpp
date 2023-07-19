@@ -121,7 +121,33 @@ Packet parseArgs(AsyncWebServerRequest *request);
 
 class CaptiveRequestHandler : public AsyncWebHandler {
 public:
-  CaptiveRequestHandler() {}
+  CaptiveRequestHandler() {
+          /* THIS IS WHERE YOU CAN PLACE THE CALLS */
+        server.onNotFound([](AsyncWebServerRequest *request){
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html");
+        request->send(response);
+       });
+
+      server.on("/ncsi.txt", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Microsoft NCSI");
+        request->send(response);
+      });
+
+      server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse* response = request->beginResponse(LittleFS, "/style.css");
+         request->send(response);
+      });
+
+      server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html");
+        request->send(response);
+      });
+
+      server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html");
+        request->send(response);
+      });
+  }
   virtual ~CaptiveRequestHandler() {}
 
   bool canHandle(AsyncWebServerRequest *request){
@@ -130,19 +156,13 @@ public:
   }
 
   void handleRequest(AsyncWebServerRequest *request) {
-    // AsyncResponseStream *response = request->beginResponseStream("text/html");
-    // response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
-    // response->print("<p>This is out captive portal front page.</p>");
-    // response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
-    // response->printf("<p>Try opening <a href='http://%s'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
-    // response->print("</body></html>");
-    // request->send(response);
-    AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html");
-    // response->addHeader("Content-Encoding", "gzip");
+    AsyncResponseStream *response = request->beginResponseStream("text/html");
+    response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
+    response->print("<p>This is out captive portal front page.</p>");
+    response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
+    response->printf("<p>Try opening <a href='http://%s/index.html'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
+    response->print("</body></html>");
     request->send(response);
-    // response->addHeader("Content-Encoding", "gzip");
-    // request->send(LittleFS, "/index.html.gz", "text/html", false, processor);
-    Serial.println("I delivered the file!");
   }
 };
 
