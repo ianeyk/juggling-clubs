@@ -1,51 +1,47 @@
+#include <DNSServer.h>
+#ifdef ESP32
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#elif defined(ESP8266)
 #include <ESP8266WiFi.h>
-#include <ESP8266WebServer.h>
+#include <ESPAsyncTCP.h>
+#endif
+#include "ESPAsyncWebServer.h"
 
-/* Put your SSID & Password */
-const char* ssid = "NodeMCU";  // Enter SSID here
-const char* password = "12345678";  //Enter Password here
+DNSServer dnsServer;
+AsyncWebServer server(80);
 
-/* Put IP Address details */
-IPAddress local_ip(192,168,1,1);
-IPAddress gateway(192,168,1,1);
-IPAddress subnet(255,255,255,0);
+class CaptiveRequestHandler : public AsyncWebHandler {
+public:
+  CaptiveRequestHandler() {}
+  virtual ~CaptiveRequestHandler() {}
 
-// Create a new web server
-ESP8266WebServer webserver(80);
+  bool canHandle(AsyncWebServerRequest *request){
+    //request->addInterestingHeader("ANY");
+    return true;
+  }
 
-// Handle Root
-void rootPage() {
-  webserver.send(200, "text/plain", "Check out https://siytek.com !");
+  void handleRequest(AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("text/html");
+    response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
+    response->print("<p>This is out captive portal front page.</p>");
+    response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
+    response->printf("<p>Try opening <a href='http://%s'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
+    response->print("</body></html>");
+    request->send(response);
+  }
+};
+
+
+void setup(){
+  //your other setup stuff...
+  WiFi.softAP("esp-captive");
+  dnsServer.start(53, "*", WiFi.softAPIP());
+  server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
+  //more handlers...
+  server.begin();
 }
 
-// Handle 404
-void notfoundPage(){
-  webserver.send(404, "text/plain", "404: Not found");
-}
-
-void setup()
-{
-  // Setup serial port
-  Serial.begin(115200);
-  Serial.println();
-
-  //Begin WiFi
-  WiFi.softAP(ssid, password);
-  WiFi.softAPConfig(local_ip, gateway, subnet);
-  delay(100);
-
-  // WiFi Connected
-  Serial.print("Connected! IP address: ");
-  Serial.println(WiFi.localIP());
-
-  // Start Web Server
-  webserver.on("/", rootPage);
-  webserver.onNotFound(notfoundPage);
-  webserver.begin();
-
-}
-
-// Listen for HTTP requests
-void loop(void){
-  webserver.handleClient();
+void loop(){
+  dnsServer.processNextRequest();
 }

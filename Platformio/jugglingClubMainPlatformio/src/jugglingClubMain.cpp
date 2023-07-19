@@ -56,7 +56,7 @@ FASTLED_USING_NAMESPACE
 #endif
 
 #define BRIGHTNESS          96
-#define FRAMES_PER_SECOND  120
+#define FRAMES_PER_SECOND  40
 
 CRGB leds[NUM_LEDS];
 
@@ -73,8 +73,8 @@ void start_wave();
 void getUniqueOrderNumber();
 
 
-unsigned long incrementPatternInterval = TASK_SECOND * 1; // 10 seconds default
-unsigned long incrementHueInterval = TASK_MILLISECOND * 2; // 20 milliseconds default
+unsigned long incrementPatternInterval = TASK_SECOND * 10; // 10 seconds default
+unsigned long incrementHueInterval = TASK_MILLISECOND * 20; // 20 milliseconds default
 
 
 void updateLeds();
@@ -97,7 +97,7 @@ Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPat
 #define   MESH_PORT       5555
 
 #ifdef LEADER
-#define   STATION_SSID     "Ian's Juggling Clubs"
+#define   STATION_SSID     "Ian's Juggling Clubss"
 #define   STATION_PASSWORD "circusLuminescence"
 
 #define HOSTNAME "HTTP_BRIDGE"
@@ -107,27 +107,6 @@ AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
 IPAddress myAPIP(192,168,1,2);
 IPAddress subnet(255,255,255,0);
-
-class CaptiveRequestHandler : public AsyncWebHandler {
-public:
-  CaptiveRequestHandler() {}
-  virtual ~CaptiveRequestHandler() {}
-
-  bool canHandle(AsyncWebServerRequest *request){
-    //request->addInterestingHeader("ANY");
-    return true;
-  }
-
-  void handleRequest(AsyncWebServerRequest *request) {
-    AsyncResponseStream *response = request->beginResponseStream("text/html");
-    response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
-    response->print("<p>This is out captive portal front page.</p>");
-    response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
-    response->printf("<p>Try opening <a href='http://%s'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
-    response->print("</body></html>");
-    request->send(response);
-  }
-};
 
 // end web server code
 
@@ -139,6 +118,44 @@ String processor(const String& var) {
 }
 Packet parseArgs(AsyncWebServerRequest *request);
 #endif
+
+class CaptiveRequestHandler : public AsyncWebHandler {
+public:
+  CaptiveRequestHandler() {
+          /* THIS IS WHERE YOU CAN PLACE THE CALLS */
+       server.onNotFound([](AsyncWebServerRequest *request){
+        AsyncWebServerResponse* response = request->beginResponse(SPIFFS, "/NotFound.html", "text/html");
+        request->send(response);
+       });
+
+      server.on("/Bootstrap.min.css", HTTP_GET, [](AsyncWebServerRequest *request) {
+        AsyncWebServerResponse* response = request->beginResponse(SPIFFS, "/Bootstrap.min.css", "text/css");
+         request->send(response);
+      });
+  }
+  virtual ~CaptiveRequestHandler() {}
+
+  bool canHandle(AsyncWebServerRequest *request){
+    //request->addInterestingHeader("ANY");
+    return true;
+  }
+
+  void handleRequest(AsyncWebServerRequest *request) {
+    // AsyncResponseStream *response = request->beginResponseStream("text/html");
+    // response->print("<!DOCTYPE html><html><head><title>Captive Portal</title></head><body>");
+    // response->print("<p>This is out captive portal front page.</p>");
+    // response->printf("<p>You were trying to reach: http://%s%s</p>", request->host().c_str(), request->url().c_str());
+    // response->printf("<p>Try opening <a href='http://%s'>this link</a> instead</p>", WiFi.softAPIP().toString().c_str());
+    // response->print("</body></html>");
+    // request->send(response);
+    AsyncWebServerResponse *response = request->beginResponse(LittleFS, "/index.html");
+    // response->addHeader("Content-Encoding", "gzip");
+    request->send(response);
+    // response->addHeader("Content-Encoding", "gzip");
+    // request->send(LittleFS, "/index.html.gz", "text/html", false, processor);
+    Serial.println("I delivered the file!");
+  }
+};
 
 
 Scheduler userScheduler; // to control your personal task
@@ -219,32 +236,33 @@ void setup() {
   Serial.println("My AP IP is " + myAPIP.toString());
   //
   // Async webserver
-  WiFi.softAP(STATION_SSID, STATION_PASSWORD);
-  WiFi.softAPConfig(myIP, myAPIP, subnet);
+  // WiFi.softAP(STATION_SSID, STATION_PASSWORD);
+  // WiFi.softAPConfig(myIP, myAPIP, subnet);
+  WiFi.softAP(STATION_SSID);
   delay(100);
   dnsServer.start(53, "*", WiFi.softAPIP());
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    Serial.println("I received a request!");
-    request->send(LittleFS, "/index.html", String(), false, processor);
-    Serial.println("I delivered the file!");
+  // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+  //   Serial.println("I received a request!");
+  //   request->send(LittleFS, "/index.html", String(), false, processor);
+  //   Serial.println("I delivered the file!");
 
-    // call the user-defined parsing function, below
-    //
-    packet = parseArgs(request);
-    Serial.println("-----------------------");
-    Serial.println("Received JSON message: ");
-    Serial.println("-----------------------");
-    String serialized = serializePacket(packet);
-    Serial.println(serialized);
+  //   // call the user-defined parsing function, below
+  //   //
+  //   packet = parseArgs(request);
+  //   Serial.println("-----------------------");
+  //   Serial.println("Received JSON message: ");
+  //   Serial.println("-----------------------");
+  //   String serialized = serializePacket(packet);
+  //   Serial.println(serialized);
 
-    sendMessage(packet);
-  });
-  // Route to load style.css file
-  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(LittleFS, "/style.css", "text/css");
-  });
+  //   sendMessage(packet);
+  // });
+  // // Route to load style.css file
+  // server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
+  //   request->send(LittleFS, "/style.css", "text/css");
+  // });
   // start web server
   server.begin();
 
