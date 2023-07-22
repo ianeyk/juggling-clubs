@@ -1,5 +1,5 @@
 #include "StringSplitter.h"
-#include "packet.h"
+// #include "packet.h"
 
 void sendMessage(Packet packet) {
   packet.currentPattern = gCurrentPatternNumber;

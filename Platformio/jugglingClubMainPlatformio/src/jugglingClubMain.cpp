@@ -1,17 +1,11 @@
-#define FASTLED_ESP8266_RAW_PIN_ORDER
+#include <Arduino.h>
 
-// comment the following line out if not the leader
-//
 // **************************** //
-#define LEADER true
-#define SHORTER_STRIPS true
-#define MY_UNIQUE_CLUB_ID 0
-// **************************** //
-// #define MY_UNIQUE_CLUB_ID 1
-// **************************** //
+// #define LEADER true
+// #define MY_UNIQUE_CLUB_ID 0
+#define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
 // **************************** //
-//
 
 #include "IPAddress.h"
 #include <FS.h>
@@ -25,57 +19,18 @@
 #include <ESPAsyncWebServer.h>
 #include <DNSServer.h>
 
-// #include <TaskScheduler.h>
-#include <FastLED.h>
 #include "painlessMesh.h"
-
-
-FASTLED_USING_NAMESPACE
-
-// FastLED "100-lines-of-code" demo reel, showing just a few
-// of the kinds of animation patterns you can quickly and easily
-// compose using FastLED.
-//
-// This example also shows one easy way to define multiple
-// animations patterns and have them automatically rotate.
-//
-// -Mark Kriegsman, December 2014
 
 #define PI 3.1415926535897932384626433832795
 #define HALF_PI 1.5707963267948966192313216916398
 #define TWO_PI 6.283185307179586476925286766559
 
-#define DATA_PIN    D4
-//#define CLK_PIN   0
-#define LED_TYPE    WS2811
-#define COLOR_ORDER GRB
-#ifdef SHORTER_STRIPS
-#define NUM_LEDS 54
-#else
-#define NUM_LEDS    66
-#endif
-
-#define BRIGHTNESS          96
 #define FRAMES_PER_SECOND  40
 
-CRGB leds[NUM_LEDS];
-
-#ifdef SHORTER_STRIPS
-int strip_len = 9;
-#else
-int strip_len = 12;
-#endif
-
-int ring_len = 18;
-
-void handle_wave(int h, int s, int v);
-void start_wave();
 void getUniqueOrderNumber();
-
 
 unsigned long incrementPatternInterval = TASK_SECOND * 10; // 10 seconds default
 unsigned long incrementHueInterval = TASK_MILLISECOND * 20; // 20 milliseconds default
-
 
 void updateLeds();
 Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
@@ -96,6 +51,8 @@ Task taskIncrementPattern( incrementPatternInterval, TASK_FOREVER, &incrementPat
 #define   MESH_PASSWORD   "circusLuminescence"
 #define   MESH_PORT       5555
 
+// #include "packet.h"
+
 #ifdef LEADER
 #define   STATION_SSID     "Ian's Juggling Clubss"
 #define   STATION_PASSWORD "circusLuminescence"
@@ -110,14 +67,12 @@ IPAddress subnet(255,255,255,0);
 
 // end web server code
 
-#include "packet.h"
 
 // Replaces placeholder with LED state value
 String processor(const String& var) {
   return "Return val from processor";
 }
 Packet parseArgs(AsyncWebServerRequest *request);
-#endif
 
 class CaptiveRequestHandler : public AsyncWebHandler {
 public:
@@ -166,6 +121,7 @@ public:
   }
 };
 
+#endif
 
 Scheduler userScheduler; // to control your personal task
 painlessMesh mesh;
@@ -176,7 +132,7 @@ uint8_t gCurrentPatternNumber = 0; // Index number of which pattern is current
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 
 #include "patterns.h"
-#include "meshFuncs.h"
+// #include "meshFuncs.h"
 
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
@@ -190,10 +146,10 @@ void receivedCallback( uint32_t from, String &msg ) {
   #endif
 
   // it is important that interpretMessage be called AFTER restarting the tasks (not before)
-  packet = interpretMessage(msg);
-  if (packet.addons[4]) {
-    gHue = (gHue + int(256 / nClubs) * myUniqueOrderNumber) % 256;
-  }
+  // packet = interpretMessage(msg);
+  // if (packet.addons[4]) {
+  //   gHue = (gHue + int(256 / nClubs) * myUniqueOrderNumber) % 256;
+  // }
 }
 void newConnectionCallback(uint32_t nodeId) {
     Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
@@ -217,17 +173,7 @@ void setup() {
     Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
-  #endif
 
-  // set up FastLED
-  //
-  // tell FastLED about the LED strip configuration
-  //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  // set master brightness control
-  FastLED.setBrightness(BRIGHTNESS);
-
-  #ifdef LEADER
   // set up PainlessMesh
   //
   mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
@@ -298,30 +244,11 @@ void setup() {
   taskIncrementPattern.enable();
 }
 
-// List of patterns to cycle through.  Each is defined as a separate function below.
-typedef void (*SimplePatternList[])();
-// SimplePatternList gPatterns = { solid, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbowWithGlitter, confetti, juggle};
-SimplePatternList gPatterns = { pulse, solid, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
-SimplePatternList gAddins = { ring_solid, sparkle, ring_solid, ring_solid, ring_solid, ring_solid, ring_solid };
-
-void updateLeds() {
-  // Call the current pattern function once, updating the 'leds' array
-  gPatterns[gCurrentPatternNumber]();
-
-  // Call all the addins in order
-  for (int i = 0; i < N_ADDONS; i++) {
-    if (packet.addons[i]) {
-      gAddins[i]();
-    }
-  }
-
-  // send the 'leds' array out to the actual LED strip
-  FastLED.show();
-}
-
 void loop()
 {
+  #ifdef LEADER
   dnsServer.processNextRequest();
+  #endif
   mesh.update();
 }
 
