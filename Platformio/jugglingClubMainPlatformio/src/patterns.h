@@ -1,6 +1,7 @@
 #ifndef JUGGLING_CLUB_PATTERNS_LIBRARY
 #define JUGGLING_CLUB_PATTERNS_LIBRARY
 
+#include "jsonPacket.h"
 #include <FastLED.h>
 #define FASTLED_ESP8266_RAW_PIN_ORDER
 FASTLED_USING_NAMESPACE
@@ -16,8 +17,6 @@ CRGB leds[NUM_LEDS];
 
 int strip_len = 3;
 int ring_len = 5;
-
-int patternId = 0;
 
 void handle_wave(int h, int s, int v);
 void start_wave();
@@ -54,7 +53,7 @@ void fill_ring(CRGB color) {
 
 void pulse_color(CRGB color) {
   int pulseLength = 128;
-  int pulseAmount = abs((gHue % pulseLength) - (pulseLength / 2));
+  int pulseAmount = abs((hueCounter % pulseLength) - (pulseLength / 2));
   int pulseScale = 1;
 
   for (int i = 0; i < pulseAmount; i += pulseScale) {
@@ -66,14 +65,15 @@ void pulse_color(CRGB color) {
   fill_solid( leds, NUM_LEDS, color);
 }
 
-int multi_solid_colors[nClubs] = {0, 1, 2};
+int multi_solid_colors[N_CLUBS] = {0, 1, 2};
 int get_unique_color_id() {
-  if (packet.addons[5]) { // if the "Alternate Colors" add-on is selected:
-    return myUniqueOrderNumber + int(int(gHue * nClubs) / 256);
-  }
-  else { // do not alternate colors
-    return myUniqueOrderNumber;
-  }
+  // if (packet.addons[5]) { // if the "Alternate Colors" add-on is selected:
+  //   return myUniqueOrderNumber + int(int(hueCounter * N_CLUBS) / 256);
+  // }
+  // else { // do not alternate colors
+  //   return myUniqueOrderNumber;
+  // }
+  return MY_UNIQUE_CLUB_ID;
 }
 
 void addGlitter( fract8 chanceOfGlitter)
@@ -84,16 +84,16 @@ void addGlitter( fract8 chanceOfGlitter)
 }
 
 CRGB getLinkedColor(JsonObject colorLocation) {
-  JsonObject colorHsv;
+  JsonObject colorObj;
   if (colorLocation["linkColors"]) {
     colorObj = colorLocation["color"][MY_UNIQUE_CLUB_ID];
   }
   else {
     colorObj = colorLocation["color"][0];
   }
-  CHSV colorHsv = CHSV(colorObj["h"], colorObj["s"], colorObj["v"]);
+  CHSV colorHsv = CHSV(colorObj["h"], colorObj["s"], colorObj["l"]);
   CRGB colorRgb;
-  hsv2rgb_rainbow(hsv, rgb);
+  hsv2rgb_rainbow(colorHsv, colorRgb);
   return colorRgb;
 }
 
@@ -106,12 +106,12 @@ void solid() {
 }
 
 void pulse() {
-  pulse_color(jsonPacket[patternId]["color"]);
+  pulse_color(getLinkedColor(jsonPacket[patternId]["color"]));
 }
 
 void rainbow() // FastLED's built-in rainbow generator
 {
-  fill_rainbow( leds, NUM_LEDS, int(gHue / 50) * 50, 7);
+  fill_rainbow( leds, NUM_LEDS, int(hueCounter / 50) * 50, 7);
 }
 
 void rainbowWithGlitter() // built-in FastLED rainbow, plus some random sparkly glitter
@@ -124,7 +124,7 @@ void confetti() // random colored speckles that blink in and fade smoothly
 {
   fadeToBlackBy( leds, NUM_LEDS, 10);
   int pos = random16(NUM_LEDS);
-  leds[pos] += CHSV( gHue + random8(64), 200, 255);
+  leds[pos] += CHSV( hueCounter + random8(64), 200, 255);
 }
 
 void bpm() // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
@@ -133,7 +133,7 @@ void bpm() // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
   CRGBPalette16 palette = PartyColors_p;
   uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
   for( int i = 0; i < NUM_LEDS; i++) { //9948
-    leds[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
+    leds[i] = ColorFromPalette(palette, hueCounter+(i*2), beat-hueCounter+(i*10));
   }
 }
 
@@ -144,6 +144,10 @@ void juggle() { // eight colored dots, weaving in and out of sync with each othe
     leds[beatsin16( i+7, 0, NUM_LEDS-1 )] |= CHSV(dothue, 200, 255);
     dothue += 32;
   }
+}
+
+void verticalWave() {
+  solid();
 }
 
 
@@ -185,11 +189,11 @@ void flash() {
     return;
   }
   // first, increment the counter
-  flashCounter += jsonPacket[patternId]["flashColor"]["speed"];
+  flashCounter += int(jsonPacket[patternId]["flashColor"]["speed"]);
   // check if it is over the flash duty cycle limit
   if (flashCounter > FRAMES_PER_SECOND * jsonPacket[patternId]["flashColor"]["duration"]) {
     // during the flash time, make sure the club is a solid color by setting it every frame rate
-    fill_solid(getLinkedColor(jsonPacket[patternId]["flashColor"]));
+    fill_solid(leds, NUM_LEDS, getLinkedColor(jsonPacket[patternId]["flashColor"]));
   }
   // then, check if it is over the total period limit
   if (flashCounter > FRAMES_PER_SECOND * 200) {
@@ -197,54 +201,5 @@ void flash() {
     // don't do anything to the pattern; let the base pattern shine through
   }
 }
-
-////////////////////////////
-////  LED Driver code   ////
-////////////////////////////
-
-void fastLedSetup() {
-  // tell FastLED about the LED strip configuration
-  //FastLED.addLeds<LED_TYPE,DATA_PIN,CLK_PIN,COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  // set master brightness control
-  FastLED.setBrightness(BRIGHTNESS);
-}
-
-// List of patterns to cycle through.  Each is defined as a separate function below.
-typedef void (*SimplePatternList[])();
-// SimplePatternList gPatterns = { solid, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbowWithGlitter, confetti, juggle};
-SimplePatternList gPatterns = { pulse, solid, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid };
-SimplePatternList gAddins = { ring_solid, sparkle, flash};
-
-void updateLeds() {
-    // Call the current pattern function once, updating the 'leds' array
-    String patternName = jsonPacket[patternId]["displayName"];
-    switch(patternName) {
-      case "Vertical Wave":
-        verticalWave();
-        break;
-      case "Pulsing Color":
-        pulse();
-        break;
-      case "BPM":
-        bpm();
-        break;
-      default:
-        solid();
-    }
-  }
-
-  // then apply all of the addins. If they are not enabled, the function will handle that
-  ring_solid();
-  sparkle();
-  flash();
-
-  // send the 'leds' array out to the actual LED strip
-  FastLED.show();
-}
-
-
-
-
 
 #endif
