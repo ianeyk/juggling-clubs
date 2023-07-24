@@ -1,3 +1,6 @@
+#ifndef JSON_PACKET_LIBRARY
+#define JSON_PACKET_LIBRARY
+
 #include <ArduinoJson.h>
 
 DynamicJsonDocument jsonPacket(6144);
@@ -14,3 +17,5 @@ void readJsonDocument(String jsonString) {
     return;
   }
 }
+
+#endif

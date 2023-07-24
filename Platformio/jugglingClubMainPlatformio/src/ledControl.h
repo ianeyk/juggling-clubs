@@ -1,3 +1,6 @@
+#ifndef LED_CONTROL_LIBRARY
+#define LED_CONTROL_LIBRARY
+
 #define COUNTER_WRAP_LIMIT = 65535 // 256 ^ 2
 uint8_t patternId = 0; // Index number of which pattern is current
 uint8_t hueCounter = 0; // rotating "base color" used by many of the patterns
@@ -49,3 +52,5 @@ void updateLeds() {
 
     FastLED.show(); // send the 'leds' array out to the actual LED strip
 }
+
+#endif
