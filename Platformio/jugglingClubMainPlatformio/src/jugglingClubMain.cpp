@@ -16,33 +16,33 @@
 #define N_CLUBS 3
 
 Scheduler userScheduler; // to control your personal task
-#include "ledControl.h"
+// #include "ledControl.h"
 #include "wifiServer.h"
-#include "meshFuncs.h"
+// #include "meshFuncs.h"
 
 int myUniqueOrderNumber;
 void getUniqueOrderNumber();
 
-unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
-unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
+// unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
+// unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
 
-Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
-Task taskIncrementCounters( incrementCounterInterval, TASK_FOREVER, &incrementCounters );
+// Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
+// Task taskIncrementCounters( incrementCounterInterval, TASK_FOREVER, &incrementCounters );
 
 void setup() {
   Serial.begin(115200);
   delay(1000); // 1 second delay for recovery
   Serial.println("Hello World!");
 
-  setupMesh();
+  // setupMesh();
   setupWifiServer();
-  fastLedSetup();
+  // fastLedSetup();
 
-  // start tasks controlling LEDs
-  userScheduler.addTask(taskUpdateLeds);
-  taskUpdateLeds.enable();
-  userScheduler.addTask(taskIncrementCounters);
-  taskIncrementCounters.enable();
+  // // start tasks controlling LEDs
+  // userScheduler.addTask(taskUpdateLeds);
+  // taskUpdateLeds.enable();
+  // userScheduler.addTask(taskIncrementCounters);
+  // taskIncrementCounters.enable();
 }
 
 void loop()
@@ -50,15 +50,15 @@ void loop()
   #ifdef LEADER
   dnsServer.processNextRequest();
   #endif
-  mesh.update();
+  // mesh.update();
 }
 
-void getUniqueOrderNumber() {
-  myUniqueOrderNumber = 0;
-  int myId = mesh.getNodeList(true).front(); // assuming the first element is its own; // system_get_chip_id();
-  for (int otherNodeId : mesh.getNodeList(false)) {
-      if (otherNodeId < myId) {
-        myUniqueOrderNumber++;
-      }
-    }
-}
+// void getUniqueOrderNumber() {
+//   myUniqueOrderNumber = 0;
+//   int myId = mesh.getNodeList(true).front(); // assuming the first element is its own; // system_get_chip_id();
+//   for (int otherNodeId : mesh.getNodeList(false)) {
+//       if (otherNodeId < myId) {
+//         myUniqueOrderNumber++;
+//       }
+//     }
+// }
