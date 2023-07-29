@@ -6,6 +6,11 @@
 // #define MY_UNIQUE_CLUB_ID 0
 #define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
+
+#define INCLUDE_LEDS true
+#define INCLUDE_WIFI true
+#define INCLUDE_MESH true
+#define PRINT_DEBUG true
 // **************************** //
 
 #define PI 3.1415926535897932384626433832795
@@ -16,41 +21,65 @@
 #define N_CLUBS 3
 
 Scheduler userScheduler; // to control your personal task
-// #include "ledControl.h"
-#include "wifiServer.h"
-// #include "meshFuncs.h"
+#ifdef INCLUDE_LEDS
+  #include "ledControl.h"
+#endif
+#ifdef INCLUDE_WIFI
+  #include "wifiServer.h"
+#endif
+#ifdef INCLUDE_MESH
+  #include "meshFuncs.h"
+#endif
 
 int myUniqueOrderNumber;
 void getUniqueOrderNumber();
+void sendDebugMessage();
 
-// unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
-// unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
+unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
+unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
+unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
 
-// Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
-// Task taskIncrementCounters( incrementCounterInterval, TASK_FOREVER, &incrementCounters );
+#ifdef INCLUDE_LEDS
+  Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
+  Task taskIncrementCounters( incrementCounterInterval, TASK_FOREVER, &incrementCounters );
+#endif
+#ifdef PRINT_DEBUG
+  Task taskSendDebugMessage( debugMessageInterval, TASK_FOREVER, &sendDebugMessage );
+#endif
 
 void setup() {
   Serial.begin(115200);
   delay(1000); // 1 second delay for recovery
   Serial.println("Hello World!");
 
-  // setupMesh();
-  setupWifiServer();
-  // fastLedSetup();
-
-  // // start tasks controlling LEDs
-  // userScheduler.addTask(taskUpdateLeds);
-  // taskUpdateLeds.enable();
-  // userScheduler.addTask(taskIncrementCounters);
-  // taskIncrementCounters.enable();
+  #ifdef INCLUDE_MESH
+    setupMesh();
+  #endif
+  #ifdef INCLUDE_WIFI
+    setupWifiServer();
+  #endif
+  #ifdef INCLUDE_LEDS
+    fastLedSetup();
+    // start tasks controlling LEDs
+    userScheduler.addTask(taskUpdateLeds);
+    taskUpdateLeds.enable();
+    userScheduler.addTask(taskIncrementCounters);
+    taskIncrementCounters.enable();
+  #endif
+  #ifdef PRINT_DEBUG
+    userScheduler.addTask(taskSendDebugMessage);
+    taskSendDebugMessage.enable();
+  #endif
 }
 
 void loop()
 {
   #ifdef LEADER
-  dnsServer.processNextRequest();
+    dnsServer.processNextRequest();
   #endif
-  // mesh.update();
+  #ifdef INCLUDE_MESH
+    mesh.update();
+  #endif
 }
 
 // void getUniqueOrderNumber() {
@@ -62,3 +91,7 @@ void loop()
 //       }
 //     }
 // }
+
+void sendDebugMessage() {
+  Serial.println("Spare Heap Remaining = " + String(ESP.getFreeHeap()));
+}
