@@ -10,13 +10,13 @@ FASTLED_USING_NAMESPACE
 //#define CLK_PIN   0
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
-#define NUM_LEDS    30
-#define BRIGHTNESS          94
+#define NUM_LEDS    100
+#define BRIGHTNESS  94
 
 CRGB leds[NUM_LEDS];
 
-int strip_len = 3;
-int ring_len = 5;
+#define STRIP_LEN 3
+#define RING_LEN 5
 
 void handle_wave(int h, int s, int v);
 void start_wave();
@@ -29,32 +29,32 @@ void start_wave();
 
 void set_handle_by_height(int height, CRGB color) {
   leds[height]                     = color;
-  leds[2 * strip_len - 1 - height] = color;
-  leds[2 * strip_len - 1 + height] = color;
-  leds[4 * strip_len - 1 - height] = color;
+  leds[2 * STRIP_LEN - 1 - height] = color;
+  leds[2 * STRIP_LEN - 1 + height] = color;
+  leds[4 * STRIP_LEN - 1 - height] = color;
 }
 
 void fill_handle(CRGB color) {
-  for (int i = 0; i < strip_len; i ++) {
+  for (int i = 0; i < STRIP_LEN; i ++) {
     set_handle_by_height(i, color);
   }
 }
 
-int ring_start = 4 * strip_len;
+int ring_start = 4 * STRIP_LEN;
 void set_ring_by_longitude(int lon, CRGB color) {
   leds[ring_start + lon] = color;
 }
 
 void fill_ring(CRGB color) {
-  for (int i = 0; i < ring_len; i++) {
+  for (int i = 0; i < RING_LEN; i++) {
     set_ring_by_longitude(i, color);
   }
 }
 
+const int pulseLength = 128;
+const int pulseScale = 1;
 void pulse_color(CRGB color) {
-  int pulseLength = 128;
   int pulseAmount = abs((hueCounter % pulseLength) - (pulseLength / 2));
-  int pulseScale = 1;
 
   for (int i = 0; i < pulseAmount; i += pulseScale) {
     color -= 3;
@@ -85,7 +85,7 @@ void addGlitter( fract8 chanceOfGlitter)
 
 CRGB getLinkedColor(JsonObject colorLocation) {
   JsonObject colorObj;
-  if (colorLocation["linkColors"]) {
+  if (!colorLocation["linkColors"]) {
     colorObj = colorLocation["color"][MY_UNIQUE_CLUB_ID];
   }
   else {
@@ -102,6 +102,8 @@ CRGB getLinkedColor(JsonObject colorLocation) {
 ////////////////////////////
 
 void solid() {
+  // CRGB myColor = getLinkedColor(jsonPacket[patternId]["color"]);
+  // Serial.print("filling solid wtih color "); Serial.print(myColor.red); Serial.print(myColor.green); Serial.print(myColor.blue);
   fill_solid( leds, NUM_LEDS, getLinkedColor(jsonPacket[patternId]["color"]));
 }
 
@@ -148,6 +150,7 @@ void juggle() { // eight colored dots, weaving in and out of sync with each othe
 
 void verticalWave() {
   solid();
+  Serial.println("Inside the verticalWave function!");
 }
 
 

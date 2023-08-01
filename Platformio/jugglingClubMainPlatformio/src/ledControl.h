@@ -11,6 +11,7 @@ uint8_t patternTimeCounter = 0; // defines the time step for animations
 void fastLedSetup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip); // tell FastLED about the LED strip configuration
   FastLED.setBrightness(BRIGHTNESS);   // set master brightness control
+  readJsonDocument("");
 }
 
 typedef void (*SimplePatternList[])(); // List of patterns to cycle through.  Each is defined as a separate function below.
@@ -32,12 +33,15 @@ void incrementCounters() {
     unsigned short duration = jsonPacket[patternId]["duration"];
     if (patternTimeCounter > duration) {
         patternTimeCounter = 0;
-        patternId = (patternId + 1) % jsonPacket[patternId].size();
+        patternId = (patternId + 1) % jsonPacket.size();
     }
+    Serial.println("Json packet size is " + String(jsonPacket.size()));
+    Serial.println("Incrementing counters! New counter is " + String(patternId));
+    Serial.println("Pattern Speed is " + String(patternSpeed) + "and duration is " + String(duration) + "and counter is " + String(patternTimeCounter));
 }
 
 void updateLeds() {
-    incrementCounters();
+    // incrementCounters();
     // Call the current pattern function once, updating the 'leds' array
     String patternName = jsonPacket[patternId]["displayName"];
     if (patternName == "Vertical Wave") verticalWave();
@@ -49,6 +53,8 @@ void updateLeds() {
     ring_solid();
     sparkle();
     flash();
+
+    // Serial.println("Pattern Name: " + patternName);
 
     FastLED.show(); // send the 'leds' array out to the actual LED strip
 }

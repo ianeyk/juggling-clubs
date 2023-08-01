@@ -8,7 +8,7 @@
 // #define MY_UNIQUE_CLUB_ID 2
 
 #define INCLUDE_LEDS true
-#define INCLUDE_WIFI true
+// #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 #define PRINT_DEBUG true
 // **************************** //
@@ -17,7 +17,7 @@
 #define HALF_PI 1.5707963267948966192313216916398
 #define TWO_PI 6.283185307179586476925286766559
 
-#define FRAMES_PER_SECOND  10
+#define FRAMES_PER_SECOND  60
 #define N_CLUBS 3
 
 Scheduler userScheduler; // to control your personal task
@@ -35,9 +35,9 @@ int myUniqueOrderNumber;
 void getUniqueOrderNumber();
 void sendDebugMessage();
 
-unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
-unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
-unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
+const unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
+const unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
+const unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
 
 #ifdef INCLUDE_LEDS
   Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
@@ -75,7 +75,9 @@ void setup() {
 void loop()
 {
   #ifdef LEADER
-    dnsServer.processNextRequest();
+    #ifdef INCLUDE_WIFI
+      dnsServer.processNextRequest();
+    #endif
   #endif
   #ifdef INCLUDE_MESH
     mesh.update();
@@ -93,5 +95,5 @@ void loop()
 // }
 
 void sendDebugMessage() {
-  Serial.println("Spare Heap Remaining = " + String(ESP.getFreeHeap()));
+  // Serial.println("Spare Heap Remaining = " + String(ESP.getFreeHeap()));
 }

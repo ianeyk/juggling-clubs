@@ -5,11 +5,6 @@
 #include "StringSplitter.h"
 #include "jsonPacket.h"
 
-// set up PainlessMesh
-// #define   MESH_PREFIX     "Apple"
-// #define   MESH_PASSWORD   "circusLuminescence"
-// #define   MESH_PORT       5555
-
 // from web server code
 #define   MESH_PREFIX     "Circus IT Department"
 #define   MESH_PASSWORD   "circusLuminescence"
