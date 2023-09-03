@@ -22,8 +22,8 @@ AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 
-String javascriptFile = "/index.js.download";
-std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", javascriptFile, "/favicon.ico"};
+std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico"};
+std::vector<String> jsFiles{"/index.js.download", "/webfontloader.js"};
 
 bool inStringArray(std::vector<String> myList, String stringToMatch) {
   for (unsigned int i = 0; i < myList.size() ; i ++) {
@@ -52,7 +52,7 @@ public:
       if (request->url() == respondWithPage[i]){
         AsyncWebServerResponse *response;
         Serial.println("received request for " + respondWithPage[i]);
-        if (respondWithPage[i] == javascriptFile) {
+        if (inStringArray(jsFiles, respondWithPage[i])) {
           response = request->beginResponse(SPIFFS, respondWithPage[i], "text/javascript");
         } else {
           response = request->beginResponse(SPIFFS, respondWithPage[i]);
