@@ -10,7 +10,7 @@
 // #define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
 // #define INCLUDE_MESH true
-#define PRINT_DEBUG true
+// #define PRINT_DEBUG true
 // **************************** //
 
 #define PI 3.1415926535897932384626433832795
