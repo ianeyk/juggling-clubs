@@ -22,7 +22,8 @@ AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 
-std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/favicon.ico"};
+String javascriptFile = "/index.js.download";
+std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", javascriptFile, "/favicon.ico"};
 
 bool inStringArray(std::vector<String> myList, String stringToMatch) {
   for (unsigned int i = 0; i < myList.size() ; i ++) {
@@ -39,9 +40,7 @@ public:
   virtual ~CaptiveRequestHandler() {}
 
   bool canHandle(AsyncWebServerRequest *request){
-    // check if url matches a string in array doNotCaptivePortal
     // return inStringArray(respondWithPage, request->url());
-    // return !(inStringArray(doNotCaptivePortal, request->url()));
     return true; // make sue CaptiveRequestHandler is enabled after canHandle
   }
 
@@ -53,7 +52,11 @@ public:
       if (request->url() == respondWithPage[i]){
         AsyncWebServerResponse *response;
         Serial.println("received request for " + respondWithPage[i]);
-        response = request->beginResponse(SPIFFS, respondWithPage[i]);
+        if (respondWithPage[i] == javascriptFile) {
+          response = request->beginResponse(SPIFFS, respondWithPage[i], "text/javascript");
+        } else {
+          response = request->beginResponse(SPIFFS, respondWithPage[i]);
+        }
         request->send(response);
         return;
       }
@@ -93,7 +96,6 @@ void setupWifiServer() {
   WiFi.softAP(STATION_SSID);
   delay(100);
   dnsServer.start(53, "*", WiFi.softAPIP());
-  // server.addHandler(new ServerRequestHandler()).setFilter(ON_AP_FILTER); //only when requested from AP
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER); //only when requested from AP
   // start web server
   server.begin();
