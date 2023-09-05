@@ -9,7 +9,7 @@
 
 // #define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
-// #define INCLUDE_MESH true
+#define INCLUDE_MESH true
 // #define PRINT_DEBUG true
 // **************************** //
 

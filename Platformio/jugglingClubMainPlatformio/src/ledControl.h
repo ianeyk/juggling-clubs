@@ -59,4 +59,49 @@ void updateLeds() {
     FastLED.show(); // send the 'leds' array out to the actual LED strip
 }
 
+std::vector<unsigned long> cumDurations;
+std::vector<unsigned long> cumHueDurations;
+
+void assignDurations() {
+  // assign cumulative duration values for calculating pattern time from global clock
+  unsigned long duration = 0;
+  unsigned long hueDuration = 0;
+  cumDurations.clear();
+  cumHueDurations.clear();
+
+  for (int i = 0; i < jsonPacket.size(); i++) {
+    duration += jsonPacket[i]["duration"] * 1000; // seconds to milliseconds
+    hueDuration += jsonPacket[i]["duration"] * 1000 * jsonPacket[i]["colorCycleSpeed"];
+    cumDurations.push_back(duration);
+    cumHueDurations.push_back(hueDuration);
+  }
+}
+
+unsigned long patternTime = 0; // in milliseconds
+unsigned long hueTime = 0; // in milliseconds
+unsigned long patternFrame = 0; // in frames, 20fps
+unsigned long hueFrame = 0; // in frames, 20fps
+const unsigned int millisecondsPerFrame = 50; // for use later in patterns themselves
+
+void updateCounters() { // replacement for incrementCounters() above
+    unsigned long nodeTime = mesh.getNodeTime() / 1000; // microseconds to milliseconds
+
+    unsigned long periodTime = nodeTime % cumDurations.back();
+    for (int i = 0; i < cumDurations.size(); i++) {
+        if (periodTime <= cumDurations[i]) {
+            patternId = i;
+            break; // out of the for loop
+        }
+    }
+    if (patternId == 0) {
+        patternTime = periodTime;
+        hueTime = periodTime * jsonPacket[patternId]["colorCycleSpeed"];
+    } else {
+        patternTime = periodTime - cumDurations[patternId - 1];
+        hueTime = periodTime * jsonPacket[patternId]["colorCycleSpeed"] - cumHueDurations[patternId - 1];
+    }
+    patternFrame = patternTime / millisecondsPerFrame;
+    hueFrame = (hueTime / millisecondsPerFrame) % 256;
+}
+
 #endif
