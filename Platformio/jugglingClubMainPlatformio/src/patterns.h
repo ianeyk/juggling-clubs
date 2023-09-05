@@ -53,8 +53,9 @@ void fill_ring(CRGB color) {
 
 const int pulseLength = 128;
 const int pulseScale = 1;
+
 void pulse_color(CRGB color) {
-  int pulseAmount = abs((hueCounter % pulseLength) - (pulseLength / 2));
+  int pulseAmount = (hueFrame % pulseLength) - (pulseLength / 2);
 
   for (int i = 0; i < pulseAmount; i += pulseScale) {
     color -= 3;
@@ -68,7 +69,7 @@ void pulse_color(CRGB color) {
 int multi_solid_colors[N_CLUBS] = {0, 1, 2};
 int get_unique_color_id() {
   // if (packet.addons[5]) { // if the "Alternate Colors" add-on is selected:
-  //   return myUniqueOrderNumber + int(int(hueCounter * N_CLUBS) / 256);
+  //   return myUniqueOrderNumber + int(int(hueFrame * N_CLUBS) / 256);
   // }
   // else { // do not alternate colors
   //   return myUniqueOrderNumber;
@@ -113,7 +114,7 @@ void pulse() {
 
 void rainbow() // FastLED's built-in rainbow generator
 {
-  fill_rainbow( leds, NUM_LEDS, int(hueCounter / 50) * 50, 7);
+  fill_rainbow( leds, NUM_LEDS, int(hueFrame / 50) * 50, 7);
 }
 
 void rainbowWithGlitter() // built-in FastLED rainbow, plus some random sparkly glitter
@@ -126,7 +127,7 @@ void confetti() // random colored speckles that blink in and fade smoothly
 {
   fadeToBlackBy( leds, NUM_LEDS, 10);
   int pos = random16(NUM_LEDS);
-  leds[pos] += CHSV( hueCounter + random8(64), 200, 255);
+  leds[pos] += CHSV( hueFrame + random8(64), 200, 255);
 }
 
 void bpm() // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
@@ -135,7 +136,7 @@ void bpm() // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
   CRGBPalette16 palette = PartyColors_p;
   uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
   for( int i = 0; i < NUM_LEDS; i++) { //9948
-    leds[i] = ColorFromPalette(palette, hueCounter+(i*2), beat-hueCounter+(i*10));
+    leds[i] = ColorFromPalette(palette, hueFrame+(i*2), beat-hueFrame+(i*10));
   }
 }
 
@@ -150,7 +151,7 @@ void juggle() { // eight colored dots, weaving in and out of sync with each othe
 
 void verticalWave() {
   solid();
-  Serial.println("Inside the verticalWave function!");
+  // Serial.println("Inside the verticalWave function!");
 }
 
 

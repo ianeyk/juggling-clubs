@@ -7,7 +7,7 @@
 #define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
 
-// #define INCLUDE_LEDS true
+#define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 // #define PRINT_DEBUG true
@@ -22,10 +22,6 @@
 
 Scheduler userScheduler; // to control your personal task
 
-#ifdef INCLUDE_LEDS
-  #include "ledControl.h"
-#endif
-
 #ifdef INCLUDE_WIFI
   #include "wifiServer.h"
 #endif
@@ -34,17 +30,18 @@ Scheduler userScheduler; // to control your personal task
   #include "meshFuncs.h"
 #endif
 
+#ifdef INCLUDE_LEDS
+  #include "ledControl.h"
+#endif
+
 int myUniqueOrderNumber;
 void getUniqueOrderNumber();
 void sendDebugMessage();
 
-const unsigned long incrementCounterInterval = TASK_SECOND * 1; // 1 second default
-const unsigned long incrementHueInterval = TASK_MILLISECOND * 100; // 100 milliseconds default
 const unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
 
 #ifdef INCLUDE_LEDS
   Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
-  Task taskIncrementCounters( incrementCounterInterval, TASK_FOREVER, &incrementCounters );
 #endif
 
 #ifdef PRINT_DEBUG
@@ -70,8 +67,6 @@ void setup() {
     // start tasks controlling LEDs
     userScheduler.addTask(taskUpdateLeds);
     taskUpdateLeds.enable();
-    userScheduler.addTask(taskIncrementCounters);
-    taskIncrementCounters.enable();
   #endif
 
   #ifdef PRINT_DEBUG
