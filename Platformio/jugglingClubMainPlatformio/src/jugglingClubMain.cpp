@@ -8,7 +8,7 @@
 // #define MY_UNIQUE_CLUB_ID 2
 
 #define INCLUDE_LEDS true
-// #define INCLUDE_WIFI true
+#define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 #define PRINT_DEBUG true
 // **************************** //
