@@ -2,7 +2,6 @@
 #define MESH_FUNCS_LIBRARY
 
 #include "painlessMesh.h"
-#include "StringSplitter.h"
 #include "jsonPacket.h"
 
 // from web server code
@@ -18,12 +17,6 @@ void receivedCallback( uint32_t from, String &msg ) {
   Serial.println("receiving message");
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
 
-  #ifndef LEADER
-  taskUpdateLeds.restart();
-  taskIncrementCounters.restart();
-  #endif
-
-  // it is important that interpretMessage be called AFTER restarting the tasks (not before)
   readJsonDocument(msg);
 }
 

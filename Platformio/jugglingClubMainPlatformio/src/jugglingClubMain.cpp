@@ -7,15 +7,11 @@
 #define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
 
-// #define INCLUDE_LEDS true
-#define INCLUDE_WIFI true
-// #define INCLUDE_MESH true
-// #define PRINT_DEBUG true
+#define INCLUDE_LEDS true
+// #define INCLUDE_WIFI true
+#define INCLUDE_MESH true
+#define PRINT_DEBUG true
 // **************************** //
-
-#define PI 3.1415926535897932384626433832795
-#define HALF_PI 1.5707963267948966192313216916398
-#define TWO_PI 6.283185307179586476925286766559
 
 #define FRAMES_PER_SECOND  60
 #define N_CLUBS 3
@@ -37,11 +33,15 @@ Scheduler userScheduler; // to control your personal task
 int myUniqueOrderNumber;
 void getUniqueOrderNumber();
 void sendDebugMessage();
+void broadcastJson();
 
 const unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
 
 #ifdef INCLUDE_LEDS
   Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
+  #ifdef LEADER
+    Task taskBroadcastJson( TASK_SECOND * 10 , TASK_FOREVER, &broadcastJson );
+  #endif
 #endif
 
 #ifdef PRINT_DEBUG
@@ -56,6 +56,9 @@ void setup() {
 
   #ifdef INCLUDE_MESH
     setupMesh();
+    #ifdef LEADER
+      userScheduler.addTask(taskBroadcastJson);
+    #endif
   #endif
 
   #ifdef INCLUDE_WIFI

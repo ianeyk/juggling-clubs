@@ -21,7 +21,6 @@ void fastLedSetup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip); // tell FastLED about the LED strip configuration
   FastLED.setBrightness(BRIGHTNESS);   // set master brightness control
   readJsonDocument("");
-  assignDurations();
 }
 
 typedef void (*SimplePatternList[])(); // List of patterns to cycle through.  Each is defined as a separate function below.
