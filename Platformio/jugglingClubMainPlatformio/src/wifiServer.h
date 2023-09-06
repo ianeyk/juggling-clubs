@@ -22,7 +22,7 @@ AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 
-std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico"};
+std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2"};
 std::vector<String> jsFiles{"/index.js.download", "/webfontloader.js"};
 
 bool inStringArray(std::vector<String> myList, String stringToMatch) {
