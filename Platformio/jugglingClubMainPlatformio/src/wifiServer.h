@@ -6,7 +6,7 @@
 // #include <SPIFFS.h>
 
 #ifdef ESP8266
-  #include "Hash.h"
+  // #include "Hash.h"
   #include <ESPAsyncTCP.h>
 #else
   #include <AsyncTCP.h>
@@ -22,6 +22,7 @@
 DNSServer dnsServer;
 AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
+IPAddress gatewayIP(192,168,1,4);
 IPAddress subnet(255,255,255,0);
 
 std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
@@ -38,7 +39,9 @@ bool inStringArray(std::vector<String> myList, String stringToMatch) {
 
 void onRequest(AsyncWebServerRequest *request){
   //Handle Unknown Request
-  request->send(404);
+  Serial.println("Sending 404. Memory is now " + String(ESP.getFreeHeap()));
+  // request->send(404);
+  // Serial.println("Sent 404. Memory is now " + String(ESP.getFreeHeap()));
 }
 
 class CaptiveRequestHandler : public AsyncWebHandler {
@@ -46,13 +49,17 @@ public:
   CaptiveRequestHandler() {}
   virtual ~CaptiveRequestHandler() {}
 
+String request_url = "";
   bool canHandle(AsyncWebServerRequest *request){
     // return inStringArray(respondWithPage, request->url());
 
+    Serial.println("requesting url. Memory is now " + String(ESP.getFreeHeap()));
     Serial.print("The initial request was: ");
-    String request_url = request->url();
+    request_url = request->url();
+    Serial.println("requested url. Memory is now " + String(ESP.getFreeHeap()));
     Serial.println(request_url);
     bool canHandleVal = !(request_url.equals("/wpad.dat"));
+    Serial.println("checked .equals() on url. Memory is now " + String(ESP.getFreeHeap()));
     if (canHandleVal) {
       Serial.println("it's not the same (canHandleVal is true)");
     } else {
@@ -105,8 +112,6 @@ void setupWifiServer() {
     return;
   }
 
-  writeSplashPageFile();
-
   // if (!SPIFFS.format()) {
   //   Serial.println("An Error has occurred while formatting SPIFFS");
   //   return;
@@ -122,7 +127,7 @@ void setupWifiServer() {
 
   // Async webserver
   // WiFi.softAP(STATION_SSID, STATION_PASSWORD);
-  // WiFi.softAPConfig(myIP, myAPIP, subnet);
+  WiFi.softAPConfig(myIP, gatewayIP, subnet);
   WiFi.softAP(STATION_SSID);
   delay(100);
   dnsServer.start(53, "*", WiFi.softAPIP());
@@ -131,6 +136,7 @@ void setupWifiServer() {
 
   // start web server
   server.begin();
+  writeSplashPageFile();
 }
 
 void writeSplashPageFile() {

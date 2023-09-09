@@ -9,8 +9,8 @@
 
 // #define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
-#define INCLUDE_MESH true
-#define PRINT_DEBUG true
+// #define INCLUDE_MESH true
+// #define PRINT_DEBUG true
 // **************************** //
 
 #define FRAMES_PER_SECOND  60
