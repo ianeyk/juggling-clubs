@@ -71,7 +71,7 @@ void updateCounters() { // replacement for incrementCounters() above
     }
     patternFrame = patternTime / millisecondsPerFrame;
     hueFrame = (hueTime / millisecondsPerFrame) % 256;
-    Serial.println("pattern Frame is " + String(patternFrame) + ", hue Frame is " + String(hueFrame));
+    // Serial.println("pattern Frame is " + String(patternFrame) + ", hue Frame is " + String(hueFrame));
 }
 
 void assignDurations() {
@@ -88,7 +88,7 @@ void assignDurations() {
     hueDuration += nextDurationValue * 1000 * colorCycleSpeed;
     cumDurations.push_back(duration);
     cumHueDurations.push_back(hueDuration);
-    Serial.println("Cumulative duration was " + String(duration) + " milliseconds.");
+    // Serial.println("Cumulative duration was " + String(duration) + " milliseconds.");
   }
 }
 

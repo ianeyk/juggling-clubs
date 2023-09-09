@@ -6,23 +6,25 @@
 // #include <SPIFFS.h>
 
 #ifdef ESP8266
-#include "Hash.h"
-#include <ESPAsyncTCP.h>
+  #include "Hash.h"
+  #include <ESPAsyncTCP.h>
 #else
-#include <AsyncTCP.h>
+  #include <AsyncTCP.h>
 #endif
-#include <ESPAsyncWebServer.h>
-#include <DNSServer.h>
+  #include <ESPAsyncWebServer.h>
+  #include <DNSServer.h>
 
 #define   STATION_SSID     "Ian's Juggling Clubss"
 #define   STATION_PASSWORD "circusLuminescence"
+#define splashPageFileName "/splashpage.html" // to minimize typos
+// #define splashPageFileName "/connecttest.txt" // to minimize typos
 
 DNSServer dnsServer;
 AsyncWebServer server(80);
 IPAddress myIP(192,168,1,1);
 IPAddress subnet(255,255,255,0);
 
-std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2"};
+std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
 std::vector<String> jsFiles{"/index.js.download", "/webfontloader.js"};
 
 bool inStringArray(std::vector<String> myList, String stringToMatch) {
@@ -34,6 +36,11 @@ bool inStringArray(std::vector<String> myList, String stringToMatch) {
   return false;
 }
 
+void onRequest(AsyncWebServerRequest *request){
+  //Handle Unknown Request
+  request->send(404);
+}
+
 class CaptiveRequestHandler : public AsyncWebHandler {
 public:
   CaptiveRequestHandler() {}
@@ -41,17 +48,30 @@ public:
 
   bool canHandle(AsyncWebServerRequest *request){
     // return inStringArray(respondWithPage, request->url());
-    return true; // make sue CaptiveRequestHandler is enabled after canHandle
+
+    Serial.print("The initial request was: ");
+    String request_url = request->url();
+    Serial.println(request_url);
+    bool canHandleVal = !(request_url.equals("/wpad.dat"));
+    if (canHandleVal) {
+      Serial.println("it's not the same (canHandleVal is true)");
+    } else {
+      Serial.println("it IS the same (canHandleVal is false)");
+    }
+    return canHandleVal;
+
+    // return true; // make sue CaptiveRequestHandler is enabled after canHandle
   }
 
   void handleRequest(AsyncWebServerRequest *request) {
     Serial.print("The initial request was: ");
-    Serial.println(request->url());
+    Serial.print(request->url());
+    Serial.println(". Memory is " + String(ESP.getFreeHeap()));
 
     for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
       if (request->url() == respondWithPage[i]){
         AsyncWebServerResponse *response;
-        Serial.println("received request for " + respondWithPage[i]);
+        // Serial.println("received request for " + respondWithPage[i]);
         if (inStringArray(jsFiles, respondWithPage[i])) {
           response = request->beginResponse(SPIFFS, respondWithPage[i], "text/javascript");
         } else {
@@ -61,14 +81,22 @@ public:
         return;
       }
     } // if page name not found in respondWithPage:
-    Serial.print("received arbitrary request");
-    AsyncResponseStream *response = request->beginResponseStream("text/html");
-    response->print("<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body>");
-    response->printf("<p>To proceed, click <a href='http://%s/index.html'>here</a>.</p>", WiFi.softAPIP().toString().c_str());
-    response->print("</body></html>");
+    Serial.println("That did not match a file. Memory is " + String(ESP.getFreeHeap()));
+    AsyncWebServerResponse *response;
+    response = request->beginResponse(SPIFFS, splashPageFileName);
     request->send(response);
+    // AsyncResponseStream *response = request->beginResponseStream("text/html");
+    // response->print("<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body>");
+    // response->printf("<p>To proceed, click <a href='http://%s/index.html'>here</a>.</p>", WiFi.softAPIP().toString().c_str());
+    // response->print("</body></html>");
+    // request->send(response);
+    Serial.println("After sending home page text, memory is " + String(ESP.getFreeHeap()));
   }
 };
+
+    void writeSplashPageFile();
+    String fileContentsBefore = "<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body><p>To proceed, click <a href='http://";
+    String fileContentsAfter = "/index.html'>here</a>.</p></body></html>";
 
 void setupWifiServer() {
   // Initialize SPIFFS
@@ -76,6 +104,8 @@ void setupWifiServer() {
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
+
+  writeSplashPageFile();
 
   // if (!SPIFFS.format()) {
   //   Serial.println("An Error has occurred while formatting SPIFFS");
@@ -97,8 +127,35 @@ void setupWifiServer() {
   delay(100);
   dnsServer.start(53, "*", WiFi.softAPIP());
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER); //only when requested from AP
+  server.onNotFound(onRequest);
+
   // start web server
   server.begin();
+}
+
+void writeSplashPageFile() {
+  if (SPIFFS.exists(splashPageFileName)) {
+    SPIFFS.remove(splashPageFileName);
+  }
+
+  File file = SPIFFS.open(splashPageFileName, "w");
+
+  if (!file) {
+      Serial.println("There was an error opening the file for writing");
+      return;
+  }
+
+  if (file.print("TEST")) {
+      Serial.println("File was written");
+  } else {
+      Serial.println("File write failed");
+  }
+
+    file.print(fileContentsBefore);
+    file.print(String(WiFi.softAPIP().toString().c_str()));
+    file.print(fileContentsAfter);
+
+  file.close();
 }
 
 #endif

@@ -7,7 +7,7 @@
 #define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
 
-#define INCLUDE_LEDS true
+// #define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 #define PRINT_DEBUG true
@@ -39,8 +39,11 @@ const unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
 
 #ifdef INCLUDE_LEDS
   Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
+#endif
+
+#ifdef INCLUDE_MESH
   #ifdef LEADER
-    Task taskBroadcastJson( TASK_SECOND * 10 , TASK_FOREVER, &broadcastJson );
+    Task taskBroadcastJson( TASK_SECOND * 1 , TASK_FOREVER, &broadcastJson );
   #endif
 #endif
 
@@ -58,6 +61,7 @@ void setup() {
     setupMesh();
     #ifdef LEADER
       userScheduler.addTask(taskBroadcastJson);
+      taskBroadcastJson.enable();
     #endif
   #endif
 
