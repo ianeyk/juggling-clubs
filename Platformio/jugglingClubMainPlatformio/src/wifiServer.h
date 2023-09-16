@@ -33,7 +33,7 @@ std::vector<const char*> jsFiles{"/index.js.download", "/webfontloader.js"};
 
 bool inStringArray(std::vector<const char*> myList, const char* stringToMatch) {
   for (unsigned int i = 0; i < myList.size() ; i ++) {
-    if (stringToMatch == myList[i]){
+    if (strcmp(stringToMatch, myList[i]) == 0){
       return true;
     }
   }
@@ -77,10 +77,10 @@ String request_url = "";
     Serial.print("The initial request was: ");
     Serial.print(request->url());
     Serial.println(". Memory is " + String(ESP.getFreeHeap()));
-    userScheduler.pause();
+    // userScheduler.pause();
 
     for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
-      if (request->url().c_str() == respondWithPage[i]){
+      if (strcmp(request->url().c_str(), respondWithPage[i]) == 0){
         AsyncWebServerResponse *response;
         // Serial.println("received request for " + respondWithPage[i]);
         if (inStringArray(jsFiles, respondWithPage[i])) {
@@ -89,7 +89,7 @@ String request_url = "";
           response = request->beginResponse(SPIFFS, respondWithPage[i]);
         }
         request->send(response);
-        userScheduler.resume();
+        // userScheduler.resume();
         return;
       }
     } // if page name not found in respondWithPage:
@@ -102,7 +102,7 @@ String request_url = "";
     // response->printf("<p>To proceed, click <a href='http://%s/index.html'>here</a>.</p>", WiFi.softAPIP().toString().c_str());
     // response->print("</body></html>");
     // request->send(response);
-    userScheduler.resume();
+    // userScheduler.resume();
     Serial.println("After sending home page text, memory is " + String(ESP.getFreeHeap()));
   }
 };
