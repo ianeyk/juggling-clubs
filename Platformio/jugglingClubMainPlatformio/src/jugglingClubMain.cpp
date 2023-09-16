@@ -7,10 +7,10 @@
 #define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
 
-// #define INCLUDE_LEDS true
+#define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
-// #define INCLUDE_MESH true
-// #define PRINT_DEBUG true
+#define INCLUDE_MESH true
+#define PRINT_DEBUG true
 // **************************** //
 
 #define FRAMES_PER_SECOND  60
@@ -106,5 +106,5 @@ void loop()
 // }
 
 void sendDebugMessage() {
-  Serial.println("Spare Heap Remaining = " + String(ESP.getFreeHeap()));
+  Serial.println("My IP Address = " + WiFi.softAPIP().toString() + " and Spare Heap Remaining = " + String(ESP.getFreeHeap()));
 }

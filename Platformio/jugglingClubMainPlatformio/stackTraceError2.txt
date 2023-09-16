@@ -1,0 +1,126 @@
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x402193c8 in operator() at .pio\libdeps\juggling_club_main\ESP Async WebServer\src/WebServer.cpp:45
+ (inlined by) __invoke_impl<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:60
+ (inlined by) __invoke_r<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:110
+ (inlined by) _M_invoke at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:291
+0x40229fd2 in raise_exception at core_esp8266_postmortem.cpp:?
+0x40229ff1 in __unhandled_exception at ??:?
+0x402193c8 in operator() at .pio\libdeps\juggling_club_main\ESP Async WebServer\src/WebServer.cpp:45
+ (inlined by) __invoke_impl<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:60
+ (inlined by) __invoke_r<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:110
+ (inlined by) _M_invoke at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:291
+0x40229776 in operator new(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/abi.cpp:47
+0x402193c8 in operator() at .pio\libdeps\juggling_club_main\ESP Async WebServer\src/WebServer.cpp:45
+ (inlined by) __invoke_impl<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:60
+ (inlined by) __invoke_r<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:110
+ (inlined by) _M_invoke at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:291
+0x40100209 in std::function<void (void*, AsyncClient*)>::operator()(void*, AsyncClient*) const at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:623
+0x40211f8a in AsyncServer::_accept(tcp_pcb*, long) at .pio\libdeps\juggling_club_main\ESPAsyncTCP\src/ESPAsyncTCP.cpp:1281
+0x40212004 in AsyncServer::_s_accept(void*, tcp_pcb*, long) at .pio\libdeps\juggling_club_main\ESPAsyncTCP\src/ESPAsyncTCP.cpp:1302
+0x4026ebfc in tcp_process at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/core/tcp_in.c:942
+ (inlined by) tcp_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/core/tcp_in.c:438
+0x40100e69 in malloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:821
+0x4026c6c9 in ip4_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/core/ipv4/ip4.c:1467
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x402651cd in ethernet_input_LWIP2 at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/netif/ethernet.c:188
+0x40264fcc in git2glue_err at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-lwip/lwip-git.c:116
+ (inlined by) esp2glue_ethernet_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-lwip/lwip-git.c:477
+0x40293671 in ethernet_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-esp/lwip-esp.c:365
+0x40293683 in ethernet_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-esp/lwip-esp.c:373
+0x4028a95f in ppPeocessRxPktHdr at ??:?
+0x4028eefb in ets_snprintf at ??:?
+0x40105699 in call_user_start_local at ??:?
+0x4010569f in call_user_start_local at ??:?
+0x40100e10 in umm_init at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:478
+0x4010000d in call_user_start at ??:?
+0x401000ab in app_entry_redefinable at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:325
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x4010559f in lmacTxFrame at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40104beb in lmacRecycleMPDU at ??:?
+0x401044ac in lmacProcessTXStartData at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40105e31 in ets_timer_disarm at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40105e31 in ets_timer_disarm at ??:?
+0x40100e69 in malloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:821
+0x4020be7c in char const* ArduinoJson::V6212PB::detail::MemoryPool::saveString<ArduinoJson::V6212PB::detail::SizedRamString>(ArduinoJson::V6212PB::detail::SizedRamString) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Memory/MemoryPool.hpp:88
+ (inlined by) bool ArduinoJson::V6212PB::detail::storeString<ArduinoJson::V6212PB::detail::SizedRamString, ArduinoJson::V6212PB::detail::VariantData::VariantStringSetter>(ArduinoJson::V6212PB::detail::MemoryPool*, ArduinoJson::V6212PB::detail::SizedRamString, ArduinoJson::V6212PB::detail::StringStoragePolicy::Copy, ArduinoJson::V6212PB::detail::VariantData::VariantStringSetter) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Memory/MemoryPool.hpp:225
+0x40100eac in realloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:853
+0x4022859c in String::changeBuffer(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:195 (discriminator 4)
+0x40228673 in String::reserve(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:153 (discriminator 4)
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40101060 in realloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:1125
+0x40207f16 in ArduinoJson::V6212PB::detail::CountingDecorator<ArduinoJson::V6212PB::detail::Writer<String, void> >::count() const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/CountingDecorator.hpp:25
+ (inlined by) ArduinoJson::V6212PB::detail::TextFormatter<ArduinoJson::V6212PB::detail::Writer<String, void> >::bytesWritten() const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/TextFormatter.hpp:29
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::bytesWritten() const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/JsonSerializer.hpp:103
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::visitString(char const*, unsigned int) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/JsonSerializer.hpp:73
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::result_type ArduinoJson::V6212PB::detail::VariantData::accept<ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> > >(ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >&) const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Variant/VariantData.hpp:42
+0x4022859c in String::changeBuffer(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:195 (discriminator 4)
+0x40228673 in String::reserve(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:153 (discriminator 4)
+0x402289cc in String::concat(char const*, unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:306
+0x40228b80 in String::concat(char const*) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:317
+0x40208266 in ArduinoJson::V6212PB::detail::Writer<String, void>::flush() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:42
+ (inlined by) ArduinoJson::V6212PB::detail::Writer<String, void>::~Writer() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:21
+ (inlined by) ArduinoJson::V6212PB::detail::CountingDecorator<ArduinoJson::V6212PB::detail::Writer<String, void> >::~CountingDecorator() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/CountingDecorator.hpp:12
+ (inlined by) ArduinoJson::V6212PB::detail::TextFormatter<ArduinoJson::V6212PB::detail::Writer<String, void> >::~TextFormatter() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/TextFormatter.hpp:21
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::~JsonSerializer() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/JsonSerializer.hpp:15
+ (inlined by) unsigned int ArduinoJson::V6212PB::detail::doSerialize<ArduinoJson::V6212PB::detail::JsonSerializer, ArduinoJson::V6212PB::detail::Writer<String, void> >(ArduinoJson::V6212PB::JsonVariantConst, ArduinoJson::V6212PB::detail::Writer<String, void>) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/serialize.hpp:14
+0x40228b80 in String::concat(char const*) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:317
+0x40208302 in ArduinoJson::V6212PB::detail::Writer<String, void>::flush() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:42
+ (inlined by) ArduinoJson::V6212PB::detail::Writer<String, void>::~Writer() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:21
+ (inlined by) unsigned int ArduinoJson::V6212PB::detail::serialize<ArduinoJson::V6212PB::detail::JsonSerializer, String>(ArduinoJson::V6212PB::JsonVariantConst, String&) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/serialize.hpp:21
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40100e32 in free at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:595
+0x40210748 in unsigned int painlessmesh::router::broadcast<painlessmesh::protocol::Broadcast, painlessmesh::Connection>(painlessmesh::protocol::Broadcast, painlessmesh::layout::Layout<painlessmesh::Connection>, unsigned int) at .pio\libdeps\juggling_club_main\painlessMesh\src/painlessmesh/router.hpp:83
+0x4028bab3 in pp_attach at ??:?
+0x4028bb02 in pp_attach at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x4028abc3 in ppTxPkt at ??:?
+0x402738b7 in ieee80211_output_pbuf at ??:?
+0x40105bdb in wdt_feed at ??:?
+0x40264bc5 in glue2esp_linkoutput at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-esp/lwip-esp.c:301
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40235c88 in spiffs_object_index_search at spiffs_check.cpp:?
+0x40102320 in pp_post at ??:?
+0x401055b7 in lmacRxDone at ??:?
+0x40264df7 in new_linkoutput at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-lwip/lwip-git.c:268
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102751 in rcUpdateTxDone at ??:?
+0x40102320 in pp_post at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102751 in rcUpdateTxDone at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40102320 in pp_post at ??:?
+0x4010559f in lmacTxFrame at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40102320 in pp_post at ??:?
+0x40104beb in lmacRecycleMPDU at ??:?
+0x40103088 in rcReachRetryLimit at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x401046b3 in lmacProcessTxSuccess at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x4010357c in wDev_ProcessFiq at ??:?
+0x40102320 in pp_post at ??:?
+0x40103264 in wDev_ProcessFiq at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x401006ad in millis at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_wiring.cpp:185
+0x40103264 in wDev_ProcessFiq at ??:?
+0x40229a83 in loop_wrapper() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:193
+0x40101245 in cont_wrapper at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/cont.S:81
+0x40101240 in cont_wrapper at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/cont.S:79
+0x40229a80 in loop_wrapper() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:193
+0x40100e32 in free at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:595
+0x40228414 in String::init() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.h:289
+ (inlined by) String::invalidate() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:147
+0x402010c8 in sendDebugMessage() at src/jugglingClubMain.cpp:110
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40229a1e in yield at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:139
+0x40225c25 in Scheduler::execute() at .pio\libdeps\juggling_club_main\TaskScheduler\src/TaskScheduler.h:1309
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x401005ed in esp_schedule at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:129
+0x40229aaf in loop_wrapper() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:206

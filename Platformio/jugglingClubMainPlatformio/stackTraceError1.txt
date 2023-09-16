@@ -1,0 +1,519 @@
+Spare Heap Remaining = 11208
+Spare Heap Remaining = 11432
+Spare Heap Remaining = 10904
+requesting url. Memory is now 6480
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 6480
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 6456
+requesting url. Memory is now 5968
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 5968
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 5944
+requesting url. Memory is now 5168
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 5168
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 5144
+requesting url. Memory is now 4288
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 4288
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 4264
+requesting url. Memory is now 3520
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 3520
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 3496
+requesting url. Memory is now 2824
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 2824
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 2800
+requesting url. Memory is now 1200
+The initial request was: /wpad.dat
+checked .equals() on url. Memory is now 1200
+it IS the same (canHandleVal is false)
+Sending 404. Memory is now 1176
+Spare Heap Remaining = 608
+
+User exception (panic/abort/assert)
+--------------- CUT HERE FOR EXCEPTION DECODER ---------------
+
+Unhandled C++ exception: OOM
+
+>>>stack>>>
+
+ctx: sys
+sp: 3fffeda0 end: 3fffffb0 offset: 0000
+3fffeda0:  3fff1050 40103413 00000018 ffffffff
+3fffedb0:  000000fe 00000000 00000000 00000000
+3fffedc0:  00000000 00000000 00000000 00000001
+3fffedd0:  3fff4b08 00000000 00000018 3fffaf48
+3fffede0:  3fff2878 40219440 00000144 4022a0de
+3fffedf0:  3fff2878 00000020 00000144 4022a0fd
+3fffee00:  3fff940c 40219440 00000144 40229882
+3fffee10:  00000000 3fff2878 3fff940c 40219440
+3fffee20:  3fff940c 3fff2878 3fffaf3c 40100209
+3fffee30:  3fff2878 3fff940c 000000e0 3fff39d0
+3fffee40:  3fff940c 3fff2878 3fffb7d4 40211ffe
+3fffee50:  3fffaf48 3fffaf3c 00000001 40100c45
+3fffee60:  00001a1e 5eac9b7c 3fff2878 3fff39d0
+3fffee70:  3fffb7d4 3fff39d4 3fff39d5 40212078
+3fffee80:  3fffb7d4 3fff39d4 3fff39d5 4026ece0
+3fffee90:  3fff7fc4 00000020 00000014 40100e69
+3fffeea0:  00000010 00000000 00000000 00000000
+3fffeeb0:  3fff0000 00000020 00000048 3fff35d0
+3fffeec0:  3fff3804 3fff891a 3fff88fc 4026c7ad
+3fffeed0:  00000014 3fff35d0 00006434 40100c45
+3fffeee0:  00000000 00000001 00000001 3fff8464
+3fffeef0:  3fffdc90 00000020 3fffaf3c 3fff8464
+3fffef00:  3fff35d0 00000008 3fff88fc 402652b1
+3fffef10:  3fffdc90 3fff7ddc 3fffaf3c 402650b0
+3fffef20:  40293755 3fff7ddc 3fffaf3c 40293767
+3fffef30:  3fff890c 3fff88fc 00000002 3ffe88c8
+3fffef40:  4028aa43 00000000 3fffaf3c 4028efdf
+3fffef50:  40000f49 3fffdab0 3fffdab0 40000f49
+3fffef60:  40000e19 000a5585 00000000 00000005
+3fffef70:  3fffefc0 aa55aa55 000000ed 40105699
+3fffef80:  4010569f 00000000 00000005 40100e10
+3fffef90:  4010000d 4d002500 25003a00 401000ab
+3fffefa0:  4027f980 3fffef3c 4027f931 3fffff58
+3fffefb0:  3fffffc0 00000000 00000000 feefeffe
+3fffefc0:  feefeffe feefeffe feefeffe feefeffe
+3fffefd0:  feefeffe feefeffe feefeffe feefeffe
+3fffefe0:  feefeffe feefeffe feefeffe feefeffe
+3fffeff0:  feefeffe feefeffe feefeffe feefeffe
+3ffff000:  feefeffe feefeffe feefeffe feefeffe
+3ffff010:  feefeffe feefeffe feefeffe feefeffe
+3ffff020:  feefeffe feefeffe feefeffe feefeffe
+3ffff030:  feefeffe feefeffe feefeffe feefeffe
+3ffff040:  feefeffe feefeffe feefeffe feefeffe
+3ffff050:  feefeffe feefeffe feefeffe feefeffe
+3ffff060:  feefeffe feefeffe feefeffe feefeffe
+3ffff070:  feefeffe feefeffe feefeffe feefeffe
+3ffff080:  feefeffe feefeffe feefeffe feefeffe
+3ffff090:  feefeffe feefeffe feefeffe feefeffe
+3ffff0a0:  feefeffe feefeffe feefeffe feefeffe
+3ffff0b0:  feefeffe feefeffe feefeffe feefeffe
+3ffff0c0:  feefeffe feefeffe feefeffe feefeffe
+3ffff0d0:  feefeffe feefeffe feefeffe feefeffe
+3ffff0e0:  feefeffe feefeffe feefeffe feefeffe
+3ffff0f0:  feefeffe feefeffe feefeffe feefeffe
+3ffff100:  feefeffe feefeffe feefeffe feefeffe
+3ffff110:  feefeffe feefeffe feefeffe feefeffe
+3ffff120:  feefeffe feefeffe feefeffe feefeffe
+3ffff130:  feefeffe feefeffe feefeffe feefeffe
+3ffff140:  feefeffe feefeffe feefeffe feefeffe
+3ffff150:  feefeffe feefeffe feefeffe feefeffe
+3ffff160:  feefeffe feefeffe feefeffe feefeffe
+3ffff170:  feefeffe feefeffe feefeffe feefeffe
+3ffff180:  feefeffe feefeffe feefeffe feefeffe
+3ffff190:  feefeffe feefeffe feefeffe feefeffe
+3ffff1a0:  feefeffe feefeffe feefeffe feefeffe
+3ffff1b0:  feefeffe feefeffe feefeffe feefeffe
+3ffff1c0:  feefeffe feefeffe feefeffe feefeffe
+3ffff1d0:  feefeffe feefeffe feefeffe feefeffe
+3ffff1e0:  feefeffe feefeffe feefeffe feefeffe
+3ffff1f0:  feefeffe feefeffe feefeffe feefeffe
+3ffff200:  feefeffe feefeffe feefeffe feefeffe
+3ffff210:  feefeffe feefeffe feefeffe feefeffe
+3ffff220:  feefeffe feefeffe feefeffe feefeffe
+3ffff230:  feefeffe feefeffe feefeffe feefeffe
+3ffff240:  feefeffe feefeffe feefeffe feefeffe
+3ffff250:  feefeffe feefeffe feefeffe feefeffe
+3ffff260:  feefeffe feefeffe feefeffe feefeffe
+3ffff270:  feefeffe feefeffe feefeffe feefeffe
+3ffff280:  feefeffe feefeffe feefeffe feefeffe
+3ffff290:  feefeffe feefeffe feefeffe feefeffe
+3ffff2a0:  feefeffe feefeffe feefeffe feefeffe
+3ffff2b0:  feefeffe feefeffe feefeffe feefeffe
+3ffff2c0:  feefeffe feefeffe feefeffe feefeffe
+3ffff2d0:  feefeffe feefeffe feefeffe feefeffe
+3ffff2e0:  feefeffe feefeffe feefeffe feefeffe
+3ffff2f0:  feefeffe feefeffe feefeffe feefeffe
+3ffff300:  feefeffe feefeffe feefeffe feefeffe
+3ffff310:  feefeffe feefeffe feefeffe feefeffe
+3ffff320:  feefeffe feefeffe feefeffe feefeffe
+3ffff330:  feefeffe feefeffe feefeffe feefeffe
+3ffff340:  feefeffe feefeffe feefeffe feefeffe
+3ffff350:  feefeffe feefeffe feefeffe feefeffe
+3ffff360:  feefeffe feefeffe feefeffe feefeffe
+3ffff370:  feefeffe feefeffe feefeffe feefeffe
+3ffff380:  feefeffe feefeffe feefeffe feefeffe
+3ffff390:  feefeffe feefeffe feefeffe feefeffe
+3ffff3a0:  feefeffe feefeffe feefeffe feefeffe
+3ffff3b0:  feefeffe feefeffe feefeffe feefeffe
+3ffff3c0:  feefeffe feefeffe feefeffe feefeffe
+3ffff3d0:  feefeffe feefeffe feefeffe feefeffe
+3ffff3e0:  feefeffe feefeffe feefeffe feefeffe
+3ffff3f0:  feefeffe feefeffe feefeffe feefeffe
+3ffff400:  feefeffe feefeffe feefeffe feefeffe
+3ffff410:  feefeffe feefeffe feefeffe feefeffe
+3ffff420:  feefeffe feefeffe feefeffe feefeffe
+3ffff430:  feefeffe feefeffe feefeffe feefeffe
+3ffff440:  feefeffe feefeffe feefeffe feefeffe
+3ffff450:  feefeffe feefeffe feefeffe feefeffe
+3ffff460:  feefeffe feefeffe feefeffe feefeffe
+3ffff470:  feefeffe feefeffe feefeffe feefeffe
+3ffff480:  feefeffe feefeffe feefeffe feefeffe
+3ffff490:  feefeffe feefeffe feefeffe feefeffe
+3ffff4a0:  feefeffe feefeffe feefeffe feefeffe
+3ffff4b0:  feefeffe feefeffe feefeffe feefeffe
+3ffff4c0:  feefeffe feefeffe feefeffe feefeffe
+3ffff4d0:  feefeffe feefeffe feefeffe feefeffe
+3ffff4e0:  feefeffe feefeffe feefeffe feefeffe
+3ffff4f0:  feefeffe feefeffe feefeffe feefeffe
+3ffff500:  feefeffe feefeffe feefeffe feefeffe
+3ffff510:  feefeffe feefeffe feefeffe feefeffe
+3ffff520:  feefeffe feefeffe feefeffe feefeffe
+3ffff530:  feefeffe feefeffe feefeffe feefeffe
+3ffff540:  feefeffe feefeffe feefeffe feefeffe
+3ffff550:  feefeffe feefeffe feefeffe feefeffe
+3ffff560:  feefeffe feefeffe feefeffe feefeffe
+3ffff570:  feefeffe feefeffe feefeffe feefeffe
+3ffff580:  feefeffe feefeffe feefeffe feefeffe
+3ffff590:  feefeffe feefeffe feefeffe feefeffe
+3ffff5a0:  feefeffe feefeffe feefeffe feefeffe
+3ffff5b0:  feefeffe feefeffe feefeffe feefeffe
+3ffff5c0:  feefeffe feefeffe feefeffe feefeffe
+3ffff5d0:  feefeffe feefeffe feefeffe feefeffe
+3ffff5e0:  feefeffe feefeffe feefeffe feefeffe
+3ffff5f0:  feefeffe feefeffe feefeffe feefeffe
+3ffff600:  feefeffe feefeffe feefeffe feefeffe
+3ffff610:  feefeffe feefeffe feefeffe feefeffe
+3ffff620:  feefeffe feefeffe feefeffe feefeffe
+3ffff630:  feefeffe feefeffe feefeffe feefeffe
+3ffff640:  feefeffe feefeffe feefeffe feefeffe
+3ffff650:  feefeffe feefeffe feefeffe feefeffe
+3ffff660:  feefeffe feefeffe feefeffe feefeffe
+3ffff670:  feefeffe feefeffe feefeffe feefeffe
+3ffff680:  00000005 00000000 00000020 401005cc
+3ffff690:  feefeffe feefeffe 00000005 40102320
+3ffff6a0:  3ffeced5 401055b7 3fff0960 feefeffe
+3ffff6b0:  40102eab 3fff0960 feefeffe feefeffe
+3ffff6c0:  00000001 0015511f 3fff11f4 40103088
+3ffff6d0:  3ffed750 00000000 00000000 feefeffe
+3ffff6e0:  00000001 0015511f 40103542 00000100
+3ffff6f0:  3ffed750 7fffffff 00000000 00000001
+3ffff700:  00000001 00000040 feefeffe feefeffe
+3ffff710:  3ffed750 feefeffe feefeffe 0015511f
+3ffff720:  3ffed75c 2c9f0300 4000050c 3fffc278
+3ffff730:  40103264 3fffc200 00000022 feefeffe
+3ffff740:  4000e1bd 00000030 00000002 ffffffff
+3ffff750:  4000b570 3ffff850 00000000 00000040
+3ffff760:  00000000 00000000 00000000 00000000
+3ffff770:  00000000 00000000 00000000 00000000
+3ffff780:  00000000 00000000 00000000 00000000
+3ffff790:  00000000 00000000 00000000 00000000
+3ffff7a0:  76e69d44 81c3cfc6 129e80ce 0383b6bd
+3ffff7b0:  7d994450 1287c764 b3de3e4b fe3ebfa8
+3ffff7c0:  5df15f4f b79ea008 98ad6dd9 6fd1d489
+3ffff7d0:  4000b5f9 00000008 00000038 3ffff8b0
+3ffff7e0:  00000008 3ffff8b0 ec1909ce 41349b22
+3ffff7f0:  3be282db 9df143cd 2a23b0ec 21cc3b37
+3ffff800:  6c120bd8 60794def 267a454c 1d25ccfc
+3ffff810:  d6e9d608 7b4faa69 c2d6444a 1c364cc1
+3ffff820:  d914f972 b5de6cd1 6438a0d2 b1406d15
+3ffff830:  50950d51 ec92a60b ef8a0e2e 0b9ec269
+3ffff840:  5cb02dc9 2af983f1 d730108a 988bc18e
+3ffff850:  0ace6a89 2b89630b 489ed998 19ef1a2d
+3ffff860:  4000b62e 802bd095 2f0d50f9 be27c244
+3ffff870:  4000b6c4 3ffff8b0 3ffffa40 ffffffff
+3ffff880:  4000b72e 3ffff890 00000008 fe231329
+3ffff890:  00000000 00000000 4000a333 3ffff9b8
+3ffff8a0:  3ffffa40 3ffff998 3fff87bc 84f5c07d
+3ffff8b0:  00000000 00000000 00000000 00000000
+3ffff8c0:  00000000 00000000 00000020 401005cc
+3ffff8d0:  00000000 00000000 00000000 40102320
+3ffff8e0:  3ffeced0 4010559f 3fff7a04 00000000
+3ffff8f0:  00000001 4010477a 3fff1050 00000000
+3ffff900:  40104beb 00000000 00000000 3ffff990
+3ffff910:  4000ba18 3ffff990 00000003 00000020
+3ffff920:  401046b3 0000007f 00000000 00040000
+3ffff930:  00000000 00000000 00000000 00000000
+3ffff940:  00000000 00000000 00000020 401005cc
+3ffff950:  00000000 00000000 00000000 40102320
+3ffff960:  3ffeced0 4010559f 3fff7a04 3fffc278
+3ffff970:  00000001 4010477a 3fff1050 5c5c5c5c
+3ffff980:  40104beb 00000030 00000015 ffffffff
+3ffff990:  60000200 00000008 003d003d 80000000
+3ffff9a0:  401046b3 0000007f 00000000 00040000
+3ffff9b0:  00000000 00000002 0000095d 3fff9084
+3ffff9c0:  4010357c 00080000 002f2000 00000030
+3ffff9d0:  00000000 00000000 0000001f 401005cc
+3ffff9e0:  4000050c 2c9f0300 4000050c 3fffc278
+3ffff9f0:  40103264 3fffc200 00000022 0000001f
+3ffffa00:  00000000 00000020 00000020 40100e69
+3ffffa10:  4020bf24 00000000 3ffffd38 40100eac
+3ffffa20:  00000009 00000020 0000000a 00000000
+3ffffa30:  00000009 00000000 0000000a 00000000
+3ffffa40:  3ffffd08 3fff83ec 3fff83e4 0000001f
+3ffffa50:  00000000 00000020 3ffffd38 40228610
+3ffffa60:  3fff83fc 00000000 00009000 0000a000
+3ffffa70:  00000000 00000000 00009000 0000001f
+3ffffa80:  00000036 0000001f 3ffffd38 402286e7
+3ffffa90:  0000071e 3ffe88cc 000038f4 40100c45
+3ffffaa0:  3ffffb84 00000009 00000100 00000005
+3ffffab0:  3ffe88cc 3fff83fc 3fff7e24 40101060
+3ffffac0:  00000009 00000040 0000071e 0000071e
+3ffffad0:  00000020 00000020 00000024 4020821a
+3ffffae0:  3ffffd54 00000004 00000020 00000031
+3ffffaf0:  0000001f 00000040 3ffffd38 40228610
+3ffffb00:  3fff7e24 0000001f 3fff7d74 00000004
+3ffffb10:  00000000 3fff7d74 00000004 00000031
+3ffffb20:  3ffffe10 00000012 3ffffd38 402286e7
+3ffffb30:  3ffffd54 00000004 3ffffd38 40228a40
+3ffffb40:  3ffffb84 3ffffd20 3fff7d8c 3ffffd08
+3ffffb50:  3fff7d7c 3ffffd54 3ffffd30 00000000
+3ffffb60:  3ffffe10 3ffffd38 3ffffb84 40228bf4
+3ffffb70:  3ffffe10 00000028 00000031 4020856a
+3ffffb80:  3ffffd38 31313636 736d222c 223a2267
+3ffffb90:  6c6c756e 22007d22 6d6f7266 38393a22
+3ffffba0:  00313636 00000000 00000031 3ffffd38
+3ffffbb0:  3ffffd00 3ffffd08 3ffe90fc 00000004
+3ffffbc0:  3ffffd20 3ffffd08 3ffe912c 3ffffd54
+3ffffbd0:  3ffffc14 3ffffd38 3ffffd00 3ffffd08
+3ffffbe0:  3ffe90fc 00000004 3ffffd20 00000000
+3ffffbf0:  3ffffe10 3ffffd38 3ffffc14 40228bf4
+3ffffc00:  3ffffe10 00000008 00000031 40208606
+3ffffc10:  3ffffd38 3ffffd00 3ffffd08 3ffe90fc
+3ffffc20:  00000004 3ffffd20 3ffffd08 3ffe912c
+3ffffc30:  00000663 3ffe88cc 0000331c 40100c45
+3ffffc40:  0000064d 3ffe88cc 0000326c 40100c45
+3ffffc50:  3ffffe14 00000020 3fff7e24 00000000
+3ffffc60:  3ffffe14 00000020 3fff7d74 40100e32
+3ffffc70:  3ffffe10 00000008 3ffffe14 40210738
+3ffffc80:  3ffffd20 3ffffd08 4028bb97 00000001
+3ffffc90:  ffffffff 00000000 3ffed021 00000008
+3ffffca0:  4028bbe6 3fff0578 3fff7fc4 00020021
+3ffffcb0:  00000002 00000000 00000020 401005cc
+3ffffcc0:  00000005 00000005 00000002 40102320
+3ffffcd0:  3ffeced2 4028aca7 3fff0578 3fff9394
+3ffffce0:  00000000 4027399b 3fff87dc 3fff7fc4
+3ffffcf0:  00000000 00000002 00000000 3fff0578
+3ffffd00:  00000000 00000000 00000020 401005cc
+3ffffd10:  3fff7ddc 3fff7dbc 00000000 40102320
+3ffffd20:  3ffeced0 4010559f 3fff05a0 3fff356c
+3ffffd30:  00000001 4010477a 3fff1050 0031003f
+3ffffd40:  40104beb 40235d6c 00000009 3fff35d0
+3ffffd50:  3fff35d0 3fff9394 3fff9394 40264edb
+3ffffd60:  401046b3 00000000 00000000 000000fc
+3ffffd70:  0000004c 00000001 40105505 00000000
+3ffffd80:  3fff1020 000000fc 0000004c 00000001
+3ffffd90:  40105505 00000000 00000005 00000000
+3ffffda0:  00000020 401005cc 00000020 401005cc
+3ffffdb0:  00000005 40102320 3ffeced5 401055b7
+3ffffdc0:  3fff0910 00000000 40102eab 3fff0910
+3ffffdd0:  00000001 4010477a 00007fff 0317e769
+3ffffde0:  3fff11f4 40103088 3ffed768 00000000
+3ffffdf0:  00000000 4010477a 00007fff 0317e769
+3ffffe00:  40103542 00000100 3ffed768 7fffffff
+3ffffe10:  00000000 00000001 00000001 00000108
+3ffffe20:  401046b3 0000007f 3ffed768 00040000
+3ffffe30:  00000000 0317e769 3ffed774 2c9f0300
+3ffffe40:  4000050c 3fffc278 40103264 3fffc200
+3ffffe50:  00000022 00000000 4027f92a 00000030
+3ffffe60:  00000010 ffffffff 40229b1f 3fffefa0
+3ffffe70:  4027f931 00000001 3fffdab0 00000000
+3ffffe80:  3fffd9d0 3fff328c 00000000 00000000
+3ffffe90:  00000001 3fff2904 00000000 00000001
+3ffffea0:  3fff2564 00000030 00000000 fffffffe
+3ffffeb0:  ffffffff 3fffc6fc 00000001 3fff2904
+3ffffec0:  00000000 00000001 3fff328c 00000030
+3ffffed0:  3fffdab0 00000000 3fffd9d0 3fff328c
+3ffffee0:  00000000 00000000 00000001 3ffe88c8
+3ffffef0:  00000000 3fffdad0 3fff328c 00000030
+3fffff00:  00000000 3fffdad0 3fff328c 00000030
+3fffff10:  00000000 00000000 3fffff3c 40228488
+3fffff20:  007a1200 2d216328 3fff2900 402010c8
+3fffff30:  00000000 001a001f 00000000 00000000
+3fffff40:  00000000 00000000 00000001 401005cc
+3fffff50:  00000000 3db22d0e 3fff2904 00000000
+3fffff60:  00000001 3fff2564 40229b1f 3fffefa0
+3fffff70:  3fffdad0 3fff28cc 3ffe88c8 40225c99
+3fffff80:  00000000 00000000 00000001 3fff328c
+3fffff90:  3fffdad0 00000000 3ffe88c8 40202afd
+3fffffa0:  feefeffe feefeffe feefeffe 40229baa
+<<<stack<<<
+
+0x40103413 in wDev_ProcessFiq at ??:?
+0x40219440 in operator() at .pio\libdeps\juggling_club_main\ESP Async WebServer\src/WebServer.cpp:45
+ (inlined by) __invoke_impl<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:60
+ (inlined by) __invoke_r<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:110
+ (inlined by) _M_invoke at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:291
+0x4022a0de in raise_exception at core_esp8266_postmortem.cpp:?
+0x4022a0fd in __unhandled_exception at ??:?
+0x40219440 in operator() at .pio\libdeps\juggling_club_main\ESP Async WebServer\src/WebServer.cpp:45
+ (inlined by) __invoke_impl<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:60
+ (inlined by) __invoke_r<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:110
+ (inlined by) _M_invoke at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:291
+0x40229882 in operator new(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/abi.cpp:47
+0x40219440 in operator() at .pio\libdeps\juggling_club_main\ESP Async WebServer\src/WebServer.cpp:45
+ (inlined by) __invoke_impl<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:60
+ (inlined by) __invoke_r<void, AsyncWebServer::AsyncWebServer(uint16_t)::<lambda(void*, AsyncClient*)>&, void*, AsyncClient*> at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/invoke.h:110
+ (inlined by) _M_invoke at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:291
+0x40100209 in std::function<void (void*, AsyncClient*)>::operator()(void*, AsyncClient*) const at c:\users\ieykamp\.platformio\packages\toolchain-xtensa\xtensa-lx106-elf\include\c++\10.3.0\bits/std_function.h:623
+0x40211ffe in AsyncServer::_accept(tcp_pcb*, long) at .pio\libdeps\juggling_club_main\ESPAsyncTCP\src/ESPAsyncTCP.cpp:1281
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40212078 in AsyncServer::_s_accept(void*, tcp_pcb*, long) at .pio\libdeps\juggling_club_main\ESPAsyncTCP\src/ESPAsyncTCP.cpp:1302
+0x4026ece0 in tcp_process at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/core/tcp_in.c:942
+ (inlined by) tcp_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/core/tcp_in.c:438
+0x40100e69 in malloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:821
+0x4026c7ad in ip4_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/core/ipv4/ip4.c:1467
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x402652b1 in ethernet_input_LWIP2 at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/lwip2-src/src/netif/ethernet.c:188
+0x402650b0 in git2glue_err at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-lwip/lwip-git.c:116
+ (inlined by) esp2glue_ethernet_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-lwip/lwip-git.c:477
+0x40293755 in ethernet_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-esp/lwip-esp.c:365
+0x40293767 in ethernet_input at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-esp/lwip-esp.c:373
+0x4028aa43 in ppPeocessRxPktHdr at ??:?
+0x4028efdf in ets_snprintf at ??:?
+0x40105699 in call_user_start_local at ??:?
+0x4010569f in call_user_start_local at ??:?
+0x40100e10 in umm_init at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:478
+0x4010000d in call_user_start at ??:?
+0x401000ab in app_entry_redefinable at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:325
+0x4027f980 in cont_ret at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/cont.S:142
+0x4027f931 in cont_continue at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/cont.S:51
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x401055b7 in lmacRxDone at ??:?
+0x40102eab in rcReachRetryLimit at ??:?
+0x40103088 in rcReachRetryLimit at ??:?
+0x40103542 in wDev_ProcessFiq at ??:?
+0x40103264 in wDev_ProcessFiq at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x4010559f in lmacTxFrame at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40104beb in lmacRecycleMPDU at ??:?
+0x401046b3 in lmacProcessTxSuccess at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x4010559f in lmacTxFrame at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40104beb in lmacRecycleMPDU at ??:?
+0x401046b3 in lmacProcessTxSuccess at ??:?
+0x4010357c in wDev_ProcessFiq at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40103264 in wDev_ProcessFiq at ??:?
+0x40100e69 in malloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:821
+0x4020bf24 in bool ArduinoJson::V6212PB::detail::storeString<ArduinoJson::V6212PB::detail::SizedRamString, ArduinoJson::V6212PB::detail::VariantData::VariantStringSetter>(ArduinoJson::V6212PB::detail::MemoryPool*, ArduinoJson::V6212PB::detail::SizedRamString, ArduinoJson::V6212PB::detail::VariantData::VariantStringSetter) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Memory/MemoryPool.hpp:251
+0x40100eac in realloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:853
+0x40228610 in String::changeBuffer(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:195 (discriminator 4)
+0x402286e7 in String::reserve(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:153 (discriminator 4)
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40101060 in realloc at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:1125
+0x4020821a in ArduinoJson::V6212PB::detail::CountingDecorator<ArduinoJson::V6212PB::detail::Writer<String, void> >::count() const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/CountingDecorator.hpp:25
+ (inlined by) ArduinoJson::V6212PB::detail::TextFormatter<ArduinoJson::V6212PB::detail::Writer<String, void> >::bytesWritten() const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/TextFormatter.hpp:29
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::bytesWritten() const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/JsonSerializer.hpp:103
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::visitString(char const*, unsigned int) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/JsonSerializer.hpp:73
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::result_type ArduinoJson::V6212PB::detail::VariantData::accept<ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> > >(ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >&) const at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Variant/VariantData.hpp:42
+0x40228610 in String::changeBuffer(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:195 (discriminator 4)
+0x402286e7 in String::reserve(unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:153 (discriminator 4)
+0x40228a40 in String::concat(char const*, unsigned int) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:306
+0x40228bf4 in String::concat(char const*) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:317
+0x4020856a in ArduinoJson::V6212PB::detail::Writer<String, void>::flush() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:42
+ (inlined by) ArduinoJson::V6212PB::detail::Writer<String, void>::~Writer() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:21
+ (inlined by) ArduinoJson::V6212PB::detail::CountingDecorator<ArduinoJson::V6212PB::detail::Writer<String, void> >::~CountingDecorator() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/CountingDecorator.hpp:12
+ (inlined by) ArduinoJson::V6212PB::detail::TextFormatter<ArduinoJson::V6212PB::detail::Writer<String, void> >::~TextFormatter() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/TextFormatter.hpp:21
+ (inlined by) ArduinoJson::V6212PB::detail::JsonSerializer<ArduinoJson::V6212PB::detail::Writer<String, void> >::~JsonSerializer() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Json/JsonSerializer.hpp:15
+ (inlined by) unsigned int ArduinoJson::V6212PB::detail::doSerialize<ArduinoJson::V6212PB::detail::JsonSerializer, ArduinoJson::V6212PB::detail::Writer<String, void> >(ArduinoJson::V6212PB::JsonVariantConst, ArduinoJson::V6212PB::detail::Writer<String, void>) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/serialize.hpp:14
+0x40228bf4 in String::concat(char const*) at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:317
+0x40208606 in ArduinoJson::V6212PB::detail::Writer<String, void>::flush() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:42
+ (inlined by) ArduinoJson::V6212PB::detail::Writer<String, void>::~Writer() at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/Writers/ArduinoStringWriter.hpp:21
+ (inlined by) unsigned int ArduinoJson::V6212PB::detail::serialize<ArduinoJson::V6212PB::detail::JsonSerializer, String>(ArduinoJson::V6212PB::JsonVariantConst, String&) at .pio\libdeps\juggling_club_main\ArduinoJson\src/ArduinoJson/Serialization/serialize.hpp:21
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40100c45 in umm_free_core at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:549
+0x40100e32 in free at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266\umm_malloc/umm_malloc.cpp:595
+0x40210738 in unsigned int painlessmesh::router::broadcast<painlessmesh::protocol::Broadcast, painlessmesh::Connection>(painlessmesh::protocol::Broadcast, painlessmesh::layout::Layout<painlessmesh::Connection>, unsigned int) at .pio\libdeps\juggling_club_main\painlessMesh\src/painlessmesh/router.hpp:83
+0x4028bb97 in pp_attach at ??:?
+0x4028bbe6 in pp_attach at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x4028aca7 in ppTxPkt at ??:?
+0x4027399b in ieee80211_output_pbuf at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x4010559f in lmacTxFrame at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40104beb in lmacRecycleMPDU at ??:?
+0x40235d6c in spiffs_object_index_search at spiffs_check.cpp:?
+0x40264edb in new_linkoutput at /home/earle/src/esp-quick-toolchain/arduino/tools/sdk/lwip2/builder/glue-lwip/lwip-git.c:268
+0x401046b3 in lmacProcessTxSuccess at ??:?
+0x40105505 in lmacTxFrame at ??:?
+0x40105505 in lmacTxFrame at ??:?
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40102320 in pp_post at ??:?
+0x401055b7 in lmacRxDone at ??:?
+0x40102eab in rcReachRetryLimit at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40103088 in rcReachRetryLimit at ??:?
+0x4010477a in lmacRecycleMPDU at ??:?
+0x40103542 in wDev_ProcessFiq at ??:?
+0x401046b3 in lmacProcessTxSuccess at ??:?
+0x40103264 in wDev_ProcessFiq at ??:?
+0x4027f92a in cont_yield at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/cont.S:45
+0x40229b1f in esp_get_cycle_count at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_features.h:65
+ (inlined by) EspClass::getCycleCount() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/Esp.h:219
+ (inlined by) esp_yield_within_cont at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:115
+ (inlined by) __yield at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:134
+0x4027f931 in cont_continue at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/cont.S:51
+0x40228488 in String::init() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.h:289
+ (inlined by) String::invalidate() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/WString.cpp:147
+0x402010c8 in sendDebugMessage() at src/jugglingClubMain.cpp:110
+0x401005cc in ets_post at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:181
+0x40229b1f in esp_get_cycle_count at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_features.h:65
+ (inlined by) EspClass::getCycleCount() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/Esp.h:219
+ (inlined by) esp_yield_within_cont at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:115
+ (inlined by) __yield at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:134
+0x40225c99 in Scheduler::execute() at .pio\libdeps\juggling_club_main\TaskScheduler\src/TaskScheduler.h:1309
+0x40202afd in loop at src/jugglingClubMain.cpp:96
+0x40229baa in loop_wrapper() at C:\Users\ieykamp\.platformio\packages\framework-arduinoespressif8266\cores\esp8266/core_esp8266_main.cpp:201
+
+
+last failed alloc call: 40219440(324)
+
+--------------- CUT HERE FOR EXCEPTION DECODER ---------------
+
+last failed alloc caller: 0x40219440
+
+ ets Jan  8 2013,rst cause:2, boot mode:(3,6)
+
+load 0x4010f000, len 3460, room 16
+tail 4
+chksum 0xcc
+load 0x3fff20b8, len 40, room 4
+tail 4
+chksum 0xc9
+csum 0xc9
+v000a5590
+~ld
+Hello World!
+
+setLogLevel: ERROR | STARTUP | CONNECTION |
+STARTUP: init(): 0
+STARTUP: AP tcp server established on port 5555
+File system: /index.html exists.
+File system: /style.css exists.
+File system: /css exists.
+File system: /index.js.download exists.
+File system: /webfontloader.js exists.
+File system: /favicon.ico exists.
+File system: /iconfont.woff2 exists.
+File system: /splashpage.html exists.
+File was written
+CONNECTION: stationScan(): Circus IT Department
+Attempting to serialize and broadcast json! Memory is 12120
+Done broadcasting json. Memory is 12120
+Spare Heap Remaining = 12304
+Spare Heap Remaining = 12216
+CONNECTION: scanComplete(): Scan finished
+CONNECTION: scanComplete():-- > Cleared old APs.
+CONNECTION: scanComplete(): num = 1
+CONNECTION:     Found 0 nodes
+CONNECTION: connectToAP(): No unknown nodes found scan rate set to normal
+Spare Heap Remaining = 12216

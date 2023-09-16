@@ -1,9 +1,6 @@
-#ifndef WIFI_SERVER_LIBRARY
-#define WIFI_SERVER_LIBRARY
-
 #include "IPAddress.h"
 #include <FS.h>
-// #include <SPIFFS.h>
+ #include <SPIFFS.h>
 
 #ifdef ESP32
   #include <WiFi.h>
@@ -28,10 +25,10 @@ IPAddress myIP(192,168,1,1);
 IPAddress gatewayIP(192,168,1,4);
 IPAddress subnet(255,255,255,0);
 
-std::vector<const char*> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
-std::vector<const char*> jsFiles{"/index.js.download", "/webfontloader.js"};
+std::vector<String> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
+std::vector<String> jsFiles{"/index.js.download", "/webfontloader.js"};
 
-bool inStringArray(std::vector<const char*> myList, const char* stringToMatch) {
+bool inStringArray(std::vector<String> myList, String stringToMatch) {
   for (unsigned int i = 0; i < myList.size() ; i ++) {
     if (stringToMatch == myList[i]){
       return true;
@@ -43,8 +40,8 @@ bool inStringArray(std::vector<const char*> myList, const char* stringToMatch) {
 void onRequest(AsyncWebServerRequest *request){
   //Handle Unknown Request
   Serial.println("Sending 404. Memory is now " + String(ESP.getFreeHeap()));
-  request->send(404);
-  Serial.println("Sent 404. Memory is now " + String(ESP.getFreeHeap()));
+  // request->send(404);
+  // Serial.println("Sent 404. Memory is now " + String(ESP.getFreeHeap()));
 }
 
 class CaptiveRequestHandler : public AsyncWebHandler {
@@ -59,7 +56,7 @@ String request_url = "";
     Serial.println("requesting url. Memory is now " + String(ESP.getFreeHeap()));
     Serial.print("The initial request was: ");
     request_url = request->url();
-    // Serial.println("requested url. Memory is now " + String(ESP.getFreeHeap()));
+    Serial.println("requested url. Memory is now " + String(ESP.getFreeHeap()));
     Serial.println(request_url);
     bool canHandleVal = !(request_url.equals("/wpad.dat"));
     Serial.println("checked .equals() on url. Memory is now " + String(ESP.getFreeHeap()));
@@ -77,10 +74,9 @@ String request_url = "";
     Serial.print("The initial request was: ");
     Serial.print(request->url());
     Serial.println(". Memory is " + String(ESP.getFreeHeap()));
-    userScheduler.pause();
 
     for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
-      if (request->url().c_str() == respondWithPage[i]){
+      if (request->url() == respondWithPage[i]){
         AsyncWebServerResponse *response;
         // Serial.println("received request for " + respondWithPage[i]);
         if (inStringArray(jsFiles, respondWithPage[i])) {
@@ -89,7 +85,6 @@ String request_url = "";
           response = request->beginResponse(SPIFFS, respondWithPage[i]);
         }
         request->send(response);
-        userScheduler.resume();
         return;
       }
     } // if page name not found in respondWithPage:
@@ -102,7 +97,6 @@ String request_url = "";
     // response->printf("<p>To proceed, click <a href='http://%s/index.html'>here</a>.</p>", WiFi.softAPIP().toString().c_str());
     // response->print("</body></html>");
     // request->send(response);
-    userScheduler.resume();
     Serial.println("After sending home page text, memory is " + String(ESP.getFreeHeap()));
   }
 };
@@ -111,11 +105,12 @@ String request_url = "";
     String fileContentsBefore = "<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body><p>To proceed, click <a href='http://";
     String fileContentsAfter = "/index.html'>here</a>.</p></body></html>";
 
-void setupWifiServer() {
+void setup() {
+  Serial.begin(115200);
   // Initialize SPIFFS
-  if (!SPIFFS.begin()) {
+  while (!SPIFFS.begin()) {
     Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
+//    return;
   }
 
   // if (!SPIFFS.format()) {
@@ -125,9 +120,9 @@ void setupWifiServer() {
 
     for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
       if (SPIFFS.exists(respondWithPage[i])) {
-        Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.println(" exists.");
+        Serial.println("File system: " + respondWithPage[i] + " exists.");
       } else {
-        Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.print(" DOES NOT exist!!!.");
+        Serial.println("File system: " + respondWithPage[i] + " DOES NOT exist!!!.");
       }
     }
 
@@ -170,4 +165,6 @@ void writeSplashPageFile() {
   file.close();
 }
 
-#endif
+void loop() {
+  dnsServer.processNextRequest();
+}
