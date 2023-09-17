@@ -31,6 +31,8 @@ IPAddress subnet(255,255,255,0);
 std::vector<const char*> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
 std::vector<const char*> jsFiles{"/index.js.download", "/webfontloader.js"};
 
+#include "fileSystem.h"
+
 bool inStringArray(std::vector<const char*> myList, const char* stringToMatch) {
   for (unsigned int i = 0; i < myList.size() ; i ++) {
     if (strcmp(stringToMatch, myList[i]) == 0){
@@ -107,67 +109,36 @@ String request_url = "";
   }
 };
 
-    void writeSplashPageFile();
-    String fileContentsBefore = "<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body><p>To proceed, click <a href='http://";
-    String fileContentsAfter = "/index.html'>here</a>.</p></body></html>";
-
 void setupWifiServer() {
-  // Initialize SPIFFS
-  if (!SPIFFS.begin()) {
-    Serial.println("An Error has occurred while mounting SPIFFS");
-    return;
-  }
-
-  // if (!SPIFFS.format()) {
-  //   Serial.println("An Error has occurred while formatting SPIFFS");
-  //   return;
-  // }
-
-    for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
-      if (SPIFFS.exists(respondWithPage[i])) {
-        Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.println(" exists.");
-      } else {
-        Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.print(" DOES NOT exist!!!.");
-      }
-    }
-
+  setupFileSystem();
   // Async webserver
   // WiFi.softAP(STATION_SSID, STATION_PASSWORD);
   WiFi.softAPConfig(myIP, gatewayIP, subnet);
   WiFi.softAP(STATION_SSID);
   delay(100);
   dnsServer.start(53, "*", WiFi.softAPIP());
+
+  // // respond to GET requests on URL /heap
+  // server.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request){
+  //   request->send(200);
+  //   Serial.println("WE HAVE RECEIVED A POST REQUEST!!!");
+  // });
+
+  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest * request){}, NULL, [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+      Serial.println("WE HAVE RECEIVED A POST REQUEST!!!");
+      for (size_t i = 0; i < len; i++) {
+        Serial.write(data[i]);
+      }
+      Serial.println("POST REQUEST DATA IS ABOVE");
+      request->send(200);
+  });
+
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER); //only when requested from AP
   server.onNotFound(onRequest);
 
   // start web server
   server.begin();
   writeSplashPageFile();
-}
-
-void writeSplashPageFile() {
-  if (SPIFFS.exists(splashPageFileName)) {
-    SPIFFS.remove(splashPageFileName);
-  }
-
-  File file = SPIFFS.open(splashPageFileName, "w");
-
-  if (!file) {
-      Serial.println("There was an error opening the file for writing");
-      return;
-  }
-
-  if (file.print("TEST")) {
-      Serial.println("File was written");
-  } else {
-      Serial.println("File write failed");
-  }
-
-    file.print(fileContentsBefore);
-    file.print(String(WiFi.softAPIP().toString().c_str()));
-    file.print(fileContentsAfter);
-
-  file.close();
 }
 
 #endif
