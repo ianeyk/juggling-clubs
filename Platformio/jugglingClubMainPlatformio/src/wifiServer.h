@@ -44,29 +44,40 @@ public:
     return true; // make sue CaptiveRequestHandler is enabled after canHandle
   }
 
+
+  int request_counter = 0;
+
   void handleRequest(AsyncWebServerRequest *request) {
     Serial.print("The initial request was: ");
     Serial.println(request->url());
+      request_counter++;
 
     for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
       if (request->url() == respondWithPage[i]){
         AsyncWebServerResponse *response;
-        Serial.println("received request for " + respondWithPage[i]);
+        Serial.println("received request #" + String(request_counter) + " for " + respondWithPage[i]);
         if (inStringArray(jsFiles, respondWithPage[i])) {
           response = request->beginResponse(SPIFFS, respondWithPage[i], "text/javascript");
         } else {
           response = request->beginResponse(SPIFFS, respondWithPage[i]);
         }
         request->send(response);
+        Serial.println("Handled request " + String(request_counter) + ".");
         return;
       }
     } // if page name not found in respondWithPage:
-    Serial.print("received arbitrary request");
-    AsyncResponseStream *response = request->beginResponseStream("text/html");
+
+    Serial.println("received arbitrary request #" + String(request_counter));
+    AsyncResponseStream *response = request->beginResponseStream("text/html", 250);
+    Serial.println("Created stream for request " + String(request_counter) + ".");
     response->print("<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body>");
     response->printf("<p>To proceed, click <a href='http://%s/index.html'>here</a>.</p>", WiFi.softAPIP().toString().c_str());
     response->print("</body></html>");
+    Serial.println("Composed response for request " + String(request_counter) + ".");
+    // Serial.println(response);
+
     request->send(response);
+    Serial.println("Handled arbitrary request " + String(request_counter) + ".");
   }
 };
 

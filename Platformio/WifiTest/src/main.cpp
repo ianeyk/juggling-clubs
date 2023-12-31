@@ -52,7 +52,7 @@ public:
       request->send(response);
     }
     else {
-      Serial.print("received arbitrary request");
+      Serial.println("received arbitrary request");
       AsyncWebServerResponse *response;
 
       Serial.print("trying to read LittleFS");
