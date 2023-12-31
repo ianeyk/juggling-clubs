@@ -130,7 +130,7 @@ void setupWifiServer() {
         Serial.write(data[i]);
       }
       Serial.println("POST REQUEST DATA IS ABOVE");
-      request->send(200);
+      request->redirect(splashPageFileName);
   });
 
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER); //only when requested from AP
