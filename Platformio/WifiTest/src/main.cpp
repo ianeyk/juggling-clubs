@@ -15,6 +15,12 @@ AsyncWebServer server(80);
 
 std::vector<String> respondWithPage{"/index.html", "/style.css"};
 
+IPAddress myIP(192,168,1,1);
+// IPAddress gatewayIP(0,0,0,0);
+IPAddress gatewayIP(192,168,1,4);
+IPAddress subnet(255,255,255,0);
+
+
 bool inStringArray(std::vector<String> myList, String stringToMatch) {
   for (unsigned int i = 0; i < myList.size() ; i ++) {
     if (stringToMatch == myList[i]){
@@ -159,6 +165,10 @@ void setup(){
     Serial.println();
   //your other setup stuff...
   WiFi.softAP("esp-captive");
+
+
+  // WiFi.softAPConfig(myIP, gatewayIP, subnet);
+  Serial.println(WiFi.softAPIP().toString());
   dnsServer.start(53, "*", WiFi.softAPIP());
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER);//only when requested from AP
   //more handlers...

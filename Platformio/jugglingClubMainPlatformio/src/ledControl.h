@@ -3,6 +3,12 @@
 
 #include "jsonPacket.h"
 
+#ifdef INCLUDE_MESH
+# include "meshFuncs.h"
+#endif
+
+#define MICROS_TO_MILLIS .001
+
 uint8_t patternId = 0; // Index number of which pattern is current
 unsigned long patternTime = 0; // in milliseconds
 unsigned long hueTime = 0; // in milliseconds
@@ -20,7 +26,7 @@ void updateCounters();
 void fastLedSetup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip); // tell FastLED about the LED strip configuration
   FastLED.setBrightness(BRIGHTNESS);   // set master brightness control
-  readJsonDocument("");
+  // readJsonDocument("", 0);
 }
 
 typedef void (*SimplePatternList[])(); // List of patterns to cycle through.  Each is defined as a separate function below.
@@ -29,13 +35,13 @@ SimplePatternList gPatterns = { pulse, solid, solid, rainbowWithGlitter, confett
 SimplePatternList gAddins = { ring_solid, sparkle, flash};
 
 void updateLeds() {
-    updateCounters(); // get the current pattern id and pattern frame
-    // Call the current pattern function once, updating the 'leds' array
-    String patternName = jsonPacket[patternId]["displayName"];
-    if (patternName == "Vertical Wave") verticalWave();
-    else if (patternName == "Pulsing Color") pulse();
-    else if (patternName == "BPM") bpm();
-    else solid();
+    // updateCounters(); // get the current pattern id and pattern frame
+    // // Call the current pattern function once, updating the 'leds' array
+    // String patternName = jsonPacket[patternId]["displayName"];
+    // if (patternName == "Vertical Wave") verticalWave();
+    // else if (patternName == "Pulsing Color") pulse();
+    // else if (patternName == "BPM") bpm();
+    // else solid();
 
     // then apply all of the addins. If they are not enabled, the function will handle that
     ring_solid();
@@ -48,11 +54,17 @@ void updateLeds() {
 }
 
 void updateCounters() { // replacement for incrementCounters() above
-    unsigned long nodeTime = mesh.getNodeTime(); // microseconds to milliseconds
-    // Serial.print("Node Time was " + String(nodeTime));
-    nodeTime = nodeTime / 1000;
-    // Serial.println(". After / 1000, Node Time (2) was " + String(nodeTime));
 
+#ifdef INCLUDE_MESH
+    // Serial.print(String(mesh.timeOffset));
+    unsigned long nodeTime = mesh.getNodeTime();
+    // unsigned long nodeTime = micros();
+    // Serial.print("Node Time was " + String(nodeTime));
+    // Serial.println(". After / 1000, Node Time (2) was " + String(nodeTime));
+#else
+    unsigned long nodeTime = micros();
+#endif
+    nodeTime = nodeTime * MICROS_TO_MILLIS;
     unsigned long periodTime = nodeTime % cumDurations.back();
 
     for (unsigned int i = 0; i < cumDurations.size(); i++) {

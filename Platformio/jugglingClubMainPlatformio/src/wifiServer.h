@@ -2,6 +2,8 @@
 #define WIFI_SERVER_LIBRARY
 
 #include "IPAddress.h"
+#include "jsonPacket.h"
+
 #include <FS.h>
 // #include <SPIFFS.h>
 
@@ -23,8 +25,9 @@
 // #define splashPageFileName "/connecttest.txt" // to minimize typos
 
 DNSServer dnsServer;
-AsyncWebServer server(80);
+AsyncWebServer server(80);        // Our server instance; put listen events on this
 IPAddress myIP(192,168,1,1);
+// IPAddress gatewayIP(0,0,0,0);
 IPAddress gatewayIP(192,168,1,4);
 IPAddress subnet(255,255,255,0);
 
@@ -42,12 +45,14 @@ bool inStringArray(std::vector<const char*> myList, const char* stringToMatch) {
   return false;
 }
 
-void onRequest(AsyncWebServerRequest *request){
+void handleNotFound(AsyncWebServerRequest *request){
   //Handle Unknown Request
   Serial.println("Sending 404. Memory is now " + String(ESP.getFreeHeap()));
   request->send(404);
   Serial.println("Sent 404. Memory is now " + String(ESP.getFreeHeap()));
 }
+
+
 
 class CaptiveRequestHandler : public AsyncWebHandler {
 public:
@@ -74,6 +79,7 @@ String request_url = "";
 
     // return true; // make sue CaptiveRequestHandler is enabled after canHandle
   }
+
 
   void handleRequest(AsyncWebServerRequest *request) {
     Serial.print("The initial request was: ");
@@ -109,12 +115,82 @@ String request_url = "";
   }
 };
 
+
+
+class PatternHandler : public AsyncWebHandler {
+// Handle POST to /submit
+public:
+  PatternHandler() {}
+  virtual ~PatternHandler() {}
+
+String request_url = "";
+  bool canHandle(AsyncWebServerRequest *request){
+    if (request->method() != HTTP_POST) {
+      return false;
+    }
+
+    return request->url().equals("/submit");
+  }
+
+
+  // void handleRequest(AsyncWebServerRequest *request) {
+  //   // AsyncWebServerResponse *response;
+  //   // response = request->beginResponse(SPIFFS, splashPageFileName);
+  //   // request->send(response);
+  //   Serial.println("Handling pattern request");
+  //   request->send(200, "text/plain", "Received!");
+  // }
+
+
+// #define MAX_PATTERN_SIZE 1000
+// char pattern[MAX_PATTERN_SIZE + 1];
+
+
+#define MAX_MESSAGE_SIZE 6144   // chars
+uint8_t incomingDataBuffer[MAX_MESSAGE_SIZE];
+
+
+void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
+
+  if(index == 0) {
+    newProgramsArriving();
+  }
+
+  for(size_t i = 0; i < len; i++){
+    incomingDataBuffer[i + index] = data[i];
+  }
+
+
+  if(index + len < total) {
+    return;
+  }
+
+  incomingDataBuffer[total+1]='\0'; Serial.println("Deserializing packet: " + String((const char *)incomingDataBuffer)); // TODO: Delete
+  const char* error = readJsonDocument(incomingDataBuffer, total);
+
+  if(error) {
+    request->send(422, "text/plain", error);    // HTTP 422 Unprocessable Entity
+    return;
+  }
+
+  request->send(200);
+}
+
+
+};
+
+
 void setupWifiServer() {
   setupFileSystem();
   // Async webserver
   // WiFi.softAP(STATION_SSID, STATION_PASSWORD);
-  WiFi.softAPConfig(myIP, gatewayIP, subnet);
   WiFi.softAP(STATION_SSID);
+// IPAddress myIP(192,168,1,1);
+// IPAddress gatewayIP(0,0,0,0);
+// IPAddress subnet(255,255,255,0);
+
+  // WiFi.softAPConfig(myIP, gatewayIP, subnet);
+  Serial.println(WiFi.softAPIP().toString());
   delay(100);
   dnsServer.start(53, "*", WiFi.softAPIP());
 
@@ -133,8 +209,9 @@ void setupWifiServer() {
       request->redirect(splashPageFileName);
   });
 
+  server.addHandler(new PatternHandler())       .setFilter(ON_AP_FILTER); //only when requested from AP
   server.addHandler(new CaptiveRequestHandler()).setFilter(ON_AP_FILTER); //only when requested from AP
-  server.onNotFound(onRequest);
+  server.onNotFound(handleNotFound);
 
   // start web server
   server.begin();

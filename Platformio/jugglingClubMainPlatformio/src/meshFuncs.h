@@ -15,9 +15,10 @@ IPAddress myAPIP(192,168,1,2);
 // Needed for painless library
 void receivedCallback( uint32_t from, String &msg ) {
   Serial.println("receiving message");
-  Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
+  auto m = msg.c_str();
+  Serial.printf("startHere: Received from %u msg=%s\n", from, m);
 
-  readJsonDocument(msg);
+  // readJsonDocument(m, strlen(m));
 }
 
 void newConnectionCallback(uint32_t nodeId) {

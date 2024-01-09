@@ -10,7 +10,7 @@
 #define INCLUDE_LEDS true
 #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
-#define PRINT_DEBUG true
+#define PRINT_DEBUG false
 // **************************** //
 
 #define FRAMES_PER_SECOND  60
@@ -35,7 +35,7 @@ void getUniqueOrderNumber();
 void sendDebugMessage();
 void broadcastJson();
 
-const unsigned long debugMessageInterval = TASK_MILLISECOND * 100; // 1 second
+const unsigned long debugMessageInterval = 5 * TASK_SECOND;
 
 #ifdef INCLUDE_LEDS
   Task taskUpdateLeds( TASK_MILLISECOND * int(1000 / FRAMES_PER_SECOND) , TASK_FOREVER, &updateLeds );
@@ -93,6 +93,12 @@ void loop()
   #ifdef INCLUDE_MESH
     mesh.update();
   #endif
+}
+
+
+int get_club_id() {
+    // Return 0, 1, or 2
+    return MY_UNIQUE_CLUB_ID;
 }
 
 // void getUniqueOrderNumber() {
