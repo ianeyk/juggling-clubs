@@ -21,7 +21,6 @@
 
 #define   STATION_SSID     "Ian's Juggling Clubss"
 #define   STATION_PASSWORD "circusLuminescence"
-#define splashPageFileName "/splashpage.html" // to minimize typos
 // #define splashPageFileName "/connecttest.txt" // to minimize typos
 
 DNSServer dnsServer;
@@ -31,8 +30,12 @@ IPAddress myIP(192,168,1,1);
 IPAddress gatewayIP(192,168,1,4);
 IPAddress subnet(255,255,255,0);
 
+#define splashPageFileName "/splashpage.html" // to minimize typos
 std::vector<const char*> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
 std::vector<const char*> jsFiles{"/index.js.download", "/webfontloader.js"};
+
+#define MAX_MESSAGE_SIZE 6144   // chars
+char incomingDataBuffer[MAX_MESSAGE_SIZE + 1];
 
 #include "fileSystem.h"
 
@@ -146,10 +149,6 @@ String request_url = "";
 // char pattern[MAX_PATTERN_SIZE + 1];
 
 
-#define MAX_MESSAGE_SIZE 6144   // chars
-uint8_t incomingDataBuffer[MAX_MESSAGE_SIZE];
-
-
 void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total){
 
   if(index == 0) {
@@ -165,8 +164,10 @@ void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_
     return;
   }
 
-  incomingDataBuffer[total+1]='\0'; Serial.println("Deserializing packet: " + String((const char *)incomingDataBuffer)); // TODO: Delete
-  const char* error = readJsonDocument(incomingDataBuffer, total);
+  incomingDataBuffer[total+1] = '\0';   // Make sure our buffer terminates
+
+  Serial.println("Deserializing packet: " + String((const char *)incomingDataBuffer)); // TODO: Delete
+  const char* error = readJsonDocument(incomingDataBuffer);
 
   if(error) {
     request->send(422, "text/plain", error);    // HTTP 422 Unprocessable Entity

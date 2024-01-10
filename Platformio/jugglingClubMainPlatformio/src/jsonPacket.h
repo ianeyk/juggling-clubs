@@ -9,6 +9,7 @@
 
 void assignDurations();
 void sendMessage(String);
+void writeProgramsToMemory(const char *);
 
 
 
@@ -28,7 +29,7 @@ DynamicJsonDocument jsonPacket(MAX_PROGRAM_SIZE);
 // size_t blinkTestLen = 80;
 
 // const char* readJsonDocument(AsyncWebServerRequest *request) {
-const char* readJsonDocument(const uint8_t *jsonString, size_t len) {
+const char* readJsonDocument(const char *jsonString) {
 
   // Return NULL if OK, or error message if there's a problem
   // Serial.println("Inside readJsonDocument. Memory is " + String(ESP.getFreeHeap()));
@@ -36,7 +37,7 @@ const char* readJsonDocument(const uint8_t *jsonString, size_t len) {
   // Serial.println(request->);
 
   // DeserializationError error = deserializeJson(jsonPacket, blinkTestInput);
-  DeserializationError error = deserializeJson(jsonPacket, jsonString, len);
+  DeserializationError error = deserializeJson(jsonPacket, jsonString);
   // DeserializationError error = deserializeJson(jsonPacket, request);
 
   if (error) {
@@ -74,9 +75,14 @@ const char* readJsonDocument(const uint8_t *jsonString, size_t len) {
     }
 
     else Serial.println(F("Unknown program name: ") + patternName);
+
+    // once the program is verified, stick it into flash memory
+
   }
 
-
+  #ifdef WRITE_FLASH
+  writeProgramsToMemory(jsonString);
+  #endif
 
   // Serial.println("After  readJsonDocument. Memory is " + String(ESP.getFreeHeap()));
   #ifdef INCLUDE_LEDS

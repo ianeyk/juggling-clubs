@@ -125,7 +125,7 @@ class BlinkTest: public Program {
             // duration; // duration in seconds; always pass 5 seconds
             // patternSpeed; // scalar that we are trying to watch
             // 200ms (4 frames) on; 200ms (4 frames) off, up to patternSpeed times. If patternSpeed < 5, this will take less than 2s.
-            Serial.println("Inside of BlinkTest. patternFrame = " + String(patternFrame));
+            // Serial.println("Inside of BlinkTest. patternFrame = " + String(patternFrame));
 
             int blinkOnTime = 4;
             int blinkOnOffTime = 2 * blinkOnTime;
