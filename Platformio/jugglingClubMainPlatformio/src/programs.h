@@ -20,9 +20,12 @@ class Program {
             this->colorCycleSpeed = json["colorCycleSpeed"];
         }
 
-        void onTick() {
-            // Run each step of the program
-        }
+        virtual void onTick(int) = 0;
+
+        // void onTick(int patternFrame) {
+        //     // Run each step of the program
+        //     Serial.println("The parent Program class onTick() function is being called.");
+        // }
 };
 
 void convertFromJson(JsonVariantConst json, Program &prog) {
@@ -55,6 +58,7 @@ class PulsingColor: public Program {
         CRGB baseColor, sparkleColor, flashColor;
 
         PulsingColor() { /* Do nothing */ }
+        void onTick(int patternFrame) {}
 };
 
 void convertFromJson(JsonVariantConst json, PulsingColor &prog) {
@@ -85,11 +89,12 @@ class VerticalWave: public Program {
             Serial.println("Constructed VerticalWave...");
 
         }
+        void onTick(int patternFrame) {}
 };
 
 
 void convertFromJson(JsonVariantConst json, VerticalWave &prog) {
-    Serial.println("Here TTT: " + String(prog));
+    // Serial.println("Here TTT: " + String(prog));
 
     convertFromJson(json, static_cast<Program &>(prog));
 
@@ -108,7 +113,43 @@ class Bpm: public Program {
         CRGB sparkleColor, flashColor;
 
         Bpm() { /* Do nothing */ }
+        void onTick(int patternFrame) {}
 };
+
+
+class BlinkTest: public Program {
+    public:
+        BlinkTest() { Serial.println("Blink test default constructor."); /* empty constructor */}
+        void onTick(int patternFrame) {
+            // patternFrame; // each frame is 50ms long; 20 frames per second
+            // duration; // duration in seconds; always pass 5 seconds
+            // patternSpeed; // scalar that we are trying to watch
+            // 200ms (4 frames) on; 200ms (4 frames) off, up to patternSpeed times. If patternSpeed < 5, this will take less than 2s.
+            Serial.println("Inside of BlinkTest. patternFrame = " + String(patternFrame));
+
+            int blinkOnTime = 4;
+            int blinkOnOffTime = 2 * blinkOnTime;
+            bool flag = false;
+            for (int i = 0; i < this->colorCycleSpeed; i++) {
+                if (patternFrame >= blinkOnOffTime * i && patternFrame < blinkOnOffTime * i + blinkOnTime) {
+                    flag = true;
+                }
+            }
+            if (flag) {
+                digitalWrite(LED_BUILTIN, LOW);
+            }
+            else {
+                digitalWrite(LED_BUILTIN, HIGH);
+            }
+        }
+};
+
+
+
+void convertFromJson(JsonVariantConst json, BlinkTest &prog) {
+    convertFromJson(json, static_cast<Program &>(prog));
+
+}
 
 void convertFromJson(JsonVariantConst json, Bpm &prog) {
     convertFromJson(json, static_cast<Program &>(prog));

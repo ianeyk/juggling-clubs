@@ -56,6 +56,7 @@ void setup() {
   Serial.begin(115200);
   delay(1000); // 1 second delay for recovery
   Serial.println("Hello World!");
+  pinMode(LED_BUILTIN, OUTPUT);
 
   #ifdef INCLUDE_MESH
     setupMesh();

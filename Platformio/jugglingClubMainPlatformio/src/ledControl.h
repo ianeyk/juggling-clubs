@@ -8,7 +8,9 @@
 #endif
 
 #define MICROS_TO_MILLIS .001
+#define SECONDS_TO_MILLIS 1000
 
+Program* currentProgram = new BlinkTest();
 uint8_t patternId = 0; // Index number of which pattern is current
 unsigned long patternTime = 0; // in milliseconds
 unsigned long hueTime = 0; // in milliseconds
@@ -35,25 +37,28 @@ SimplePatternList gPatterns = { pulse, solid, solid, rainbowWithGlitter, confett
 SimplePatternList gAddins = { ring_solid, sparkle, flash};
 
 void updateLeds() {
-    // updateCounters(); // get the current pattern id and pattern frame
-    // // Call the current pattern function once, updating the 'leds' array
-    // String patternName = jsonPacket[patternId]["displayName"];
-    // if (patternName == "Vertical Wave") verticalWave();
-    // else if (patternName == "Pulsing Color") pulse();
-    // else if (patternName == "BPM") bpm();
-    // else solid();
+    updateCounters(); // get the current pattern id and pattern frame
+    // Call the current pattern function once, updating the 'leds' array
+    // Serial.println("patternId = " + String(patternId) + " and patternFrame = " + String(patternFrame));
 
+    if (programs.size() == 0) {
+        return;
+    }
+    programs[patternId]->onTick(patternFrame);
+
+    // programs[patternId]->onTick(patternFrame);
     // then apply all of the addins. If they are not enabled, the function will handle that
-    ring_solid();
-    sparkle();
-    flash();
-
-    // Serial.println("Pattern Name: " + patternName);
-
+    // ring_solid();
+    // sparkle();
+    // flash();
     FastLED.show(); // send the 'leds' array out to the actual LED strip
 }
 
 void updateCounters() { // replacement for incrementCounters() above
+// Serial.println("Updating counters! Current number of programs = " + String(programs.size()));
+if (programs.size() == 0) {
+    return;
+}
 
 #ifdef INCLUDE_MESH
     // Serial.print(String(mesh.timeOffset));
@@ -73,13 +78,14 @@ void updateCounters() { // replacement for incrementCounters() above
             break; // out of the for loop
         }
     }
-    unsigned long colorCycleSpeed = jsonPacket[patternId]["colorCycleSpeed"];
+    currentProgram = programs[patternId];
+
     if (patternId == 0) {
-        patternTime = periodTime;
-        hueTime = periodTime * colorCycleSpeed;
+        patternTime = periodTime * currentProgram->patternSpeed;
+        hueTime     = periodTime * currentProgram->colorCycleSpeed;
     } else {
-        patternTime = periodTime - cumDurations[patternId - 1];
-        hueTime = periodTime * colorCycleSpeed - cumHueDurations[patternId - 1];
+        patternTime = (periodTime - cumDurations[patternId - 1])    * currentProgram->patternSpeed;
+        hueTime     = (periodTime - cumHueDurations[patternId - 1]) * currentProgram->colorCycleSpeed;
     }
     patternFrame = patternTime / millisecondsPerFrame;
     hueFrame = (hueTime / millisecondsPerFrame) % 256;
@@ -93,11 +99,12 @@ void assignDurations() {
   cumDurations.clear();
   cumHueDurations.clear();
 
-  for (unsigned int i = 0; i < jsonPacket.size(); i++) {
-    unsigned long nextDurationValue = jsonPacket[i]["duration"]; // * 1000;
-    unsigned long colorCycleSpeed = jsonPacket[i]["colorCycleSpeed"];
-    duration += nextDurationValue * 1000; // seconds to milliseconds
-    hueDuration += nextDurationValue * 1000 * colorCycleSpeed;
+  for (unsigned int i = 0; i < programs.size(); i++) {
+    float nextDurationValue = programs[i]->duration;
+    float patternSpeed = programs[i]->patternSpeed;
+    float colorCycleSpeed = programs[i]->colorCycleSpeed;
+    duration += nextDurationValue * SECONDS_TO_MILLIS;
+    hueDuration += nextDurationValue * SECONDS_TO_MILLIS;
     cumDurations.push_back(duration);
     cumHueDurations.push_back(hueDuration);
     // Serial.println("Cumulative duration was " + String(duration) + " milliseconds.");

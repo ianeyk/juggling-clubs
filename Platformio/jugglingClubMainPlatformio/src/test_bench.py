@@ -12,6 +12,7 @@ def run_command2():
 
 def run_command3():
     ip_address = combo.get()
+    # curl -X POST -i http://{192.168.4.1}/submit -d "@C:/dev/juggling-clubs/Platformio/jugglingClubMainPlatformio/.pio/libdeps/juggling_club_main/sample_program.json" -H "Content-Type: application/json"
     os.system(f'curl -X POST -i http://{ip_address}/submit -d "@C:\\dev\\juggling-clubs\\Platformio\\jugglingClubMainPlatformio\\.pio\\libdeps\\juggling_club_main\\sample_program.json" -H "Content-Type: application/json"')
     if ip_address not in combo['values']:
         combo['values'] = (ip_address, *combo['values'])
