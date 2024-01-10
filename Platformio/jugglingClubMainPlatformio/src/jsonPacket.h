@@ -61,7 +61,7 @@ const char* readJsonDocument(const char *jsonString) {
     }
 
     else if (patternName == "Pulsing Color"){
-      programs.push_back(new PulsingColor(jsonPacket[i]));
+      programs.push_back(new PulsingColor(jsonPacket[i])); // TODO: Have this return a bool to tell if decoding happened correctly
     }
 
     else if (patternName == "BPM"){
@@ -75,11 +75,9 @@ const char* readJsonDocument(const char *jsonString) {
     }
 
     else Serial.println(F("Unknown program name: ") + patternName);
-
-    // once the program is verified, stick it into flash memory
-
   }
 
+  // once the program is verified, stick it into flash memory
   #ifdef WRITE_FLASH
   writeProgramsToMemory(jsonString);
   #endif

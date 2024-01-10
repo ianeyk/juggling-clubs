@@ -11,7 +11,7 @@
 #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 #define PRINT_DEBUG true
-#define WRITE_FLASH true
+// #define WRITE_FLASH true
 // **************************** //
 
 #define FRAMES_PER_SECOND  60
