@@ -11,19 +11,20 @@ void writeProgramsToMemory(const char *);
 void readProgramsFromMemory();
 
 void setupFileSystem() {
-  // Initialize SPIFFS
-  if (!SPIFFS.begin()) {
-    Serial.println("An Error has occurred while mounting SPIFFS");
+  // Initialize LittleFS
+  if (!LittleFS.begin()) {
+    Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
 
-  // if (!SPIFFS.format()) {
-  //   Serial.println("An Error has occurred while formatting SPIFFS");
+  // // run the reformatting code once when you switch between SPIFFS and LittleFS
+  // if (!LittleFS.format()) {
+  //   Serial.println("An Error has occurred while formatting LittleFS");
   //   return;
   // }
 
   for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
-    if (SPIFFS.exists(respondWithPage[i])) {
+    if (LittleFS.exists(respondWithPage[i])) {
       Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.println(" exists.");
     } else {
       Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.print(" DOES NOT exist!!!.");
@@ -34,11 +35,11 @@ void setupFileSystem() {
 }
 
 void writeSplashPageFile() {
-  if (SPIFFS.exists(splashPageFileName)) {
-    SPIFFS.remove(splashPageFileName);
+  if (LittleFS.exists(splashPageFileName)) {
+    LittleFS.remove(splashPageFileName);
   }
 
-  File file = SPIFFS.open(splashPageFileName, "w");
+  File file = LittleFS.open(splashPageFileName, "w");
 
   if (!file) {
       Serial.println("writeSplashPageFile: There was an error opening the file for writing");
@@ -62,11 +63,11 @@ void writeSplashPageFile() {
 
 
 void writeProgramsToMemory(const char *jsonString) {
-  if (SPIFFS.exists(programStorageFileName)) {
-    SPIFFS.remove(programStorageFileName);
+  if (LittleFS.exists(programStorageFileName)) {
+    LittleFS.remove(programStorageFileName);
   }
 
-  File file = SPIFFS.open(programStorageFileName, "w");
+  File file = LittleFS.open(programStorageFileName, "w");
 
   if (!file) {
       Serial.println("writeProgramsToMemory: There was an error opening the file for writing");
@@ -83,7 +84,7 @@ void writeProgramsToMemory(const char *jsonString) {
 }
 
 void readProgramsFromMemory() {
-  File file = SPIFFS.open(programStorageFileName, "r");
+  File file = LittleFS.open(programStorageFileName, "r");
 
   if (!file) {
       Serial.println("Failed to open file for reading");

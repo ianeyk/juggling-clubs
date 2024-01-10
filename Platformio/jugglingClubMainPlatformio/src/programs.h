@@ -14,6 +14,7 @@ class Program {
         float colorCycleSpeed;
 
         Program() { /* Do nothing */ }
+        virtual ~Program() { /* Do nothing */ }
         Program(const DynamicJsonDocument &json) {
             this->duration = json["duration"];
             this->patternSpeed = json["patternSpeed"];

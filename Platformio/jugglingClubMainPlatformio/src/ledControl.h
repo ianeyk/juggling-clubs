@@ -101,8 +101,6 @@ void assignDurations() {
 
   for (unsigned int i = 0; i < programs.size(); i++) {
     float nextDurationValue = programs[i]->duration;
-    float patternSpeed = programs[i]->patternSpeed;
-    float colorCycleSpeed = programs[i]->colorCycleSpeed;
     duration += nextDurationValue * SECONDS_TO_MILLIS;
     hueDuration += nextDurationValue * SECONDS_TO_MILLIS;
     cumDurations.push_back(duration);

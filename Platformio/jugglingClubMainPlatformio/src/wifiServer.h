@@ -5,7 +5,8 @@
 #include "jsonPacket.h"
 
 #include <FS.h>
-// #include <SPIFFS.h>
+#include <LittleFS.h> // comment this out to use SPIFFS
+#define CONFIG_LITTLEFS_SPIFFS_COMPAT 1 // also necessary for LittleFS
 
 #ifdef ESP32
   #include <WiFi.h>
@@ -95,9 +96,9 @@ String request_url = "";
         AsyncWebServerResponse *response;
         // Serial.println("received request for " + respondWithPage[i]);
         if (inStringArray(jsFiles, respondWithPage[i])) {
-          response = request->beginResponse(SPIFFS, respondWithPage[i], "text/javascript");
+          response = request->beginResponse(LittleFS, respondWithPage[i], "text/javascript");
         } else {
-          response = request->beginResponse(SPIFFS, respondWithPage[i]);
+          response = request->beginResponse(LittleFS, respondWithPage[i]);
         }
         request->send(response);
         // userScheduler.resume();
@@ -106,7 +107,7 @@ String request_url = "";
     } // if page name not found in respondWithPage:
     Serial.println("That did not match a file. Memory is " + String(ESP.getFreeHeap()));
     AsyncWebServerResponse *response;
-    response = request->beginResponse(SPIFFS, splashPageFileName);
+    response = request->beginResponse(LittleFS, splashPageFileName);
     request->send(response);
     // AsyncResponseStream *response = request->beginResponseStream("text/html");
     // response->print("<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body>");
@@ -138,7 +139,7 @@ String request_url = "";
 
   // void handleRequest(AsyncWebServerRequest *request) {
   //   // AsyncWebServerResponse *response;
-  //   // response = request->beginResponse(SPIFFS, splashPageFileName);
+  //   // response = request->beginResponse(LittleFS, splashPageFileName);
   //   // request->send(response);
   //   Serial.println("Handling pattern request");
   //   request->send(200, "text/plain", "Received!");

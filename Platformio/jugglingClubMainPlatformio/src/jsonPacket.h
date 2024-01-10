@@ -92,8 +92,7 @@ const char* readJsonDocument(const char *jsonString) {
 void newProgramsArriving() {
   // Delete in reverse order to try to reduce memory fragementation
   while(programs.size() > 0) {
-    Program *prog = programs.back();    // Retrieve last item in array
-    delete prog;                        // Delete it
+    delete programs.back();    // Retrieve last item in array
     programs.pop_back();                // Remove the now dead item from the array
   }
 
