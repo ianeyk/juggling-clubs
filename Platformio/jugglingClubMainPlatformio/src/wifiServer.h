@@ -24,6 +24,8 @@
 #define   STATION_PASSWORD "circusLuminescence"
 // #define splashPageFileName "/connecttest.txt" // to minimize typos
 
+void sendMessage(const char*);
+
 DNSServer dnsServer;
 AsyncWebServer server(80);        // Our server instance; put listen events on this
 IPAddress myIP(192,168,1,1);
@@ -32,7 +34,8 @@ IPAddress gatewayIP(192,168,1,4);
 IPAddress subnet(255,255,255,0);
 
 #define splashPageFileName "/splashpage.html" // to minimize typos
-std::vector<const char*> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName};
+#define programStorageFileName "/programStorageFile.json"
+std::vector<const char*> respondWithPage{"/index.html", "/style.css", "/css", "/index.js.download", "/webfontloader.js", "/favicon.ico", "/iconfont.woff2", splashPageFileName, programStorageFileName};
 std::vector<const char*> jsFiles{"/index.js.download", "/webfontloader.js"};
 
 #define MAX_MESSAGE_SIZE 6144   // chars
@@ -176,6 +179,7 @@ void handleBody(AsyncWebServerRequest *request, uint8_t *data, size_t len, size_
   }
 
   request->send(200);
+  sendMessage(incomingDataBuffer);
 }
 
 

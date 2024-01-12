@@ -11,7 +11,7 @@
 #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 #define PRINT_DEBUG true
-#define WRITE_FLASH true
+// #define WRITE_FLASH true
 // **************************** //
 
 #define FRAMES_PER_SECOND  60
@@ -34,7 +34,7 @@ Scheduler userScheduler; // to control your personal task
 int myUniqueOrderNumber;
 void getUniqueOrderNumber();
 void sendDebugMessage();
-void broadcastJson();
+// void broadcastJson();
 
 const unsigned long debugMessageInterval = 5 * TASK_SECOND;
 
@@ -44,7 +44,7 @@ const unsigned long debugMessageInterval = 5 * TASK_SECOND;
 
 #ifdef INCLUDE_MESH
   #ifdef LEADER
-    Task taskBroadcastJson( TASK_SECOND * 1 , TASK_FOREVER, &broadcastJson );
+    // Task taskBroadcastJson( TASK_SECOND * 1 , TASK_FOREVER, &broadcastJson );
   #endif
 #endif
 
@@ -62,8 +62,8 @@ void setup() {
   #ifdef INCLUDE_MESH
     setupMesh();
     #ifdef LEADER
-      userScheduler.addTask(taskBroadcastJson);
-      taskBroadcastJson.enable();
+      // userScheduler.addTask(taskBroadcastJson);
+      // taskBroadcastJson.enable();
     #endif
   #endif
 

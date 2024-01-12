@@ -1,8 +1,6 @@
 #ifndef INCLUDE_FILE_SYSTEM_LIBRARY
 #define INCLUDE_FILE_SYSTEM_LIBRARY
 
-#define programStorageFileName "/programStorageFile.json"
-
 String fileContentsBefore = "<!DOCTYPE html><html><head><title>Ian's Juggling Club Home Page</title></head><body><p>To proceed, click <a href='http://";
 String fileContentsMiddle = "/index.html'>here</a>.</p><form action=\"http://";
 String fileContentsAfter = "/upload\" method=\"post\"><input type=\"submit\" name=\"{a:[0, 1, 2], b: [9, 8, 7]}\" value=\"Upload\" /></form></body></html>";

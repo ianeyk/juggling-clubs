@@ -98,13 +98,13 @@ void newProgramsArriving() {
 
 }
 
-void broadcastJson() {
-  // Serial.println("Attempting to serialize and broadcast json! Memory is " + String(ESP.getFreeHeap()));
-  String serialized = "";
-  serializeJson(jsonPacket, serialized);
-  sendMessage(serialized);
-  // Serial.println("Done broadcasting json. Memory is " + String(ESP.getFreeHeap()));
-}
+// void broadcastJson() {
+//   // Serial.println("Attempting to serialize and broadcast json! Memory is " + String(ESP.getFreeHeap()));
+//   String serialized = "";
+//   serializeJson(jsonPacket, serialized);
+//   sendMessage(serialized);
+//   // Serial.println("Done broadcasting json. Memory is " + String(ESP.getFreeHeap()));
+// }
 
 
 #endif
