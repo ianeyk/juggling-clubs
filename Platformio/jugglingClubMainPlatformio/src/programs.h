@@ -3,6 +3,24 @@
 
 #define NUM_CLUBS 3
 
+////////// Defines for pattern properties //////////
+// from: https://github.com/ianeyk/juggling-clubs-website/blob/main/src/data/patterns.ts
+#define ALIAS_PATTERNNAME     "0"   //  #define ALIAS_PATTERNNAME     "patternName"      //
+#define ALIAS_LINKCOLORS      "1"   //  #define ALIAS_LINKCOLORS      "linkColors"       //
+#define ALIAS_COLOR           "2"   //  #define ALIAS_COLOR           "color"            //
+#define ALIAS_SECONDARYCOLOR  "3"   //  #define ALIAS_SECONDARYCOLOR  "secondaryColor"   //
+#define ALIAS_SPARKLECOLOR    "4"   //  #define ALIAS_SPARKLECOLOR    "sparkleColor"     //
+#define ALIAS_FLASHCOLOR      "5"   //  #define ALIAS_FLASHCOLOR      "flashColor"       //
+#define ALIAS_PATTERNSPEED    "6"   //  #define ALIAS_PATTERNSPEED    "patternSpeed"     //
+#define ALIAS_PATTERNDURATION "7"   //  #define ALIAS_PATTERNDURATION "patternDuration"  //
+#define ALIAS_COLORCYCLESPEED "8"   //  #define ALIAS_COLORCYCLESPEED "colorCycleSpeed"  //
+#define ALIAS_SYNCHRONIZED    "9"   //  #define ALIAS_SYNCHRONIZED    "synchronized"     //
+#define ALIAS_ON              "10"  //  #define ALIAS_ON              "on"               //
+#define ALIAS_SPEED           "11"  //  #define ALIAS_SPEED           "speed"            //
+#define ALIAS_INTENSITY       "12"  //  #define ALIAS_INTENSITY       "intensity"        //
+#define ALIAS_DUTYCYCLE       "13"  //  #define ALIAS_DUTYCYCLE       "dutyCycle"        //
+////////////////////////////////////////////////////
+
 int get_club_id();
 
 
@@ -16,9 +34,9 @@ class Program {
         Program() { /* Do nothing */ }
         virtual ~Program() { /* Do nothing */ }
         Program(const DynamicJsonDocument &json) {
-            this->duration = json["duration"];
-            this->patternSpeed = json["patternSpeed"];
-            this->colorCycleSpeed = json["colorCycleSpeed"];
+            this->duration = json[ALIAS_PATTERNDURATION];
+            this->patternSpeed = json[ALIAS_PATTERNSPEED];
+            this->colorCycleSpeed = json[ALIAS_COLORCYCLESPEED];
         }
 
         virtual void onTick(int) = 0;
@@ -30,27 +48,29 @@ class Program {
 };
 
 void convertFromJson(JsonVariantConst json, Program &prog) {
-    prog.duration = json["duration"];
-    prog.patternSpeed = json["patternSpeed"];
-    prog.colorCycleSpeed = json["colorCycleSpeed"];
+    prog.duration = json[ALIAS_PATTERNDURATION];
+    prog.patternSpeed = json[ALIAS_PATTERNSPEED];
+    prog.colorCycleSpeed = json[ALIAS_COLORCYCLESPEED];
 }
 
 
-void makeCrgb(const JsonVariantConst &json, CRGB &color) {
+void makeCrgb(JsonVariantConst json, CRGB &color) {
     // Expect json to look like this:
-    // [{ "h": 12, "s": 255, "l": 255 }, { "h": 44, "s": 66, "l": 80 }, { "h": 45, "s": 66, "l": 80 }, { "h": 12255, "s": 255, "l": 255 }]
+    // {ALIAS_LINKCOLORS: true, ALIAS_COLOR: "ffffffffffffffffffffffff"}
 
     int color_index;
 
-    if(json["linkColors"]) {
+    if(json[ALIAS_LINKCOLORS]) {
         color_index = 0;
     }
     else {
         color_index = get_club_id() + 1;
     }
-    CHSV hsv = CHSV(int(json[color_index]["h"]), int(json[color_index]["s"]), int(json[color_index]["l"]));
-    hsv2rgb_rainbow(hsv, color);
-    // Serial.println("color_index: " + String(color_index) + " h: " + String(json) + " r: " + String(color.r));
+
+    std::string colorString = json[ALIAS_COLOR].as<std::string>();
+    color = CRGB(strtol(colorString.substr(color_index * 6, 6).c_str(), NULL, 16));
+
+    Serial.println("color_index: " + String(color_index) + " r: " + String(color.r));
 };
 
 
@@ -65,9 +85,9 @@ class PulsingColor: public Program {
 void convertFromJson(JsonVariantConst json, PulsingColor &prog) {
     convertFromJson(json, static_cast<Program &>(prog));
 
-    makeCrgb(json["color"]["color"], prog.baseColor);
-    makeCrgb(json["sparkleColor"]["color"], prog.sparkleColor);
-    makeCrgb(json["flashColor"]["color"], prog.flashColor);
+    makeCrgb(json[ALIAS_COLOR][ALIAS_COLOR], prog.baseColor);
+    makeCrgb(json[ALIAS_SPARKLECOLOR][ALIAS_COLOR], prog.sparkleColor);
+    makeCrgb(json[ALIAS_FLASHCOLOR][ALIAS_COLOR], prog.flashColor);
 
     Serial.println("Constructed PulsingColor...");
 }
@@ -79,13 +99,13 @@ class VerticalWave: public Program {
         VerticalWave() {Serial.println("Default VerticalWave constructor");}
         VerticalWave(const DynamicJsonDocument &json) : Program(json) {
             Serial.println("Parameterized VerticalWave constructor");
-            makeCrgb(json["color"]["color"], this->baseColor);
+            makeCrgb(json[ALIAS_COLOR][ALIAS_COLOR], this->baseColor);
             Serial.println(this->baseColor.r);
             Serial.println(this->baseColor.g);
             Serial.println(this->baseColor.b);
-            makeCrgb(json["secondaryColor"]["color"], this->secondaryColor);
-            makeCrgb(json["sparkleColor"]["color"], this->sparkleColor);
-            makeCrgb(json["flashColor"]["color"], this->flashColor);
+            makeCrgb(json[ALIAS_SECONDARYCOLOR][ALIAS_COLOR], this->secondaryColor);
+            makeCrgb(json[ALIAS_SPARKLECOLOR][ALIAS_COLOR], this->sparkleColor);
+            makeCrgb(json[ALIAS_FLASHCOLOR][ALIAS_COLOR], this->flashColor);
 
             Serial.println("Constructed VerticalWave...");
 
@@ -99,10 +119,10 @@ void convertFromJson(JsonVariantConst json, VerticalWave &prog) {
 
     convertFromJson(json, static_cast<Program &>(prog));
 
-    makeCrgb(json["color"]["color"], prog.baseColor);
-    makeCrgb(json["secondaryColor"]["color"], prog.secondaryColor);
-    makeCrgb(json["sparkleColor"]["color"], prog.sparkleColor);
-    makeCrgb(json["flashColor"]["color"], prog.flashColor);
+    makeCrgb(json[ALIAS_COLOR][ALIAS_COLOR], prog.baseColor);
+    makeCrgb(json[ALIAS_SECONDARYCOLOR][ALIAS_COLOR], prog.secondaryColor);
+    makeCrgb(json[ALIAS_SPARKLECOLOR][ALIAS_COLOR], prog.sparkleColor);
+    makeCrgb(json[ALIAS_FLASHCOLOR][ALIAS_COLOR], prog.flashColor);
 
     // Serial.println("Constructed VerticalWave...");
 }
@@ -155,8 +175,8 @@ void convertFromJson(JsonVariantConst json, BlinkTest &prog) {
 void convertFromJson(JsonVariantConst json, Bpm &prog) {
     convertFromJson(json, static_cast<Program &>(prog));
 
-    makeCrgb(json["sparkleColor"], prog.sparkleColor);
-    makeCrgb(json["flashColor"], prog.flashColor);
+    makeCrgb(json[ALIAS_SPARKLECOLOR], prog.sparkleColor);
+    makeCrgb(json[ALIAS_FLASHCOLOR], prog.flashColor);
     Serial.printf("Constructed BPM");
 }
 
