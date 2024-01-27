@@ -15,11 +15,13 @@ void setupFileSystem() {
     return;
   }
 
-  // // run the reformatting code once when you switch between SPIFFS and LittleFS
-  // if (!LittleFS.format()) {
-  //   Serial.println("An Error has occurred while formatting LittleFS");
-  //   return;
-  // }
+  #ifdef FORMAT_LITTLEFS
+  // run the reformatting code once when you switch between SPIFFS and LittleFS
+  if (!LittleFS.format()) {
+    Serial.println("An Error has occurred while formatting LittleFS");
+    return;
+  }
+  #endif
 
   for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
     if (LittleFS.exists(respondWithPage[i])) {

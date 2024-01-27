@@ -1,2 +1,2 @@
 netsh wlan connect name="Ian's Juggling Clubss"
-curl -X POST -i http://{10.29.135.1}/submit -d "@C:/dev/git/juggling-clubs/Platformio/jugglingClubMainPlatformio/src/blinkTestJson.json" -H "Content-Type: application/json"
+curl -X POST -i http://{10.16.89.1}/submit -d "@C:/dev/git/juggling-clubs/Platformio/jugglingClubMainPlatformio/src/blinkTestJson.json" -H "Content-Type: application/json"

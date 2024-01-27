@@ -51,7 +51,7 @@ const char* readJsonDocument(const char *jsonString) {
   }
 
   for(size_t i = 0; i < min(jsonPacket.size(), MAX_PROGRAMS); i++) {
-    String patternName = jsonPacket[i]["displayName"];
+    String patternName = jsonPacket[i]["0"]; // jsonPacket[i]["displayName"];
 
     if (patternName == "Vertical Wave"){
       Serial.println("Creating VerticalWave");

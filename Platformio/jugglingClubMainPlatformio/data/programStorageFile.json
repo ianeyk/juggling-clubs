@@ -1,4 +1,4 @@
 [
-    {"displayName":"Blink Test","colorCycleSpeed":3,"duration":3,"patternSpeed":0.5},
-    {"displayName":"Blink Test","colorCycleSpeed":5,"duration":3,"patternSpeed":1.5}
+    {"0":"Blink Test","8":3,"7":3,"6":0.5},
+    {"0":"Blink Test","8":5,"7":3,"6":1.5}
 ]
