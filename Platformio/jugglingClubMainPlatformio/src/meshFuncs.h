@@ -72,6 +72,12 @@ void sendMessage(const char *msg)
   mesh.sendBroadcast(msg);
 }
 
+void restartMesh()
+{
+  mesh.stop();
+  setupMesh();
+}
+
 void blinkDebugLed()
 {
   unsigned long nodeTime = mesh.getNodeTime();

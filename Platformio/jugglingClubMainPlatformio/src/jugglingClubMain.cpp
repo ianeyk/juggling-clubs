@@ -8,8 +8,9 @@
 // #define MY_UNIQUE_CLUB_ID 2
 
 // #define INCLUDE_LEDS true
-#define INCLUDE_WIFI true
+// #define INCLUDE_WIFI true
 #define INCLUDE_MESH true
+// #define RESTART_MESH true // restarts the mesh every 10 seconds; use for leader only
 #define PRINT_DEBUG true
 #define BLINK_LED true // requires MESH
 // #define WRITE_FLASH true
@@ -44,6 +45,7 @@ void toggleLed();
 
 const unsigned long debugMessageInterval = 5 * TASK_SECOND;
 const unsigned long ledBlinkInterval = 50 * TASK_MILLISECOND;
+const unsigned long meshRestartInterval = 60 * TASK_SECOND;
 
 #ifdef INCLUDE_LEDS
 Task taskUpdateLeds(TASK_MILLISECOND *int(1000 / FRAMES_PER_SECOND), TASK_FOREVER, &updateLeds);
@@ -61,6 +63,10 @@ Task taskSendDebugMessage(debugMessageInterval, TASK_FOREVER, &sendDebugMessage)
 
 #ifdef BLINK_LED
 Task taskBlinkLed(ledBlinkInterval, TASK_FOREVER, &blinkDebugLed);
+#endif
+
+#ifdef RESTART_MESH
+Task taskRestartMesh(meshRestartInterval, TASK_FOREVER, &restartMesh);
 #endif
 
 void setup()
@@ -81,6 +87,8 @@ void setup()
 
 #ifdef INCLUDE_WIFI
   setupWifiServer();
+  // server.end();                // TODO: Delete this line
+  // WiFi.softAPdisconnect(true); // TODO: Delete this line
 #endif
 
 #ifdef INCLUDE_LEDS
@@ -98,6 +106,11 @@ void setup()
 #ifdef BLINK_LED
   userScheduler.addTask(taskBlinkLed);
   taskBlinkLed.enable();
+#endif
+
+#ifdef RESTART_MESH
+  userScheduler.addTask(taskRestartMesh);
+  taskRestartMesh.enable();
 #endif
 }
 
