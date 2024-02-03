@@ -7,8 +7,8 @@
 #define MY_UNIQUE_CLUB_ID 1
 // #define MY_UNIQUE_CLUB_ID 2
 
-// #define INCLUDE_LEDS true
-// #define INCLUDE_WIFI true
+#define INCLUDE_LEDS true
+#define INCLUDE_WIFI true
 #define INCLUDE_MESH true
 // #define RESTART_MESH true // restarts the mesh every 10 seconds; use for leader only
 #define PRINT_DEBUG true
