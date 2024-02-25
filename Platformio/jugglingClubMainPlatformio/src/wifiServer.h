@@ -206,7 +206,6 @@ void setupWifiServer() {
 
     // start web server
     server.begin();
-    writeSplashPageFile();
 }
 
 #endif

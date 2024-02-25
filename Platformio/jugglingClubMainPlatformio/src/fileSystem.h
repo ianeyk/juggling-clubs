@@ -5,8 +5,12 @@ String fileContentsBefore = "<!DOCTYPE html><html><head><title>Ian's Juggling Cl
 String fileContentsMiddle = "/index.html'>here</a>.</p><form action=\"http://";
 String fileContentsAfter = "/upload\" method=\"post\"><input type=\"submit\" name=\"{a:[0, 1, 2], b: [9, 8, 7]}\" value=\"Upload\" /></form></body></html>";
 
-void writeProgramsToMemory(const char *);
+void writeProgramsToMemory(const char*);
 void readProgramsFromMemory();
+String readFile(const char*);
+void writeIfNotEqual(const char*, const char*);
+void writeIpFile();
+void writeSplashPageFile();
 
 void setupFileSystem() {
     // Initialize LittleFS
@@ -21,6 +25,11 @@ void setupFileSystem() {
         Serial.println("An Error has occurred while formatting LittleFS");
         return;
     }
+#endif
+
+#ifdef WRITE_FLASH
+    writeIpFile();
+    writeSplashPageFile();
 #endif
 
     for (unsigned int i = 0; i < respondWithPage.size(); i++) {
@@ -39,75 +48,67 @@ void setupFileSystem() {
 }
 
 void writeIpFile() {
-    if (LittleFS.exists(splashPageFileName)) {
-        LittleFS.remove(splashPageFileName);
-    }
-
-    File file = LittleFS.open(splashPageFileName, "w");
-
-    if (!file) {
-        Serial.println("writeSplashPageFile: There was an error opening the file for writing");
-        return;
-    }
-    file.print(WiFi.softAPIP().toString());
+    writeIfNotEqual(ipStorageFileName, WiFi.softAPIP().toString().c_str());
 }
 
 void writeSplashPageFile() {
-    if (LittleFS.exists(splashPageFileName)) {
-        LittleFS.remove(splashPageFileName);
-    }
-
-    File file = LittleFS.open(splashPageFileName, "w");
-
-    if (!file) {
-        Serial.println("writeSplashPageFile: There was an error opening the file for writing");
-        return;
-    }
-
-    file.print(fileContentsBefore);
-    file.print(WiFi.softAPIP().toString());
-    file.print(fileContentsMiddle);
-    file.print(WiFi.softAPIP().toString());
-    file.print(fileContentsAfter);
-
-    file.close();
+    String splashPageContents =
+        fileContentsBefore +
+        WiFi.softAPIP().toString() +
+        fileContentsMiddle +
+        WiFi.softAPIP().toString() +
+        fileContentsAfter;
+    writeIfNotEqual(splashPageFileName, splashPageContents.c_str());
 }
 
-void writeProgramsToMemory(const char *jsonString) {
-    if (LittleFS.exists(programStorageFileName)) {
-        LittleFS.remove(programStorageFileName);
-    }
-
-    File file = LittleFS.open(programStorageFileName, "w");
-
-    if (!file) {
-        Serial.println("writeProgramsToMemory: There was an error opening the file for writing");
-        return;
-    }
-
-    if (file.print(jsonString)) {
-        Serial.println("File was written");
-    } else {
-        Serial.println("File write failed");
-    }
-
-    file.close();
+void writeProgramsToMemory(const char* jsonString) {
+    writeIfNotEqual(programStorageFileName, jsonString);
 }
 
 void readProgramsFromMemory() {
-    File file = LittleFS.open(programStorageFileName, "r");
+    String data = readFile(programStorageFileName);
+    strcpy(incomingDataBuffer, data.c_str());
+    readJsonDocument(incomingDataBuffer);
+}
+
+String readFile(const char* filename) {
+    File file = LittleFS.open(filename, "r");
 
     if (!file) {
-        Serial.println("Failed to open file for reading");
-        return;
+        Serial.println("readFile: Failed to open file " + String(filename));
+        return "";
     }
     int len = file.size();
     String data = file.readString();
     Serial.println("Reading file from memory (" + String(len) + "bytes): " + data);
 
     file.close();
-    strcpy(incomingDataBuffer, data.c_str());
-    readJsonDocument(incomingDataBuffer);
+    return data;
+}
+
+void writeIfNotEqual(const char* filename, const char* stringToWrite) {
+    if (LittleFS.exists(filename)) {
+        if (readFile(filename).equals(stringToWrite)) {
+            Serial.println("writeIfNotEqual: file matches contents of" + String(filename));
+            return;
+        }
+        LittleFS.remove(filename);
+    }
+
+    File file = LittleFS.open(filename, "w");
+
+    if (!file) {
+        Serial.println("writeIfNotEqual: There was an error opening the file " + String(filename));
+        return;
+    }
+
+    if (file.print(stringToWrite)) {
+        Serial.println("File was written");
+    } else {
+        Serial.println("File write failed");
+    }
+
+    file.close();
 }
 
 #endif

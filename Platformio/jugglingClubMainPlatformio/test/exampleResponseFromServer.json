@@ -1,0 +1,33 @@
+[
+  {
+    "id": 1708880522998,
+    "name": "Solid Color",
+    "displayName": "Solid Color",
+    "patternName": "solidColor",
+    "disabled": false,
+    "linkColors": true,
+    "color": {
+      "name": "Color",
+      "linkColors": true,
+      "color": ["#2196F3", "#000000", "#000000", "#000000"]
+    },
+    "sparkleColor": {
+      "name": "Sparkle Color",
+      "on": false,
+      "speed": 0,
+      "intensity": 0,
+      "linkColors": true,
+      "color": ["#000000", "#000000", "#000000", "#000000"]
+    },
+    "flashColor": {
+      "name": "Flash Color",
+      "on": false,
+      "speed": 0,
+      "dutyCycle": 0,
+      "linkColors": true,
+      "color": ["#000000", "#000000", "#000000", "#000000"]
+    },
+    "patternSpeed": 0,
+    "colorCycleSpeed": 5
+  }
+]

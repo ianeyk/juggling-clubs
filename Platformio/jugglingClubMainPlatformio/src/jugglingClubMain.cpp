@@ -1,4 +1,5 @@
 #include <Arduino.h>
+
 #include "painlessMesh.h"
 
 // **************************** //
@@ -12,18 +13,18 @@
 #define INCLUDE_MESH true
 // #define RESTART_MESH true // restarts the mesh every 10 seconds; use for leader only
 #define PRINT_DEBUG true
-#define BLINK_LED true // requires MESH
-// #define WRITE_FLASH true
+#define BLINK_LED true  // requires MESH
+#define WRITE_FLASH true
 // #define FORMAT_LITTLEFS true
 // **************************** //
 
 #define FRAMES_PER_SECOND 60
 #define N_CLUBS 3
 
-#define MAX_MESSAGE_SIZE 6144 // chars
+#define MAX_MESSAGE_SIZE 6144  // chars
 char incomingDataBuffer[MAX_MESSAGE_SIZE + 1];
 
-Scheduler userScheduler; // to control your personal task
+Scheduler userScheduler;  // to control your personal task
 
 #ifdef INCLUDE_WIFI
 #include "wifiServer.h"
@@ -69,68 +70,64 @@ Task taskBlinkLed(ledBlinkInterval, TASK_FOREVER, &blinkDebugLed);
 Task taskRestartMesh(meshRestartInterval, TASK_FOREVER, &restartMesh);
 #endif
 
-void setup()
-{
-
-  Serial.begin(115200);
-  delay(1000); // 1 second delay for recovery
-  Serial.println("Hello World!");
-  pinMode(LED_BUILTIN, OUTPUT);
+void setup() {
+    Serial.begin(115200);
+    delay(1000);  // 1 second delay for recovery
+    Serial.println("Hello World!");
+    pinMode(LED_BUILTIN, OUTPUT);
 
 #ifdef INCLUDE_MESH
-  setupMesh();
+    setupMesh();
 #ifdef LEADER
-  // userScheduler.addTask(taskBroadcastJson);
-  // taskBroadcastJson.enable();
+    // userScheduler.addTask(taskBroadcastJson);
+    // taskBroadcastJson.enable();
 #endif
 #endif
 
 #ifdef INCLUDE_WIFI
-  setupWifiServer();
-  // server.end();                // TODO: Delete this line
-  // WiFi.softAPdisconnect(true); // TODO: Delete this line
+    setupWifiServer();
+    // server.end();                // TODO: Delete this line
+    // WiFi.softAPdisconnect(true); // TODO: Delete this line
 #endif
 
 #ifdef INCLUDE_LEDS
-  fastLedSetup();
-  // start tasks controlling LEDs
-  userScheduler.addTask(taskUpdateLeds);
-  taskUpdateLeds.enable();
+    fastLedSetup();
+    // start tasks controlling LEDs
+    userScheduler.addTask(taskUpdateLeds);
+    taskUpdateLeds.enable();
 #endif
 
 #ifdef PRINT_DEBUG
-  userScheduler.addTask(taskSendDebugMessage);
-  taskSendDebugMessage.enable();
+    userScheduler.addTask(taskSendDebugMessage);
+    taskSendDebugMessage.enable();
 #endif
 
 #ifdef BLINK_LED
-  userScheduler.addTask(taskBlinkLed);
-  taskBlinkLed.enable();
+    userScheduler.addTask(taskBlinkLed);
+    taskBlinkLed.enable();
 #endif
 
 #ifdef RESTART_MESH
-  userScheduler.addTask(taskRestartMesh);
-  taskRestartMesh.enable();
+    userScheduler.addTask(taskRestartMesh);
+    taskRestartMesh.enable();
 #endif
 }
 
-void loop()
-{
+void loop() {
 #ifdef LEADER
 #ifdef INCLUDE_WIFI
-  dnsServer.processNextRequest();
+    dnsServer.processNextRequest();
 #endif
 #endif
 
 #ifdef INCLUDE_MESH
-  mesh.update();
+    mesh.update();
 #endif
 }
 
-int get_club_id()
-{
-  // Return 0, 1, or 2
-  return MY_UNIQUE_CLUB_ID;
+int get_club_id() {
+    // Return 0, 1, or 2
+    return MY_UNIQUE_CLUB_ID;
 }
 
 // void getUniqueOrderNumber() {
@@ -143,7 +140,6 @@ int get_club_id()
 //     }
 // }
 
-void sendDebugMessage()
-{
-  Serial.println("My IP Address = " + WiFi.softAPIP().toString() + ", Number of connected nodes = " + String(mesh.getNodeList().size()) + ", and Spare Heap Remaining = " + String(ESP.getFreeHeap()));
+void sendDebugMessage() {
+    Serial.println("My IP Address = " + WiFi.softAPIP().toString() + ", Number of connected nodes = " + String(mesh.getNodeList().size()) + ", and Spare Heap Remaining = " + String(ESP.getFreeHeap()));
 }
