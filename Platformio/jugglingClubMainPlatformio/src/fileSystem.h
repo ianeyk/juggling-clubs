@@ -9,94 +9,105 @@ void writeProgramsToMemory(const char *);
 void readProgramsFromMemory();
 
 void setupFileSystem() {
-  // Initialize LittleFS
-  if (!LittleFS.begin()) {
-    Serial.println("An Error has occurred while mounting LittleFS");
-    return;
-  }
-
-  #ifdef FORMAT_LITTLEFS
-  // run the reformatting code once when you switch between SPIFFS and LittleFS
-  if (!LittleFS.format()) {
-    Serial.println("An Error has occurred while formatting LittleFS");
-    return;
-  }
-  #endif
-
-  for (unsigned int i = 0; i < respondWithPage.size() ; i ++) {
-    if (LittleFS.exists(respondWithPage[i])) {
-      Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.println(" exists.");
-    } else {
-      Serial.print("File system: "); Serial.print(respondWithPage[i]); Serial.print(" DOES NOT exist!!!.");
+    // Initialize LittleFS
+    if (!LittleFS.begin()) {
+        Serial.println("An Error has occurred while mounting LittleFS");
+        return;
     }
-  }
 
-  readProgramsFromMemory();
+#ifdef FORMAT_LITTLEFS
+    // run the reformatting code once when you switch between SPIFFS and LittleFS
+    if (!LittleFS.format()) {
+        Serial.println("An Error has occurred while formatting LittleFS");
+        return;
+    }
+#endif
+
+    for (unsigned int i = 0; i < respondWithPage.size(); i++) {
+        if (LittleFS.exists(respondWithPage[i])) {
+            Serial.print("File system: ");
+            Serial.print(respondWithPage[i]);
+            Serial.println(" exists.");
+        } else {
+            Serial.print("File system: ");
+            Serial.print(respondWithPage[i]);
+            Serial.print(" DOES NOT exist!!!.");
+        }
+    }
+
+    readProgramsFromMemory();
+}
+
+void writeIpFile() {
+    if (LittleFS.exists(splashPageFileName)) {
+        LittleFS.remove(splashPageFileName);
+    }
+
+    File file = LittleFS.open(splashPageFileName, "w");
+
+    if (!file) {
+        Serial.println("writeSplashPageFile: There was an error opening the file for writing");
+        return;
+    }
+    file.print(WiFi.softAPIP().toString());
 }
 
 void writeSplashPageFile() {
-  if (LittleFS.exists(splashPageFileName)) {
-    LittleFS.remove(splashPageFileName);
-  }
+    if (LittleFS.exists(splashPageFileName)) {
+        LittleFS.remove(splashPageFileName);
+    }
 
-  File file = LittleFS.open(splashPageFileName, "w");
+    File file = LittleFS.open(splashPageFileName, "w");
 
-  if (!file) {
-      Serial.println("writeSplashPageFile: There was an error opening the file for writing");
-      return;
-  }
-
-  if (file.print("TEST")) {
-      Serial.println("File was written");
-  } else {
-      Serial.println("File write failed");
-  }
+    if (!file) {
+        Serial.println("writeSplashPageFile: There was an error opening the file for writing");
+        return;
+    }
 
     file.print(fileContentsBefore);
-    file.print(String(WiFi.softAPIP().toString().c_str()));
+    file.print(WiFi.softAPIP().toString());
     file.print(fileContentsMiddle);
-    file.print(String(WiFi.softAPIP().toString().c_str()));
+    file.print(WiFi.softAPIP().toString());
     file.print(fileContentsAfter);
 
-  file.close();
+    file.close();
 }
 
-
 void writeProgramsToMemory(const char *jsonString) {
-  if (LittleFS.exists(programStorageFileName)) {
-    LittleFS.remove(programStorageFileName);
-  }
+    if (LittleFS.exists(programStorageFileName)) {
+        LittleFS.remove(programStorageFileName);
+    }
 
-  File file = LittleFS.open(programStorageFileName, "w");
+    File file = LittleFS.open(programStorageFileName, "w");
 
-  if (!file) {
-      Serial.println("writeProgramsToMemory: There was an error opening the file for writing");
-      return;
-  }
+    if (!file) {
+        Serial.println("writeProgramsToMemory: There was an error opening the file for writing");
+        return;
+    }
 
-  if (file.print(jsonString)) {
-      Serial.println("File was written");
-  } else {
-      Serial.println("File write failed");
-  }
+    if (file.print(jsonString)) {
+        Serial.println("File was written");
+    } else {
+        Serial.println("File write failed");
+    }
 
-  file.close();
+    file.close();
 }
 
 void readProgramsFromMemory() {
-  File file = LittleFS.open(programStorageFileName, "r");
+    File file = LittleFS.open(programStorageFileName, "r");
 
-  if (!file) {
-      Serial.println("Failed to open file for reading");
-      return;
-  }
-  int len = file.size();
-  String data = file.readString();
-  Serial.println("Reading file from memory (" + String(len) + "bytes): " + data);
+    if (!file) {
+        Serial.println("Failed to open file for reading");
+        return;
+    }
+    int len = file.size();
+    String data = file.readString();
+    Serial.println("Reading file from memory (" + String(len) + "bytes): " + data);
 
-  file.close();
-  strcpy(incomingDataBuffer, data.c_str());
-  readJsonDocument(incomingDataBuffer);
+    file.close();
+    strcpy(incomingDataBuffer, data.c_str());
+    readJsonDocument(incomingDataBuffer);
 }
 
 #endif
