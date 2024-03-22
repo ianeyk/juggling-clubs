@@ -18,7 +18,9 @@ class Program {
     virtual ~Program() { /* Do nothing */
     }
     Program(const DynamicJsonDocument &json) {
-        this->duration = json[ALIAS_PATTERNDURATION];
+        Serial.println("Inside of parent Program constructor function");
+        // this->duration = json[ALIAS_PATTERNDURATION];
+        this->duration = json[ALIAS_COLORCYCLESPEED];
         this->patternSpeed = json[ALIAS_PATTERNSPEED];
         this->colorCycleSpeed = json[ALIAS_COLORCYCLESPEED];
     }
@@ -32,7 +34,7 @@ class Program {
 };
 
 void convertFromJson(JsonVariantConst json, Program &prog) {
-    prog.duration = json[ALIAS_PATTERNDURATION];
+    prog.duration = json[ALIAS_COLORCYCLESPEED];
     prog.patternSpeed = json[ALIAS_PATTERNSPEED];
     prog.colorCycleSpeed = json[ALIAS_COLORCYCLESPEED];
 }
@@ -49,8 +51,11 @@ void makeCrgb(JsonVariantConst json, CRGB &color) {
         color_index = get_club_id() + 1;
     }
 
-    std::string colorString = json[ALIAS_COLOR].as<std::string>();
-    color = CRGB(strtol(colorString.substr(color_index * 6, 6).c_str(), NULL, 16));
+    String colorString = json[ALIAS_COLOR];
+    if (colorString.startsWith("#")) {
+        colorString.remove(0, 1);
+    }
+    color = CRGB(strtol(colorString.c_str(), NULL, 16));
 
     Serial.println("color_index: " + String(color_index) + " r: " + String(color.r));
 };
@@ -61,17 +66,26 @@ class PulsingColor : public Program {
 
     PulsingColor() { /* Do nothing */
     }
+    PulsingColor(const DynamicJsonDocument &json) {
+        Serial.println("Inside of PulsingColor constructor");
+    }
     void onTick(int patternFrame) {}
 };
 
 void convertFromJson(JsonVariantConst json, PulsingColor &prog) {
+    Serial.println("Inside of convertFromJson");
     convertFromJson(json, static_cast<Program &>(prog));
+    Serial.println("After default convertFromJson!!");
 
-    makeCrgb(json[ALIAS_COLOR][ALIAS_COLOR], prog.baseColor);
-    makeCrgb(json[ALIAS_SPARKLECOLOR][ALIAS_COLOR], prog.sparkleColor);
-    makeCrgb(json[ALIAS_FLASHCOLOR][ALIAS_COLOR], prog.flashColor);
+    makeCrgb(json[ALIAS_COLOR], prog.baseColor);
+    Serial.println("(1)");
+    makeCrgb(json[ALIAS_SPARKLECOLOR], prog.sparkleColor);
+    Serial.println("(2)");
+    makeCrgb(json[ALIAS_FLASHCOLOR], prog.flashColor);
+    Serial.println("(3)");
 
     Serial.println("Constructed PulsingColor...");
+    Serial.println("Finished with convertFromJson");
 }
 
 class VerticalWave : public Program {
@@ -153,10 +167,3 @@ void convertFromJson(JsonVariantConst json, Bpm &prog) {
     makeCrgb(json[ALIAS_FLASHCOLOR], prog.flashColor);
     Serial.printf("Constructed BPM");
 }
-
-/*
-    [
-        { "class": "SolidColor", "data": {"color": [{"h":12,"s":255,"l":255}, {"h":12,"s":255,"l":255}, {"h":12,"s":255,"l":255}, {"h":12,"s":255,"l":255}] }},
-        { "class": "SolidColor", "data": {"color": [{"h":12,"s":255,"l":255}, {"h":12,"s":255,"l":255}, {"h":12,"s":255,"l":255}, {"h":12,"s":255,"l":255}] }},
-    ]
-*/

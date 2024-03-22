@@ -61,9 +61,10 @@ const char *readJsonDocument(const char *jsonString) {
             programs.push_back(new PulsingColor(jsonPacket[i]));  // TODO: Have this return a bool to tell if decoding happened correctly
         }
 
-        else if (patternName == "Solid Color") {  // TODO: Change this to be actually solid color
+        else if (patternName == "solidColor") {  // TODO: Change this to be actually solid color
             Serial.println("Creating a solidColor Program");
-            PulsingColor myProgram = new PulsingColor(jsonPacket[i]);
+            // PulsingColor *myProgram = new PulsingColor();
+            PulsingColor *myProgram = new PulsingColor(jsonPacket[i]);
             Serial.println("Adding it to the programs list");
             programs.push_back(myProgram);  // TODO: Have this return a bool to tell if decoding happened correctly
             Serial.println("Created solidColor Program successfully.");
@@ -97,6 +98,8 @@ const char *readJsonDocument(const char *jsonString) {
 
 void newProgramsArriving() {
     // Delete in reverse order to try to reduce memory fragementation
+    Serial.println("Deleting old programs!");
+    Serial.println("Programs.size = " + String(programs.size()));
     while (programs.size() > 0) {
         delete programs.back();  // Retrieve last item in array
         programs.pop_back();     // Remove the now dead item from the array

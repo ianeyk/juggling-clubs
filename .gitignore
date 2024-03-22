@@ -32,3 +32,7 @@
 *.app
 
 .vscode/
+
+# Temporary files
+Platformio/jugglingClubMainPlatformio/src/stackTrace.txt
+Platformio/jugglingClubMainPlatformio/src/test.json
