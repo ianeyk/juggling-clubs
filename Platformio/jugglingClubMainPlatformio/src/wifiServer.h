@@ -36,8 +36,21 @@ IPAddress subnet(255, 255, 255, 0);
 #define splashPageFileName "/splashpage.html"  // to minimize typos
 #define programStorageFileName "/programStorageFile.json"
 #define ipStorageFileName "/src/ip.txt"
-std::vector<const char *> respondWithPage{"/index.html", "/src/ip.txt", "/assets/index-de4e009c.css", "/favicon.ico", "/assets/index-56a1c786.js", "/assets/webfontloader-523643f5.js", splashPageFileName, programStorageFileName, ipStorageFileName};
-std::vector<const char *> jsFiles{"/assets/index-56a1c786.js", "/assets/webfontloader-523643f5.js"};
+std::vector<const char *> respondWithPage{
+    "/index.html",
+    "/favicon.ico",
+    // "/src/ip.txt",
+    "/assets/index-9b3ecd8a.css",
+    "/assets/icons-webfont-48d3eec6.woff",
+    // "/assets/materialdesignicons-webfont-861aea05.eot",
+    // "/assets/materialdesignicons-webfont-bd725a7a.ttf",
+    // "/assets/materialdesignicons-webfont-e52d60f6.woff2",
+    "/assets/index-f7b96a96.js",
+    "/assets/webfontloader-523643f5.js",
+    splashPageFileName,
+    programStorageFileName,
+};
+std::vector<const char *> jsFiles{"/assets/index-f7b96a96.js", "/assets/webfontloader-523643f5.js"};
 
 #include "fileSystem.h"
 
@@ -129,7 +142,7 @@ class PatternHandler : public AsyncWebHandler {
             return false;
         }
 
-        return request->url().equals("/submit") || request->url().equals("//submit") || request->url().equals("/10.16.89.1/submit");
+        return request->url().equals("/submit") || request->url().equals("//submit") || request->url().equals("/10.16.89.1/submit") || request->url().equals("/10.147.35.1/submit");
     }
 
     // void handleRequest(AsyncWebServerRequest *request) {

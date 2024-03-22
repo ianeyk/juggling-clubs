@@ -40,7 +40,7 @@ void setupFileSystem() {
         } else {
             Serial.print("File system: ");
             Serial.print(respondWithPage[i]);
-            Serial.print(" DOES NOT exist!!!.");
+            Serial.println(" DOES NOT exist!!!.");
         }
     }
 
