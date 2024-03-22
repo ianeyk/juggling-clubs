@@ -5,21 +5,19 @@
 #include <Array.h>
 #include <ESPAsyncWebServer.h>
 
+#include "programPropertyAliases.h"
 #include "programs.h"
 
 void assignDurations();
 void sendMessage(String);
 void writeProgramsToMemory(const char *);
 
-
-
 const long BAUD = 115200;
 
 const size_t MAX_PROGRAMS = 256;
-const size_t MAX_PROGRAM_SIZE = 6144;   // chars
+const size_t MAX_PROGRAM_SIZE = 6144;  // chars
 
 Array<Program *, MAX_PROGRAMS> programs;
-
 
 DynamicJsonDocument jsonPacket(MAX_PROGRAM_SIZE);
 // StaticJsonDocument<MAX_PROGRAM_SIZE> jsonPacket;
@@ -29,73 +27,80 @@ DynamicJsonDocument jsonPacket(MAX_PROGRAM_SIZE);
 // size_t blinkTestLen = 80;
 
 // const char* readJsonDocument(AsyncWebServerRequest *request) {
-const char* readJsonDocument(const char *jsonString) {
+const char *readJsonDocument(const char *jsonString) {
+    // Return NULL if OK, or error message if there's a problem
+    // Serial.println("Inside readJsonDocument. Memory is " + String(ESP.getFreeHeap()));
 
-  // Return NULL if OK, or error message if there's a problem
-  // Serial.println("Inside readJsonDocument. Memory is " + String(ESP.getFreeHeap()));
+    // Serial.println(request->);
 
-  // Serial.println(request->);
+    // DeserializationError error = deserializeJson(jsonPacket, blinkTestInput);
+    DeserializationError error = deserializeJson(jsonPacket, jsonString);
+    // DeserializationError error = deserializeJson(jsonPacket, request);
 
-  // DeserializationError error = deserializeJson(jsonPacket, blinkTestInput);
-  DeserializationError error = deserializeJson(jsonPacket, jsonString);
-  // DeserializationError error = deserializeJson(jsonPacket, request);
-
-  if (error) {
-    Serial.print(F("deserializeJson() failed: "));
-    Serial.println(error.f_str());
-    return error.c_str();
-  }
-
-  if (jsonPacket.size() > MAX_PROGRAMS) {
-    Serial.println(F("WARNING: Number of programs sent exceeds available slots (") + String(jsonPacket.size()) + F(").  Will only load ") + String(MAX_PROGRAMS));
-  }
-
-  for(size_t i = 0; i < min(jsonPacket.size(), MAX_PROGRAMS); i++) {
-    String patternName = jsonPacket[i]["0"]; // jsonPacket[i]["displayName"];
-
-    if (patternName == "Vertical Wave"){
-      Serial.println("Creating VerticalWave");
-      VerticalWave *p = new VerticalWave(jsonPacket[i]);
-      programs.push_back(p);
-      Serial.println(p->baseColor.r);
+    if (error) {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        return error.c_str();
     }
 
-    else if (patternName == "Pulsing Color"){
-      programs.push_back(new PulsingColor(jsonPacket[i])); // TODO: Have this return a bool to tell if decoding happened correctly
+    if (jsonPacket.size() > MAX_PROGRAMS) {
+        Serial.println(F("WARNING: Number of programs sent exceeds available slots (") + String(jsonPacket.size()) + F(").  Will only load ") + String(MAX_PROGRAMS));
     }
 
-    else if (patternName == "BPM"){
-      programs.push_back(new Bpm(jsonPacket[i]));
+    for (size_t i = 0; i < min(jsonPacket.size(), MAX_PROGRAMS); i++) {
+        String patternName = jsonPacket[i][ALIAS_PATTERNNAME];  // jsonPacket[i]["displayName"];
+
+        if (patternName == "Vertical Wave") {
+            Serial.println("Creating VerticalWave");
+            VerticalWave *p = new VerticalWave(jsonPacket[i]);
+            programs.push_back(p);
+            Serial.println(p->baseColor.r);
+        }
+
+        else if (patternName == "Pulsing Color") {
+            programs.push_back(new PulsingColor(jsonPacket[i]));  // TODO: Have this return a bool to tell if decoding happened correctly
+        }
+
+        else if (patternName == "Solid Color") {  // TODO: Change this to be actually solid color
+            Serial.println("Creating a solidColor Program");
+            PulsingColor myProgram = new PulsingColor(jsonPacket[i]);
+            Serial.println("Adding it to the programs list");
+            programs.push_back(myProgram);  // TODO: Have this return a bool to tell if decoding happened correctly
+            Serial.println("Created solidColor Program successfully.");
+        }
+
+        else if (patternName == "BPM") {
+            programs.push_back(new Bpm(jsonPacket[i]));
+        }
+
+        else if (patternName == "Blink Test") {
+            Serial.println("Deserialized a Blink Test! Current number of programs is " + String(programs.size()));
+            programs.push_back(new BlinkTest(jsonPacket[i]));
+            Serial.println("New number of programs is " + String(programs.size()));
+        }
+
+        else
+            Serial.println(F("Unknown program name: ") + patternName);
     }
 
-    else if (patternName == "Blink Test"){
-      Serial.println("Deserialized a Blink Test! Current number of programs is " + String(programs.size()));
-      programs.push_back(new BlinkTest(jsonPacket[i]));
-      Serial.println("New number of programs is " + String(programs.size()));
-    }
+// once the program is verified, stick it into flash memory
+#ifdef WRITE_FLASH
+    writeProgramsToMemory(jsonString);
+#endif
 
-    else Serial.println(F("Unknown program name: ") + patternName);
-  }
-
-  // once the program is verified, stick it into flash memory
-  #ifdef WRITE_FLASH
-  writeProgramsToMemory(jsonString);
-  #endif
-
-  // Serial.println("After  readJsonDocument. Memory is " + String(ESP.getFreeHeap()));
-  #ifdef INCLUDE_LEDS
+// Serial.println("After  readJsonDocument. Memory is " + String(ESP.getFreeHeap()));
+#ifdef INCLUDE_LEDS
     assignDurations();
-  #endif
-  return NULL;
+#endif
+    return NULL;
 }
 
 void newProgramsArriving() {
-  // Delete in reverse order to try to reduce memory fragementation
-  while(programs.size() > 0) {
-    delete programs.back();    // Retrieve last item in array
-    programs.pop_back();                // Remove the now dead item from the array
-  }
-
+    // Delete in reverse order to try to reduce memory fragementation
+    while (programs.size() > 0) {
+        delete programs.back();  // Retrieve last item in array
+        programs.pop_back();     // Remove the now dead item from the array
+    }
 }
 
 // void broadcastJson() {
@@ -105,6 +110,5 @@ void newProgramsArriving() {
 //   sendMessage(serialized);
 //   // Serial.println("Done broadcasting json. Memory is " + String(ESP.getFreeHeap()));
 // }
-
 
 #endif
