@@ -1,6 +1,7 @@
 #include <ArduinoJson.h>
 #include <FastLED.h>
 
+#include "ledDef.h"
 #include "programPropertyAliases.h"
 
 #define NUM_CLUBS 3
@@ -51,7 +52,8 @@ void makeCrgb(JsonVariantConst json, CRGB &color) {
         color_index = get_club_id() + 1;
     }
 
-    String colorString = json[ALIAS_COLOR];
+    String colorString = json[ALIAS_COLOR][color_index];
+    Serial.println("colorString = " + colorString);
     if (colorString.startsWith("#")) {
         colorString.remove(0, 1);
     }
@@ -69,7 +71,10 @@ class PulsingColor : public Program {
     PulsingColor(const DynamicJsonDocument &json) {
         Serial.println("Inside of PulsingColor constructor");
     }
-    void onTick(int patternFrame) {}
+    void onTick(int patternFrame) {
+        Serial.println("Filling solid with color r: " + String(baseColor.r) + ", g: " + String(baseColor.g) + ", b: " + String(baseColor.b));
+        fill_solid(leds, NUM_LEDS, baseColor);
+    }
 };
 
 void convertFromJson(JsonVariantConst json, PulsingColor &prog) {

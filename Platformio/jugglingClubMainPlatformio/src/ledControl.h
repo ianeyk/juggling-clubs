@@ -20,21 +20,27 @@ const unsigned int millisecondsPerFrame = 50;  // for use later in patterns them
 std::vector<unsigned long> cumDurations;
 std::vector<unsigned long> cumHueDurations;
 
-#include "patterns.h"
+// #include "patterns.h"
+#include "ledDef.h"
 
 void assignDurations();
 void updateCounters();
 
 void fastLedSetup() {
+    Serial.println("YESSSS!!!!");
     FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);  // tell FastLED about the LED strip configuration
     FastLED.setBrightness(BRIGHTNESS);                                                                // set master brightness control
                                                                                                       // readJsonDocument("", 0);
+    // TESTING PURPOSES:
+    // send the 'leds' array out to the actual LED strip
+    // fill_solid(leds, NUM_LEDS, CRGB(0x0000FF));
+    // FastLED.show();
 }
 
-typedef void (*SimplePatternList[])();  // List of patterns to cycle through.  Each is defined as a separate function below.
+// typedef void (*SimplePatternList[])();  // List of patterns to cycle through.  Each is defined as a separate function below.
 // SimplePatternList gPatterns = { solid, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbow, rainbowWithGlitter, confetti, sinelon, juggle, bpm, rainbowWithGlitter, confetti, juggle};
-SimplePatternList gPatterns = {pulse, solid, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid};
-SimplePatternList gAddins = {ring_solid, sparkle, flash};
+// SimplePatternList gPatterns = {pulse, solid, solid, rainbowWithGlitter, confetti, juggle, bpm, solid, solid, solid, solid, solid, solid, solid, solid};
+// SimplePatternList gAddins = {ring_solid, sparkle, flash};
 
 void updateLeds() {
     updateCounters();  // get the current pattern id and pattern frame
@@ -52,7 +58,11 @@ void updateLeds() {
     // ring_solid();
     // sparkle();
     // flash();
+
+    Serial.println("leds[1] = r: " + String(leds[1].r) + ", g: " + String(leds[1].g) + ", b: " + String(leds[1].b));
+    fill_solid(leds, NUM_LEDS, CRGB(0xFF0000));
     FastLED.show();  // send the 'leds' array out to the actual LED strip
+    // FastLED.delay(10);
 }
 
 void updateCounters() {  // replacement for incrementCounters() above
@@ -96,16 +106,16 @@ void updateCounters() {  // replacement for incrementCounters() above
     Serial.print("colorCycleSpeed = ");
     Serial.println(currentProgram->colorCycleSpeed);
 
-    // if (patternId == 0) {
-    //     patternTime = periodTime * currentProgram->patternSpeed;
-    //     hueTime = periodTime * currentProgram->colorCycleSpeed;
-    // } else {
-    //     patternTime = (periodTime - cumDurations[patternId - 1]) * currentProgram->patternSpeed;
-    //     hueTime = (periodTime - cumHueDurations[patternId - 1]) * currentProgram->colorCycleSpeed;
-    // }
-    // patternFrame = patternTime / millisecondsPerFrame;
-    // hueFrame = (hueTime / millisecondsPerFrame) % 256;
-    // // Serial.println("pattern Frame is " + String(patternFrame) + ", hue Frame is " + String(hueFrame));
+    if (patternId == 0) {
+        patternTime = periodTime * currentProgram->patternSpeed;
+        hueTime = periodTime * currentProgram->colorCycleSpeed;
+    } else {
+        patternTime = (periodTime - cumDurations[patternId - 1]) * currentProgram->patternSpeed;
+        hueTime = (periodTime - cumHueDurations[patternId - 1]) * currentProgram->colorCycleSpeed;
+    }
+    patternFrame = patternTime / millisecondsPerFrame;
+    hueFrame = (hueTime / millisecondsPerFrame) % 256;
+    // Serial.println("pattern Frame is " + String(patternFrame) + ", hue Frame is " + String(hueFrame));
 }
 
 void assignDurations() {
