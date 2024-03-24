@@ -50,7 +50,7 @@ void updateLeds() {
     if (programs.size() == 0) {
         return;
     }
-    Serial.println("Inside of updateLeds!");
+    // Serial.println("Inside of updateLeds!");
     programs[patternId]->onTick(patternFrame);
 
     // programs[patternId]->onTick(patternFrame);
@@ -59,7 +59,7 @@ void updateLeds() {
     // sparkle();
     // flash();
 
-    Serial.println("leds[1] = r: " + String(leds[1].r) + ", g: " + String(leds[1].g) + ", b: " + String(leds[1].b));
+    // Serial.println("leds[1] = r: " + String(leds[1].r) + ", g: " + String(leds[1].g) + ", b: " + String(leds[1].b));
     // fill_solid(leds, NUM_LEDS, CRGB(0xFF0000));
     FastLED.show();  // send the 'leds' array out to the actual LED strip
     // FastLED.delay(10);
@@ -70,7 +70,7 @@ void updateCounters() {  // replacement for incrementCounters() above
     if (programs.size() == 0) {
         return;
     }
-    Serial.println("Inside of updateCounters()");
+    // Serial.println("Inside of updateCounters()");
 
 #ifdef INCLUDE_MESH
     // Serial.print(String(mesh.timeOffset));
@@ -82,16 +82,13 @@ void updateCounters() {  // replacement for incrementCounters() above
     unsigned long nodeTime = micros();
 #endif
 
-    Serial.print("cumDurations.size() = ");
-    Serial.println(cumDurations.size());
-    Serial.print("cumDurations.back() = ");
-    Serial.println(cumDurations.back());
+    // Serial.print("cumDurations.size() = ");
+    // Serial.println(cumDurations.size());
+    // Serial.print("cumDurations.back() = ");
+    // Serial.println(cumDurations.back());
 
-    Serial.println("(1)");
     nodeTime = nodeTime * MICROS_TO_MILLIS;
-    Serial.println("(2)");
     unsigned long periodTime = nodeTime % cumDurations.back();
-    Serial.println("(3)");
 
     for (unsigned int i = 0; i < cumDurations.size(); i++) {
         if (periodTime <= cumDurations[i]) {
@@ -101,10 +98,10 @@ void updateCounters() {  // replacement for incrementCounters() above
     }
     currentProgram = programs[patternId];
 
-    Serial.print("patternSpeed = ");
-    Serial.println(currentProgram->patternSpeed);
-    Serial.print("colorCycleSpeed = ");
-    Serial.println(currentProgram->colorCycleSpeed);
+    // Serial.print("patternSpeed = ");
+    // Serial.println(currentProgram->patternSpeed);
+    // Serial.print("colorCycleSpeed = ");
+    // Serial.println(currentProgram->colorCycleSpeed);
 
     if (patternId == 0) {
         patternTime = periodTime * currentProgram->patternSpeed;

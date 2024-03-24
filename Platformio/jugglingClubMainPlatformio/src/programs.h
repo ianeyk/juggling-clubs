@@ -72,25 +72,22 @@ class PulsingColor : public Program {
         Serial.println("Inside of PulsingColor constructor");
     }
     void onTick(int patternFrame) {
-        Serial.println("Filling solid with color r: " + String(baseColor.r) + ", g: " + String(baseColor.g) + ", b: " + String(baseColor.b));
+        // Serial.println("Filling solid with color r: " + String(baseColor.r) + ", g: " + String(baseColor.g) + ", b: " + String(baseColor.b));
         fill_solid(leds, NUM_LEDS, baseColor);
     }
 };
 
 void convertFromJson(JsonVariantConst json, PulsingColor &prog) {
-    Serial.println("Inside of convertFromJson");
+    // Serial.println("Inside of convertFromJson");
     convertFromJson(json, static_cast<Program &>(prog));
-    Serial.println("After default convertFromJson!!");
+    // Serial.println("After default convertFromJson!!");
 
     makeCrgb(json[ALIAS_COLOR], prog.baseColor);
-    Serial.println("(1)");
     makeCrgb(json[ALIAS_SPARKLECOLOR], prog.sparkleColor);
-    Serial.println("(2)");
     makeCrgb(json[ALIAS_FLASHCOLOR], prog.flashColor);
-    Serial.println("(3)");
 
-    Serial.println("Constructed PulsingColor...");
-    Serial.println("Finished with convertFromJson");
+    // Serial.println("Constructed PulsingColor...");
+    // Serial.println("Finished with convertFromJson");
 }
 
 class VerticalWave : public Program {

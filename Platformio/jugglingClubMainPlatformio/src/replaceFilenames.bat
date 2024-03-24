@@ -27,6 +27,10 @@ del materialdesignicons.woff2
 set ffile='index.css'
 set fold='materialdesignicons.*?\.'
 set fnew='materialdesignicons.'
-powershell -Command "(gc %ffile%) -replace %fold%, %fnew% | Out-File %ffile%"
+powershell -Command "(gc %ffile%) -replace %fold%, %fnew% | Out-File %ffile% -encoding utf8"
+
+@echo on
+
+cd ../../src
 
 ECHO Finished!
