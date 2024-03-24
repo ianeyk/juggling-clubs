@@ -60,7 +60,7 @@ void updateLeds() {
     // flash();
 
     Serial.println("leds[1] = r: " + String(leds[1].r) + ", g: " + String(leds[1].g) + ", b: " + String(leds[1].b));
-    fill_solid(leds, NUM_LEDS, CRGB(0xFF0000));
+    // fill_solid(leds, NUM_LEDS, CRGB(0xFF0000));
     FastLED.show();  // send the 'leds' array out to the actual LED strip
     // FastLED.delay(10);
 }

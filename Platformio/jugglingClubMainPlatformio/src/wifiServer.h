@@ -40,17 +40,17 @@ std::vector<const char *> respondWithPage{
     "/index.html",
     "/favicon.ico",
     // "/src/ip.txt",
-    "/assets/index-9b3ecd8a.css",
-    "/assets/icons-webfont-48d3eec6.woff",
-    // "/assets/materialdesignicons-webfont-861aea05.eot",
-    // "/assets/materialdesignicons-webfont-bd725a7a.ttf",
-    // "/assets/materialdesignicons-webfont-e52d60f6.woff2",
-    "/assets/index-f7b96a96.js",
-    "/assets/webfontloader-523643f5.js",
+    "/assets/index.css",
+    "/assets/materialdesignicons.woff",
+    // "/assets/materialdesignicons.eot",
+    // "/assets/materialdesignicons.ttf",
+    // "/assets/materialdesignicons.woff2",
+    "/assets/index.js",
+    "/assets/webfontloader.js",
     splashPageFileName,
     programStorageFileName,
 };
-std::vector<const char *> jsFiles{"/assets/index-f7b96a96.js", "/assets/webfontloader-523643f5.js"};
+std::vector<const char *> jsFiles{"/assets/index.js", "/assets/webfontloader.js"};
 
 #include "fileSystem.h"
 

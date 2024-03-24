@@ -154,9 +154,9 @@ class BlinkTest : public Program {
             }
         }
         if (flag) {
-            digitalWrite(LED_BUILTIN, LOW);
+            // digitalWrite(LED_BUILTIN, LOW);
         } else {
-            digitalWrite(LED_BUILTIN, HIGH);
+            // digitalWrite(LED_BUILTIN, HIGH);
         }
     }
 };

@@ -28,6 +28,11 @@ Scheduler userScheduler;  // to control your personal task
 
 #ifdef INCLUDE_WIFI
 #include "wifiServer.h"
+#else
+#include <FS.h>
+#include <LittleFS.h>  // comment this out to use SPIFFS
+#define programStorageFileName "/programStorageFile.json"
+#include "fileSystem.h"
 #endif
 
 #ifdef INCLUDE_MESH
@@ -88,6 +93,8 @@ void setup() {
     setupWifiServer();
     // server.end();                // TODO: Delete this line
     // WiFi.softAPdisconnect(true); // TODO: Delete this line
+#else
+    setupFileSystem();
 #endif
 
 #ifdef INCLUDE_LEDS
